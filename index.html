@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo Cafe - Premium Digital Menu</title>
+    <title>Demo Cafe - Ultra Smooth Experience</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; -webkit-tap-highlight-color: transparent; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         @keyframes pulseGlow {
@@ -15,171 +15,167 @@
             50% { transform: scale(1.08); opacity: 0.85; }
         }
         .animate-glow { animation: pulseGlow 2s infinite ease-in-out; }
+        /* Silky smooth modal transitions */
+        .modal-transition { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
     </style>
 </head>
-<body class="pb-32 text-slate-800 bg-slate-50 min-h-screen">
+<body class="pb-32 text-slate-800 bg-slate-50 min-h-screen antialiased selection:bg-emerald-500 selection:text-white">
 
     <!-- 1. SPLASH SCREEN -->
-    <div id="splashTheme" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-between p-8 text-center text-white transition-all duration-500">
+    <div id="splashTheme" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-between p-8 text-center text-white transition-opacity duration-500">
         <div class="my-auto space-y-4">
-            <div class="w-24 h-24 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-3xl flex items-center justify-center mx-auto text-5xl shadow-2xl shadow-emerald-500/40 animate-glow">
+            <div class="w-24 h-24 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-3xl flex items-center justify-center mx-auto text-5xl shadow-2xl shadow-emerald-500/30 animate-glow">
                 ☕
             </div>
             <div>
-                <span class="text-xs font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/80 px-3 py-1 rounded-full border border-emerald-800">Table #4</span>
+                <span class="text-[11px] font-extrabold uppercase tracking-widest text-emerald-400 bg-emerald-950/80 px-3.5 py-1.5 rounded-full border border-emerald-800/50">Table #4</span>
                 <h1 class="text-3xl font-extrabold mt-3 tracking-tight">DEMO CAFE</h1>
-                <p class="text-xs text-slate-400 mt-1">Smart Contactless Dining Experience</p>
+                <p class="text-xs text-slate-400 mt-1">Ultra-Smooth Contactless Dining</p>
             </div>
         </div>
-        <button onclick="startApp()" class="w-full max-w-xs py-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold text-sm rounded-2xl shadow-lg shadow-emerald-500/30 active:scale-95 transition-all">
+        <button onclick="startApp()" class="w-full max-w-xs py-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold text-sm rounded-2xl shadow-xl shadow-emerald-500/20 active:scale-95 transition-all">
             Enter Menu ➔
         </button>
     </div>
 
     <!-- 2. CUSTOMER DETAILS FORM -->
-    <div id="welcomeModal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-40 flex items-center justify-center p-4 hidden">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl text-center space-y-4">
-            <h2 class="text-xl font-extrabold text-slate-900">Welcome to Demo Cafe</h2>
-            <p class="text-xs text-slate-500">Help us identify your order at Table #4</p>
-            <div class="space-y-3 text-left pt-2">
+    <div id="welcomeModal" class="fixed inset-0 bg-black/60 backdrop-blur-md z-40 flex items-center justify-center p-4 hidden modal-transition">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl text-center space-y-4 border border-slate-100">
+            <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold">👋</div>
+            <div>
+                <h2 class="text-xl font-extrabold text-slate-900">Welcome to Demo Cafe</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Quick setup for Table #4</p>
+            </div>
+            <div class="space-y-3 text-left pt-1">
                 <div>
-                    <label class="text-xs font-bold text-slate-700 ml-1">Your Name</label>
-                    <input type="text" id="custName" placeholder="e.g. Rahul Sharma" class="w-full mt-1 px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium">
+                    <label class="text-[11px] font-bold text-slate-600 ml-1">Your Name</label>
+                    <input type="text" id="custName" placeholder="e.g. Rahul Sharma" class="w-full mt-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium transition-all">
                 </div>
                 <div>
-                    <label class="text-xs font-bold text-slate-700 ml-1">Mobile Number</label>
-                    <input type="tel" id="custPhone" placeholder="10-digit phone number" class="w-full mt-1 px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium">
+                    <label class="text-[11px] font-bold text-slate-600 ml-1">Mobile Number</label>
+                    <input type="tel" id="custPhone" placeholder="10-digit phone number" class="w-full mt-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium transition-all">
                 </div>
             </div>
             <button onclick="saveCustomerDetails()" class="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-lg active:scale-95 transition-all">
-                Continue to Menu
+                Continue to Menu ➔
             </button>
         </div>
     </div>
 
     <!-- 3. WAITER CONFIRMATION MODAL -->
-    <div id="waiterModal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center space-y-4">
-            <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-3xl">🔔</div>
+    <div id="waiterModal" class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden modal-transition">
+        <div class="bg-white w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center space-y-4 border border-slate-100">
+            <div class="w-14 h-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-2xl">🔔</div>
             <div>
-                <h3 class="text-lg font-bold text-slate-900">Call Waiter?</h3>
-                <p class="text-xs text-slate-500 mt-1">A staff member will be dispatched to <strong class="text-slate-800">Table #4</strong>.</p>
+                <h3 class="text-base font-bold text-slate-900">Call Waiter?</h3>
+                <p class="text-xs text-slate-500 mt-1">A staff member will be notified for <strong class="text-slate-800">Table #4</strong>.</p>
             </div>
-            <div class="flex gap-2 pt-2">
-                <button onclick="closeWaiterModal()" class="w-1/2 py-3 bg-slate-100 text-slate-700 font-bold text-xs rounded-xl">Cancel</button>
-                <button onclick="confirmCallWaiter()" class="w-1/2 py-3 bg-amber-500 text-slate-950 font-extrabold text-xs rounded-xl shadow-lg">Yes, Call</button>
+            <div class="flex gap-2 pt-1">
+                <button onclick="closeWaiterModal()" class="w-1/2 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all">Cancel</button>
+                <button onclick="confirmCallWaiter()" class="w-1/2 py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs rounded-xl shadow-md active:scale-95 transition-all">Yes, Call</button>
             </div>
         </div>
     </div>
 
     <!-- 4. CART BOTTOM SHEET DRAWER -->
-    <div id="cartDrawer" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end hidden">
-        <div class="bg-white w-full rounded-t-3xl p-6 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="font-extrabold text-slate-900 text-lg">Your Order (Table #4)</h3>
-                <button onclick="toggleCartDrawer(false)" class="text-slate-400 text-xl font-bold">✕</button>
+    <div id="cartDrawer" class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-end hidden modal-transition">
+        <div class="bg-white w-full rounded-t-3xl p-6 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto transform transition-transform duration-300">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 class="font-extrabold text-slate-900 text-base">Your Order (Table #4)</h3>
+                <button onclick="toggleCartDrawer(false)" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold hover:bg-slate-200 transition-all">✕</button>
             </div>
             
-            <div id="cartItemsList" class="space-y-3 divide-y divide-slate-100">
-                <!-- Cart Items rendered here -->
-            </div>
+            <div id="cartItemsList" class="space-y-3 divide-y divide-slate-100"></div>
 
-            <!-- PROMO CODE BOX -->
-            <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex gap-2 items-center">
-                <span class="text-base">🎟️</span>
-                <input type="text" id="couponInput" placeholder="Try promo WELCOME10" class="uppercase text-xs font-bold bg-transparent flex-1 focus:outline-none">
-                <button onclick="applyCoupon()" class="bg-slate-900 text-white text-xs font-bold px-3 py-1.5 rounded-xl active:scale-95">Apply</button>
-            </div>
-
-            <!-- COOKING INSTRUCTIONS -->
-            <div>
-                <label class="text-[11px] font-bold text-slate-500">👨‍🍳 Cooking Instructions / Notes</label>
-                <input type="text" id="cookingNotes" placeholder="e.g. Less spicy, extra sauce..." class="w-full mt-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
+            <!-- PROMO CODE -->
+            <div class="bg-slate-50 p-2.5 rounded-2xl border border-slate-200 flex gap-2 items-center">
+                <span class="text-sm pl-1">🎟️</span>
+                <input type="text" id="couponInput" placeholder="Try WELCOME10" class="uppercase text-xs font-bold bg-transparent flex-1 focus:outline-none">
+                <button onclick="applyCoupon()" class="bg-slate-900 text-white text-xs font-bold px-3 py-2 rounded-xl active:scale-95 transition-all">Apply</button>
             </div>
 
             <!-- BILL BREAKDOWN -->
-            <div class="border-t pt-3 space-y-1.5 text-xs text-slate-600">
-                <div class="flex justify-between"><span>Item Total</span><span id="drawerSubtotal">₹0</span></div>
+            <div class="border-t border-slate-100 pt-3 space-y-1.5 text-xs text-slate-600">
+                <div class="flex justify-between"><span>Item Total</span><span id="drawerSubtotal" class="font-medium text-slate-800">₹0</span></div>
                 <div id="discountRow" class="flex justify-between text-emerald-600 font-semibold hidden"><span>Discount (10% OFF)</span><span id="drawerDiscount">-₹0</span></div>
-                <div class="flex justify-between"><span>GST & Restaurant Charges (5%)</span><span id="drawerTax">₹0</span></div>
-                <div class="flex justify-between font-extrabold text-slate-900 text-sm pt-2 border-t"><span>Grand Total</span><span id="drawerGrandTotal">₹0</span></div>
+                <div class="flex justify-between"><span>GST & Charges (5%)</span><span id="drawerTax" class="font-medium text-slate-800">₹0</span></div>
+                <div class="flex justify-between font-extrabold text-slate-900 text-sm pt-2 border-t border-slate-100"><span>Grand Total</span><span id="drawerGrandTotal">₹0</span></div>
             </div>
 
-            <button id="placeOrderBtn" onclick="placeOrder()" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm rounded-xl shadow-lg shadow-emerald-600/30 active:scale-95 transition-all">
+            <button id="placeOrderBtn" onclick="placeOrder()" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-emerald-600/20 active:scale-95 transition-all">
                 Place Secure Order ➔
             </button>
         </div>
     </div>
 
     <!-- 5. LIVE ORDER TRACKER MODAL -->
-    <div id="trackerModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl text-center space-y-5">
-            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl">👨‍🍳</div>
+    <div id="trackerModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden modal-transition">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl text-center space-y-4 border border-slate-100">
+            <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl animate-pulse">👨‍🍳</div>
             <div>
-                <h3 id="orderStatusTitle" class="text-xl font-extrabold text-slate-800">Order Sent to Kitchen!</h3>
-                <p class="text-xs text-slate-500 mt-1">Table #4 • Total Bill: <span id="trackTotal" class="font-bold text-slate-900">₹0</span></p>
+                <h3 id="orderStatusTitle" class="text-base font-extrabold text-slate-900">Order Sent to Kitchen!</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Table #4 • Total: <span id="trackTotal" class="font-bold text-slate-900">₹0</span></p>
             </div>
 
-            <div id="notesDisplayBox" class="text-left bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-[11px] text-slate-600 hidden">
-                <strong>Note:</strong> <span id="savedCookingNotes"></span>
-            </div>
-
-            <div id="paymentStatusBox" class="bg-amber-50 border border-amber-200 p-3.5 rounded-2xl text-amber-800 text-xs font-semibold">
-                🟡 Please pay <span id="payAmount">₹0</span> at the counter.
-            </div>
-            
-            <div id="reviewSection" class="border-t pt-4 space-y-2 hidden">
-                <p class="text-xs font-bold text-slate-700">How was your food experience?</p>
-                <div class="flex justify-center gap-2 text-2xl">
-                    <span onclick="submitRating(1)" class="cursor-pointer hover:scale-125">⭐</span>
-                    <span onclick="submitRating(2)" class="cursor-pointer hover:scale-125">⭐</span>
-                    <span onclick="submitRating(3)" class="cursor-pointer hover:scale-125">⭐</span>
-                    <span onclick="submitRating(4)" class="cursor-pointer hover:scale-125">⭐</span>
-                    <span onclick="submitRating(5)" class="cursor-pointer hover:scale-125">⭐</span>
+            <!-- PROGRESS BAR -->
+            <div class="py-2">
+                <div class="flex justify-between text-[10px] font-bold text-slate-400 mb-1">
+                    <span class="text-emerald-600">Placed</span>
+                    <span class="text-amber-500">Preparing</span>
+                    <span>Ready</span>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden flex">
+                    <div id="progressBar" class="bg-emerald-500 h-full w-1/2 transition-all duration-700"></div>
                 </div>
             </div>
 
-            <button onclick="simulateCounterPaid()" class="w-full py-3 bg-slate-900 text-white text-xs font-bold rounded-xl shadow">
+            <div id="paymentStatusBox" class="bg-amber-50 border border-amber-200/60 p-3 rounded-2xl text-amber-800 text-xs font-semibold">
+                🟡 Please pay <span id="payAmount">₹0</span> at the counter.
+            </div>
+            
+            <div id="reviewSection" class="border-t border-slate-100 pt-3 space-y-2 hidden">
+                <p class="text-xs font-bold text-slate-700">How was your food experience?</p>
+                <div class="flex justify-center gap-2 text-2xl">
+                    <span onclick="submitRating(1)" class="cursor-pointer hover:scale-125 transition-transform">⭐</span>
+                    <span onclick="submitRating(2)" class="cursor-pointer hover:scale-125 transition-transform">⭐</span>
+                    <span onclick="submitRating(3)" class="cursor-pointer hover:scale-125 transition-transform">⭐</span>
+                    <span onclick="submitRating(4)" class="cursor-pointer hover:scale-125 transition-transform">⭐</span>
+                    <span onclick="submitRating(5)" class="cursor-pointer hover:scale-125 transition-transform">⭐</span>
+                </div>
+            </div>
+
+            <button onclick="simulateCounterPaid()" class="w-full py-3 bg-slate-900 text-white text-xs font-bold rounded-xl shadow active:scale-95 transition-all">
                 [Demo] Simulate Admin Received Payment
             </button>
         </div>
     </div>
 
     <!-- HEADER -->
-    <header class="sticky top-0 bg-white/90 backdrop-blur-md z-30 border-b border-slate-100 px-4 py-3 shadow-sm">
+    <header class="sticky top-0 bg-white/90 backdrop-blur-md z-30 border-b border-slate-100 px-4 py-3 shadow-xs">
         <div class="flex items-center justify-between">
             <div>
-                <span class="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">TABLE #4</span>
-                <h1 class="text-lg font-extrabold text-slate-800 leading-tight">Demo Cafe</h1>
+                <span class="text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/50 px-2 py-0.5 rounded-full">TABLE #4</span>
+                <h1 class="text-lg font-extrabold text-slate-900 tracking-tight leading-tight">Demo Cafe</h1>
             </div>
-            <button id="callWaiterHeaderBtn" onclick="openWaiterModal()" class="flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm active:scale-95 transition-all">
+            <button id="callWaiterHeaderBtn" onclick="openWaiterModal()" class="flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200/60 px-3 py-1.5 rounded-full text-xs font-semibold shadow-2xs active:scale-95 transition-all">
                 <span>🔔</span> <span id="waiterBtnText">Call Waiter</span>
             </button>
-        </div>
-
-        <!-- PROMO BANNER -->
-        <div class="mt-2.5 bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-2.5 rounded-2xl flex justify-between items-center text-xs shadow-md">
-            <div>
-                <span class="font-extrabold">10% OFF</span> on First Order
-                <p class="text-[10px] text-emerald-100">Use Code: <strong class="underline">WELCOME10</strong></p>
-            </div>
-            <span class="text-xl">🎁</span>
         </div>
 
         <!-- SEARCH & VEG TOGGLE -->
         <div class="mt-3 flex gap-2 items-center">
             <div class="relative flex-1">
-                <input type="text" id="searchInput" oninput="filterMenu()" placeholder="Search coffees, pizzas, burgers..." class="w-full pl-9 pr-4 py-2.5 bg-slate-100 rounded-xl text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium">
+                <input type="text" id="searchInput" oninput="filterMenu()" placeholder="Search coffees, pizzas..." class="w-full pl-9 pr-4 py-2.5 bg-slate-100/80 rounded-xl text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium transition-all">
                 <span class="absolute left-3 top-3 text-xs text-slate-400">🔍</span>
             </div>
-            <button id="vegToggleBtn" onclick="toggleVegOnly()" class="flex items-center gap-1 bg-slate-100 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-600 border border-slate-200 shrink-0">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> Veg
+            <button id="vegToggleBtn" onclick="toggleVegOnly()" class="flex items-center gap-1 bg-slate-100 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-600 border border-slate-200/60 shrink-0 active:scale-95 transition-all">
+                <span class="w-2 h-2 rounded-full bg-emerald-600"></span> Veg
             </button>
         </div>
 
         <!-- CATEGORY TABS -->
         <div class="flex gap-2 mt-3 overflow-x-auto no-scrollbar pb-1 text-xs font-medium">
-            <button onclick="filterCategory('All', this)" class="cat-btn px-4 py-1.5 bg-slate-900 text-white rounded-full font-semibold shrink-0 transition-all">🔥 All</button>
+            <button onclick="filterCategory('All', this)" class="cat-btn px-4 py-1.5 bg-slate-900 text-white rounded-full font-semibold shrink-0 transition-all shadow-xs">🔥 All</button>
             <button onclick="filterCategory('Coffee', this)" class="cat-btn px-4 py-1.5 bg-slate-100 text-slate-600 rounded-full shrink-0 transition-all">☕ Coffees</button>
             <button onclick="filterCategory('Pizza', this)" class="cat-btn px-4 py-1.5 bg-slate-100 text-slate-600 rounded-full shrink-0 transition-all">🍕 Pizzas</button>
             <button onclick="filterCategory('Burger', this)" class="cat-btn px-4 py-1.5 bg-slate-100 text-slate-600 rounded-full shrink-0 transition-all">🍔 Burgers</button>
@@ -187,18 +183,18 @@
         </div>
     </header>
 
-    <!-- MAIN DYNAMIC MENU CONTAINER -->
-    <main id="menuContainer" class="p-4 space-y-4">
+    <!-- MAIN MENU CONTAINER -->
+    <main id="menuContainer" class="p-4 space-y-3.5">
         <!-- Rendered dynamically -->
     </main>
 
     <!-- FLOATING CART BAR -->
-    <div id="cartBar" class="fixed bottom-4 left-4 right-4 bg-emerald-600 text-white rounded-2xl p-3.5 shadow-xl flex justify-between items-center hidden z-30 transition-all">
+    <div id="cartBar" class="fixed bottom-4 left-4 right-4 bg-emerald-600 text-white rounded-2xl p-3.5 shadow-xl flex justify-between items-center hidden z-30 transition-all transform translate-y-0">
         <div>
             <p id="cartItemsCount" class="text-xs font-semibold opacity-90">0 ITEMS</p>
-            <p id="cartTotal" class="text-base font-extrabold">₹0</p>
+            <p id="cartTotal" class="text-base font-extrabold tracking-tight">₹0</p>
         </div>
-        <button onclick="toggleCartDrawer(true)" class="flex items-center gap-1 font-bold text-sm bg-white text-emerald-700 px-4 py-2 rounded-xl shadow active:scale-95">
+        <button onclick="toggleCartDrawer(true)" class="flex items-center gap-1 font-bold text-xs bg-white text-emerald-700 px-4 py-2.5 rounded-xl shadow-md active:scale-95 transition-all">
             View Cart ➔
         </button>
     </div>
@@ -223,7 +219,9 @@
         let isWaiterCalled = false;
 
         function startApp() {
-            document.getElementById('splashTheme').classList.add('hidden');
+            const splash = document.getElementById('splashTheme');
+            splash.style.opacity = '0';
+            setTimeout(() => splash.classList.add('hidden'), 500);
             document.getElementById('welcomeModal').classList.remove('hidden');
             renderMenu();
         }
@@ -238,11 +236,9 @@
         function toggleVegOnly() {
             isVegOnly = !isVegOnly;
             const btn = document.getElementById('vegToggleBtn');
-            if(isVegOnly) {
-                btn.className = "flex items-center gap-1 bg-emerald-600 text-white px-3 py-2.5 rounded-xl text-xs font-bold border border-emerald-600 shrink-0 shadow-md";
-            } else {
-                btn.className = "flex items-center gap-1 bg-slate-100 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-600 border border-slate-200 shrink-0";
-            }
+            btn.className = isVegOnly 
+                ? "flex items-center gap-1 bg-emerald-600 text-white px-3 py-2.5 rounded-xl text-xs font-bold border border-emerald-600 shrink-0 shadow-sm transition-all"
+                : "flex items-center gap-1 bg-slate-100 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-600 border border-slate-200/60 shrink-0 transition-all";
             renderMenu();
         }
 
@@ -258,7 +254,7 @@
             });
 
             if(filtered.length === 0) {
-                container.innerHTML = `<div class="text-center py-12 text-slate-400 text-xs font-semibold">No dishes found.</div>`;
+                container.innerHTML = `<div class="text-center py-16 text-slate-400 text-xs font-semibold">No dishes found.</div>`;
                 return;
             }
 
@@ -269,27 +265,27 @@
                     : `<span class="w-3.5 h-3.5 border border-red-600 flex items-center justify-center p-0.5 rounded-sm"><span class="w-1.5 h-1.5 bg-red-600 rounded-full"></span></span>`;
 
                 let actionBtnHTML = qty === 0 
-                    ? `<button onclick="updateQty(${item.id}, 1)" class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white text-emerald-600 border border-emerald-500 font-bold px-4 py-1 rounded-lg text-xs shadow-md hover:bg-emerald-50 active:scale-95">+ ADD</button>`
+                    ? `<button onclick="updateQty(${item.id}, 1)" class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white text-emerald-600 border border-emerald-500 font-bold px-4 py-1 rounded-lg text-xs shadow-md hover:bg-emerald-50 active:scale-95 transition-all">+ ADD</button>`
                     : `<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-emerald-600 text-white flex items-center gap-2 px-3 py-1 rounded-lg text-xs font-bold shadow-md">
-                        <button onclick="updateQty(${item.id}, -1)" class="px-1 text-sm font-extrabold">-</button>
+                        <button onclick="updateQty(${item.id}, -1)" class="px-1 text-sm font-extrabold active:scale-75 transition-transform">-</button>
                         <span>${qty}</span>
-                        <button onclick="updateQty(${item.id}, 1)" class="px-1 text-sm font-extrabold">+</button>
+                        <button onclick="updateQty(${item.id}, 1)" class="px-1 text-sm font-extrabold active:scale-75 transition-transform">+</button>
                     </div>`;
 
                 container.innerHTML += `
-                    <div class="bg-white p-3.5 rounded-2xl shadow-sm border border-slate-100 flex justify-between gap-3">
+                    <div class="bg-white p-3.5 rounded-2xl shadow-2xs border border-slate-100 flex justify-between gap-3 transition-all hover:shadow-sm">
                         <div class="space-y-1 flex-1">
                             <div class="flex items-center gap-1.5">
                                 ${vegBadge}
-                                <span class="text-[10px] font-bold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">${item.tag}</span>
+                                <span class="text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200/40 px-1.5 py-0.5 rounded">${item.tag}</span>
                                 <span class="text-[10px] font-bold text-slate-500">⭐ ${item.rating}</span>
                             </div>
-                            <h3 class="font-bold text-slate-800 text-sm">${item.name}</h3>
-                            <p class="text-xs font-bold text-slate-900">₹${item.price}</p>
-                            <p class="text-[11px] text-slate-400 line-clamp-2">${item.desc}</p>
+                            <h3 class="font-bold text-slate-800 text-sm tracking-tight">${item.name}</h3>
+                            <p class="text-xs font-extrabold text-slate-900">₹${item.price}</p>
+                            <p class="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">${item.desc}</p>
                         </div>
                         <div class="relative w-24 h-24 shrink-0">
-                            <img src="${item.img}" class="w-full h-full object-cover rounded-xl">
+                            <img src="${item.img}" class="w-full h-full object-cover rounded-xl shadow-xs">
                             ${actionBtnHTML}
                         </div>
                     </div>
@@ -300,7 +296,7 @@
         function filterCategory(cat, btn) {
             currentCategory = cat;
             document.querySelectorAll('.cat-btn').forEach(b => b.className = "cat-btn px-4 py-1.5 bg-slate-100 text-slate-600 rounded-full shrink-0 transition-all");
-            btn.className = "cat-btn px-4 py-1.5 bg-slate-900 text-white rounded-full font-semibold shrink-0 transition-all";
+            btn.className = "cat-btn px-4 py-1.5 bg-slate-900 text-white rounded-full font-semibold shrink-0 transition-all shadow-xs";
             renderMenu();
         }
 
@@ -352,7 +348,7 @@
             const code = document.getElementById('couponInput').value.trim().toUpperCase();
             if(code === 'WELCOME10') {
                 isCouponApplied = true;
-                alert("🎉 'WELCOME10' Applied! You saved 10%.");
+                alert("🎉 'WELCOME10' Applied successfully!");
                 renderCartDrawerItems();
             } else {
                 alert("Invalid Coupon Code! Try WELCOME10");
@@ -370,10 +366,10 @@
                 subtotal += cost;
 
                 list.innerHTML += `
-                    <div class="flex justify-between items-center py-2 text-xs">
+                    <div class="flex justify-between items-center py-2.5 text-xs">
                         <div>
                             <p class="font-bold text-slate-800">${item.name}</p>
-                            <p class="text-slate-500">₹${item.price} × ${cart[id]}</p>
+                            <p class="text-slate-400 text-[11px]">₹${item.price} × ${cart[id]}</p>
                         </div>
                         <div class="flex items-center gap-3">
                             <span class="font-bold text-slate-900">₹${cost}</span>
@@ -400,7 +396,7 @@
             document.getElementById('drawerGrandTotal').innerText = `₹${grandTotal}`;
         }
 
-        // AUDIO EFFECTS
+        // AUDIO
         function playPopSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -427,7 +423,7 @@
             playWaiterBellSound();
             const btn = document.getElementById('callWaiterHeaderBtn');
             const txt = document.getElementById('waiterBtnText');
-            btn.className = "flex items-center gap-1.5 bg-gray-100 text-gray-500 border border-gray-200 px-3 py-1.5 rounded-full text-xs font-semibold cursor-not-allowed";
+            btn.className = "flex items-center gap-1.5 bg-slate-100 text-slate-400 border border-slate-200 px-3 py-1.5 rounded-full text-xs font-semibold cursor-not-allowed";
             txt.innerText = "Waiter Called ✓";
 
             let countdown = 30;
@@ -436,7 +432,7 @@
                 if(countdown <= 0) {
                     clearInterval(timer);
                     isWaiterCalled = false;
-                    btn.className = "flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm active:scale-95 transition-all";
+                    btn.className = "flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200/60 px-3 py-1.5 rounded-full text-xs font-semibold shadow-2xs active:scale-95 transition-all";
                     txt.innerText = "Call Waiter";
                 }
             }, 1000);
@@ -463,12 +459,6 @@
             isOrderPlaced = true;
             toggleCartDrawer(false);
 
-            let notes = document.getElementById('cookingNotes').value;
-            if(notes) {
-                document.getElementById('savedCookingNotes').innerText = notes;
-                document.getElementById('notesDisplayBox').classList.remove('hidden');
-            }
-
             let subtotal = 0;
             for(let id in cart) {
                 const item = menuItems.find(i => i.id == id);
@@ -483,7 +473,7 @@
                 document.getElementById('trackTotal').innerText = `₹${grandTotal}`;
                 document.getElementById('payAmount').innerText = `₹${grandTotal}`;
                 document.getElementById('trackerModal').classList.remove('hidden');
-            }, 500);
+            }, 400);
         }
 
         function playOrderSuccessSound() {
@@ -504,7 +494,8 @@
         }
 
         function simulateCounterPaid() {
-            document.getElementById('paymentStatusBox').className = "bg-emerald-50 border border-emerald-200 p-3.5 rounded-2xl text-emerald-800 text-xs font-bold";
+            document.getElementById('progressBar').className = "bg-emerald-500 h-full w-full transition-all duration-700";
+            document.getElementById('paymentStatusBox').className = "bg-emerald-50 border border-emerald-200/60 p-3 rounded-2xl text-emerald-800 text-xs font-bold";
             document.getElementById('paymentStatusBox').innerHTML = "🟢 BILL PAID SUCCESSFULLY!";
             document.getElementById('orderStatusTitle').innerText = "Enjoy Your Meal!";
             document.getElementById('reviewSection').classList.remove('hidden');
