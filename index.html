@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo Cafe - Artisanal Coffee & Kitchen</title>
+    <title>Demo Cafe - Luxury Digital Menu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -21,7 +21,7 @@
 </head>
 <body class="pb-36 min-h-screen antialiased selection:bg-amber-200 selection:text-amber-900">
 
-    <!-- 1. REAL CAFE SPLASH SCREEN -->
+    <!-- 1. SPLASH SCREEN -->
     <div id="splashTheme" class="fixed inset-0 bg-[#1c1816] z-50 flex flex-col items-center justify-between p-8 text-center text-white transition-opacity duration-700">
         <div class="my-auto space-y-6">
             <div class="w-28 h-28 bg-gradient-to-tr from-amber-600 to-amber-400 rounded-full flex items-center justify-center mx-auto text-5xl shadow-2xl shadow-amber-900/40 animate-glow border-2 border-amber-500/30">
@@ -106,12 +106,9 @@
                 <p id="modalDesc" class="text-xs text-stone-500 mt-1 leading-relaxed"></p>
             </div>
 
-            <!-- Add-ons / Customizations Selection -->
             <div id="customizationSection" class="border-t border-stone-100 pt-3 space-y-3">
                 <p class="text-xs font-bold text-stone-700">Choose Add-ons / Customization:</p>
-                <div id="addonList" class="space-y-2">
-                    <!-- Dynamic Add-ons injected here -->
-                </div>
+                <div id="addonList" class="space-y-2"></div>
             </div>
 
             <button id="modalAddBtn" onclick="addItemFromModal()" class="w-full py-3.5 bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs rounded-2xl shadow-lg active:scale-95 transition-all">
@@ -120,7 +117,7 @@
         </div>
     </div>
 
-    <!-- 5. CART BOTTOM SHEET DRAWER -->
+    <!-- 5. CART DRAWER -->
     <div id="cartDrawer" class="fixed inset-0 bg-stone-950/60 backdrop-blur-sm z-50 flex items-end hidden modal-transition">
         <div class="bg-white w-full rounded-t-3xl p-6 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto border-t border-stone-200">
             <div class="flex justify-between items-center border-b border-stone-100 pb-3">
@@ -131,7 +128,6 @@
                 <button onclick="toggleCartDrawer(false)" class="w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center text-stone-500 font-bold">✕</button>
             </div>
 
-            <!-- DINE-IN VS TAKEAWAY -->
             <div class="bg-stone-100 p-1.5 rounded-2xl flex gap-1 text-xs font-bold">
                 <button id="typeDineIn" onclick="setOrderType('Dine-In')" class="flex-1 py-2 rounded-xl bg-white text-stone-900 shadow-xs transition-all">🍽️ Dine-In</button>
                 <button id="typeTakeaway" onclick="setOrderType('Takeaway')" class="flex-1 py-2 rounded-xl text-stone-500 transition-all">🛍️ Takeaway</button>
@@ -139,20 +135,17 @@
             
             <div id="cartItemsList" class="space-y-3 divide-y divide-stone-100"></div>
 
-            <!-- PROMO CODE -->
             <div class="bg-stone-50 p-2.5 rounded-2xl border border-stone-200 flex gap-2 items-center">
                 <span class="text-sm pl-1">🎟️</span>
                 <input type="text" id="couponInput" placeholder="Try WELCOME10" class="uppercase text-xs font-bold bg-transparent flex-1 focus:outline-none">
                 <button onclick="applyCoupon()" class="bg-stone-900 text-white text-xs font-bold px-3 py-2 rounded-xl">Apply</button>
             </div>
 
-            <!-- SPECIAL INSTRUCTIONS -->
             <div>
                 <label class="text-[11px] font-bold text-stone-500 ml-1">✍️ Kitchen Notes</label>
                 <input type="text" id="cookingNotes" placeholder="e.g. less ice, extra warm..." class="w-full mt-1 px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none">
             </div>
 
-            <!-- BILL BREAKDOWN (EXACT TOTAL - NO GST) -->
             <div class="border-t border-stone-100 pt-3 space-y-2 text-xs text-stone-600">
                 <div class="flex justify-between"><span>Subtotal</span><span id="drawerSubtotal" class="font-bold text-stone-800">₹0</span></div>
                 <div id="discountRow" class="flex justify-between text-emerald-700 font-bold hidden"><span>Discount (10% OFF)</span><span id="drawerDiscount">-₹0</span></div>
@@ -162,13 +155,13 @@
                 </div>
             </div>
 
-            <button onclick="placeOrder()" class="w-full py-4 bg-amber-600 hover:bg-amber-500 text-stone-950 font-extrabold text-xs uppercase tracking-wider rounded-2xl shadow-xl shadow-amber-600/20 active:scale-95 transition-all">
+            <button onclick="placeOrder()" class="w-full py-4 bg-amber-600 hover:bg-amber-500 text-stone-950 font-extrabold text-xs uppercase tracking-wider rounded-2xl shadow-xl active:scale-95 transition-all">
                 Place Order Now ➔
             </button>
         </div>
     </div>
 
-    <!-- 6. ORDER TRACKER MODAL -->
+    <!-- 6. ORDER TRACKER MODAL WITH "VIEW MENU" OPTION -->
     <div id="trackerModal" class="fixed inset-0 bg-stone-950/70 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden modal-transition">
         <div class="bg-white w-full max-w-sm rounded-3xl p-7 shadow-2xl text-center space-y-5 border border-stone-100">
             <div class="flex justify-between items-center bg-stone-50 p-3 rounded-2xl text-xs">
@@ -204,14 +197,26 @@
                 </div>
             </div>
 
-            <button onclick="simulateCounterPaid()" class="w-full py-3.5 bg-stone-900 text-white text-xs font-bold rounded-xl shadow">
-                [Demo] Simulate Payment Received
-            </button>
+            <!-- BUTTONS: View Menu & Simulate Payment -->
+            <div class="space-y-2">
+                <button onclick="closeTrackerAndReturnToMenu()" class="w-full py-3.5 bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs rounded-xl shadow active:scale-95 transition-all">
+                    🏠 Return to Home Menu
+                </button>
+                <button onclick="simulateCounterPaid()" class="w-full py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-[11px] rounded-xl">
+                    [Demo] Simulate Payment Received
+                </button>
+            </div>
         </div>
     </div>
 
+    <!-- 7. FLOATING LIVE ORDER STATUS WIDGET (VISIBLE ON HOME MENU AFTER ORDERING) -->
+    <div id="liveStatusWidget" onclick="openTrackerModal()" class="fixed top-3.5 right-4 bg-amber-500 text-stone-950 px-3 py-1.5 rounded-full shadow-lg text-[11px] font-extrabold items-center gap-1.5 cursor-pointer z-30 hidden animate-pulse border border-amber-300">
+        <span class="w-2 h-2 rounded-full bg-stone-950"></span>
+        <span id="widgetStatusText">Order Active 👨‍🍳</span>
+    </div>
+
     <!-- REAL CAFE HEADER -->
-    <header class="sticky top-0 glass-header z-30 border-b border-stone-200/80 px-4 py-3.5">
+    <header class="sticky top-0 glass-header z-20 border-b border-stone-200/80 px-4 py-3.5">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-2.5">
                 <div class="w-10 h-10 bg-[#1c1816] text-amber-400 rounded-2xl flex items-center justify-center font-bold text-base shadow-sm">☕</div>
@@ -279,7 +284,7 @@
             document.getElementById('billModalText').innerHTML = `Notify the counter to print and bring the bill to <strong class="text-stone-800">Table #${tableNo}</strong>.`;
             document.getElementById('cartTableText').innerText = `Table #${tableNo} • Review items`;
             document.getElementById('headerTableBadge').innerText = `TABLE #${tableNo}`;
-            loadCartFromStorage();
+            loadStorageData();
         });
 
         const menuItems = [
@@ -309,7 +314,7 @@
             }
         ];
 
-        let cart = {}; // Format: { "id_addons": {item, qty, selectedAddons, totalItemPrice} }
+        let cart = {};
         let currentCategory = 'All';
         let searchQuery = '';
         let isVegOnly = false;
@@ -334,20 +339,24 @@
             document.getElementById('welcomeModal').classList.add('hidden');
         }
 
-        // PERSISTENT CART (LOCAL STORAGE)
-        function saveCartToStorage() {
+        function saveStorageData() {
             localStorage.setItem(`demoCafeCart_Table_${tableNo}`, JSON.stringify(cart));
+            localStorage.setItem(`demoCafeOrderPlaced_${tableNo}`, isOrderPlaced);
         }
 
-        function loadCartFromStorage() {
-            const saved = localStorage.getItem(`demoCafeCart_Table_${tableNo}`);
-            if(saved) {
-                cart = JSON.parse(saved);
+        function loadStorageData() {
+            const savedCart = localStorage.getItem(`demoCafeCart_Table_${tableNo}`);
+            if(savedCart) {
+                cart = JSON.parse(savedCart);
                 updateCartBar();
+            }
+            const savedOrderStatus = localStorage.getItem(`demoCafeOrderPlaced_${tableNo}`);
+            if(savedOrderStatus === 'true') {
+                isOrderPlaced = true;
+                document.getElementById('liveStatusWidget').style.display = 'flex';
             }
         }
 
-        // OPEN DISH ZOOM & CUSTOMIZATION MODAL
         function openItemModal(itemId) {
             activeModalItem = menuItems.find(i => i.id === itemId);
             if(!activeModalItem) return;
@@ -414,7 +423,7 @@
             }
             cart[cartKey].qty += 1;
 
-            saveCartToStorage();
+            saveStorageData();
             closeItemModal();
             updateCartBar();
         }
@@ -458,7 +467,6 @@
             }
 
             filtered.forEach(item => {
-                // Calculate total quantity for this item across variations
                 let totalQty = 0;
                 for(let key in cart) {
                     if(cart[key].id === item.id) totalQty += cart[key].qty;
@@ -521,7 +529,7 @@
                 bar.classList.add('hidden');
                 toggleCartDrawer(false);
             }
-            saveCartToStorage();
+            saveStorageData();
         }
 
         function toggleCartDrawer(show) {
@@ -576,7 +584,7 @@
             }
 
             let discount = isCouponApplied ? Math.round(subtotal * 0.10) : 0;
-            let grandTotal = subtotal - discount; // Zero GST
+            let grandTotal = subtotal - discount;
 
             document.getElementById('drawerSubtotal').innerText = `₹${subtotal}`;
             if(isCouponApplied) {
@@ -616,7 +624,6 @@
             } catch(e){}
         }
 
-        // WAITER & BILL MODALS
         function openWaiterModal() { if(!isWaiterCalled) document.getElementById('waiterModal').classList.remove('hidden'); }
         function closeWaiterModal() { document.getElementById('waiterModal').classList.add('hidden'); }
         function confirmCallWaiter() {
@@ -684,9 +691,21 @@
             setTimeout(() => {
                 document.getElementById('payAmount').innerText = `₹${grandTotal}`;
                 document.getElementById('trackerModal').classList.remove('hidden');
-                // Clear cart from storage after order sent
-                localStorage.removeItem(`demoCafeCart_Table_${tableNo}`);
+                
+                // Save state and show live status widget on menu
+                cart = {};
+                saveStorageData();
+                updateCartBar();
+                document.getElementById('liveStatusWidget').style.display = 'flex';
             }, 400);
+        }
+
+        function closeTrackerAndReturnToMenu() {
+            document.getElementById('trackerModal').classList.add('hidden');
+        }
+
+        function openTrackerModal() {
+            document.getElementById('trackerModal').classList.remove('hidden');
         }
 
         function playOrderSuccessSound() {
@@ -712,6 +731,12 @@
             document.getElementById('paymentStatusBox').innerHTML = `<span class="text-stone-400 text-[10px]">Status</span><div class="text-xl font-black text-emerald-800">PAID SUCCESSFULLY ✓</div><p class="text-[10px] text-emerald-700">Thank you for dining at Demo Cafe!</p>`;
             document.getElementById('orderStatusTitle').innerText = "Enjoy Your Meal!";
             document.getElementById('reviewSection').classList.remove('hidden');
+            
+            // Hide live widget after full payment & review completion
+            setTimeout(() => {
+                localStorage.removeItem(`demoCafeOrderPlaced_${tableNo}`);
+                document.getElementById('liveStatusWidget').style.display = 'none';
+            }, 4000);
         }
 
         function submitRating(stars) {
@@ -726,3 +751,4 @@
     </script>
 </body>
 </html>
+
