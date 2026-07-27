@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         @keyframes pulseGlow {
@@ -18,9 +18,9 @@
         .animate-glow { animation: pulseGlow 2s infinite ease-in-out; }
     </style>
 </head>
-<body class="pb-28 text-slate-800 bg-slate-50 min-h-screen">
+<body class="pb-32 text-slate-800 bg-slate-50 min-h-screen">
 
-    <!-- 1. PREVIEW WELCOME THEME (SPLASH SCREEN) -->
+    <!-- 1. SPLASH SCREEN -->
     <div id="splashTheme" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-between p-8 text-center text-white transition-all duration-500">
         <div class="my-auto space-y-4">
             <div class="w-24 h-24 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-3xl flex items-center justify-center mx-auto text-5xl shadow-2xl shadow-emerald-500/40 animate-glow">
@@ -58,27 +58,61 @@
         </div>
     </div>
 
-    <!-- 3. UPSELLING POPUP MODAL -->
-    <div id="upsellModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center hidden">
-        <div class="bg-white w-full max-w-sm rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl space-y-4">
-            <div class="flex justify-between items-center border-b pb-3">
-                <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-full">🔥 Chef Recommended</span>
-                <button onclick="closeUpsell()" class="text-slate-400 text-lg font-bold">✕</button>
+    <!-- 3. WAITER CONFIRMATION MODAL -->
+    <div id="waiterModal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center space-y-4">
+            <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-3xl">🔔</div>
+            <div>
+                <h3 class="text-lg font-bold text-slate-900">Call Waiter?</h3>
+                <p class="text-xs text-slate-500 mt-1">A staff member will be dispatched to <strong class="text-slate-800">Table #4</strong>.</p>
             </div>
-            <h3 class="font-bold text-slate-800 text-base">Pair it with Crispy Fries?</h3>
-            <div class="flex items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-100">
-                <img src="https://images.unsplash.com/photo-1576107232684-1279f3908594?w=200" class="w-16 h-16 rounded-xl object-cover">
-                <div class="flex-1">
-                    <h4 class="font-bold text-xs text-slate-800">Crispy French Fries</h4>
-                    <p class="text-xs text-emerald-600 font-bold">+ ₹99 <span class="line-through text-slate-400 text-[10px]">₹130</span></p>
-                </div>
-                <button onclick="addUpsell('Crispy French Fries', 99)" class="bg-emerald-600 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow active:scale-95">+ Add</button>
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeWaiterModal()" class="w-1/2 py-3 bg-slate-100 text-slate-700 font-bold text-xs rounded-xl">Cancel</button>
+                <button onclick="confirmCallWaiter()" class="w-1/2 py-3 bg-amber-500 text-slate-950 font-extrabold text-xs rounded-xl shadow-lg">Yes, Call</button>
             </div>
-            <button onclick="closeUpsell()" class="w-full py-2.5 text-xs text-slate-500 font-semibold">No Thanks, Continue</button>
         </div>
     </div>
 
-    <!-- 4. LIVE ORDER TRACKER MODAL -->
+    <!-- 4. CART BOTTOM SHEET DRAWER -->
+    <div id="cartDrawer" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end hidden">
+        <div class="bg-white w-full rounded-t-3xl p-6 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-extrabold text-slate-900 text-lg">Your Order (Table #4)</h3>
+                <button onclick="toggleCartDrawer(false)" class="text-slate-400 text-xl font-bold">✕</button>
+            </div>
+            
+            <div id="cartItemsList" class="space-y-3 divide-y divide-slate-100">
+                <!-- Cart Items rendered here -->
+            </div>
+
+            <!-- PROMO CODE BOX -->
+            <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex gap-2 items-center">
+                <span class="text-base">🎟️</span>
+                <input type="text" id="couponInput" placeholder="Try promo WELCOME10" class="uppercase text-xs font-bold bg-transparent flex-1 focus:outline-none">
+                <button onclick="applyCoupon()" class="bg-slate-900 text-white text-xs font-bold px-3 py-1.5 rounded-xl active:scale-95">Apply</button>
+            </div>
+
+            <!-- COOKING INSTRUCTIONS -->
+            <div>
+                <label class="text-[11px] font-bold text-slate-500">👨‍🍳 Cooking Instructions / Notes</label>
+                <input type="text" id="cookingNotes" placeholder="e.g. Less spicy, extra sauce..." class="w-full mt-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
+            </div>
+
+            <!-- BILL BREAKDOWN -->
+            <div class="border-t pt-3 space-y-1.5 text-xs text-slate-600">
+                <div class="flex justify-between"><span>Item Total</span><span id="drawerSubtotal">₹0</span></div>
+                <div id="discountRow" class="flex justify-between text-emerald-600 font-semibold hidden"><span>Discount (10% OFF)</span><span id="drawerDiscount">-₹0</span></div>
+                <div class="flex justify-between"><span>GST & Restaurant Charges (5%)</span><span id="drawerTax">₹0</span></div>
+                <div class="flex justify-between font-extrabold text-slate-900 text-sm pt-2 border-t"><span>Grand Total</span><span id="drawerGrandTotal">₹0</span></div>
+            </div>
+
+            <button id="placeOrderBtn" onclick="placeOrder()" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm rounded-xl shadow-lg shadow-emerald-600/30 active:scale-95 transition-all">
+                Place Secure Order ➔
+            </button>
+        </div>
+    </div>
+
+    <!-- 5. LIVE ORDER TRACKER MODAL -->
     <div id="trackerModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl text-center space-y-5">
             <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl">👨‍🍳</div>
@@ -86,19 +120,23 @@
                 <h3 id="orderStatusTitle" class="text-xl font-extrabold text-slate-800">Order Sent to Kitchen!</h3>
                 <p class="text-xs text-slate-500 mt-1">Table #4 • Total Bill: <span id="trackTotal" class="font-bold text-slate-900">₹0</span></p>
             </div>
+
+            <div id="notesDisplayBox" class="text-left bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-[11px] text-slate-600 hidden">
+                <strong>Note:</strong> <span id="savedCookingNotes"></span>
+            </div>
+
             <div id="paymentStatusBox" class="bg-amber-50 border border-amber-200 p-3.5 rounded-2xl text-amber-800 text-xs font-semibold">
                 🟡 Please pay <span id="payAmount">₹0</span> at the counter.
             </div>
             
-            <!-- GOOGLE REVIEW FILTER -->
             <div id="reviewSection" class="border-t pt-4 space-y-2 hidden">
                 <p class="text-xs font-bold text-slate-700">How was your food experience?</p>
                 <div class="flex justify-center gap-2 text-2xl">
-                    <span onclick="submitRating(1)" class="cursor-pointer hover:scale-125 transition-transform">⭐</span>
-                    <span onclick="submitRating(2)" class="cursor-pointer hover:scale-125 transition-transform">⭐</span>
-                    <span onclick="submitRating(3)" class="cursor-pointer hover:scale-125 transition-transform">⭐</span>
-                    <span onclick="submitRating(4)" class="cursor-pointer hover:scale-125 transition-transform">⭐</span>
-                    <span onclick="submitRating(5)" class="cursor-pointer hover:scale-125 transition-transform">⭐</span>
+                    <span onclick="submitRating(1)" class="cursor-pointer hover:scale-125">⭐</span>
+                    <span onclick="submitRating(2)" class="cursor-pointer hover:scale-125">⭐</span>
+                    <span onclick="submitRating(3)" class="cursor-pointer hover:scale-125">⭐</span>
+                    <span onclick="submitRating(4)" class="cursor-pointer hover:scale-125">⭐</span>
+                    <span onclick="submitRating(5)" class="cursor-pointer hover:scale-125">⭐</span>
                 </div>
             </div>
 
@@ -115,133 +153,361 @@
                 <span class="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">TABLE #4</span>
                 <h1 class="text-lg font-extrabold text-slate-800 leading-tight">Urban Cafe</h1>
             </div>
-            <button onclick="callWaiter()" class="flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm active:scale-95 transition-all">
-                <span>🔔</span> Call Waiter
+            <button id="callWaiterHeaderBtn" onclick="openWaiterModal()" class="flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm active:scale-95 transition-all">
+                <span>🔔</span> <span id="waiterBtnText">Call Waiter</span>
             </button>
+        </div>
+
+        <!-- PROMO BANNER -->
+        <div class="mt-2.5 bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-2.5 rounded-2xl flex justify-between items-center text-xs shadow-md">
+            <div>
+                <span class="font-extrabold">10% OFF</span> on First Order
+                <p class="text-[10px] text-emerald-100">Use Code: <strong class="underline">WELCOME10</strong></p>
+            </div>
+            <span class="text-xl">🎁</span>
+        </div>
+
+        <!-- SEARCH & VEG TOGGLE -->
+        <div class="mt-3 flex gap-2 items-center">
+            <div class="relative flex-1">
+                <input type="text" id="searchInput" oninput="filterMenu()" placeholder="Search coffees, pizzas, burgers..." class="w-full pl-9 pr-4 py-2.5 bg-slate-100 rounded-xl text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium">
+                <span class="absolute left-3 top-3 text-xs text-slate-400">🔍</span>
+            </div>
+            <button id="vegToggleBtn" onclick="toggleVegOnly()" class="flex items-center gap-1 bg-slate-100 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-600 border border-slate-200 shrink-0">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> Veg
+            </button>
+        </div>
+
+        <!-- CATEGORY TABS -->
+        <div class="flex gap-2 mt-3 overflow-x-auto no-scrollbar pb-1 text-xs font-medium">
+            <button onclick="filterCategory('All', this)" class="cat-btn px-4 py-1.5 bg-slate-900 text-white rounded-full font-semibold shrink-0 transition-all">🔥 All</button>
+            <button onclick="filterCategory('Coffee', this)" class="cat-btn px-4 py-1.5 bg-slate-100 text-slate-600 rounded-full shrink-0 transition-all">☕ Coffees</button>
+            <button onclick="filterCategory('Pizza', this)" class="cat-btn px-4 py-1.5 bg-slate-100 text-slate-600 rounded-full shrink-0 transition-all">🍕 Pizzas</button>
+            <button onclick="filterCategory('Burger', this)" class="cat-btn px-4 py-1.5 bg-slate-100 text-slate-600 rounded-full shrink-0 transition-all">🍔 Burgers</button>
+            <button onclick="filterCategory('Dessert', this)" class="cat-btn px-4 py-1.5 bg-slate-100 text-slate-600 rounded-full shrink-0 transition-all">🍨 Desserts</button>
         </div>
     </header>
 
-    <!-- MAIN DISHES MENU -->
-    <main class="p-4 space-y-4">
-        <div class="bg-white p-3.5 rounded-2xl shadow-sm border border-slate-100 flex justify-between gap-3">
-            <div class="space-y-1 flex-1">
-                <span class="text-[10px] font-bold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">BESTSELLER</span>
-                <h3 class="font-bold text-slate-800 text-sm">Classic Cold Coffee</h3>
-                <p class="text-xs font-bold text-slate-900">₹140</p>
-                <p class="text-[11px] text-slate-400">Rich creamy brewed coffee with ice.</p>
-            </div>
-            <div class="relative w-24 h-24 shrink-0">
-                <img src="https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=300" class="w-full h-full object-cover rounded-xl">
-                <button onclick="addToCart('Classic Cold Coffee', 140, true)" class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white text-emerald-600 border border-emerald-500 font-bold px-4 py-1 rounded-lg text-xs shadow-md hover:bg-emerald-50 active:scale-95">+ ADD</button>
-            </div>
-        </div>
+    <!-- MAIN DYNAMIC MENU CONTAINER -->
+    <main id="menuContainer" class="p-4 space-y-4">
+        <!-- Rendered dynamically -->
     </main>
 
     <!-- FLOATING CART BAR -->
-    <div id="cartBar" class="fixed bottom-4 left-4 right-4 bg-emerald-600 text-white rounded-2xl p-3.5 shadow-xl flex justify-between items-center hidden z-30">
+    <div id="cartBar" class="fixed bottom-4 left-4 right-4 bg-emerald-600 text-white rounded-2xl p-3.5 shadow-xl flex justify-between items-center hidden z-30 transition-all">
         <div>
             <p id="cartItemsCount" class="text-xs font-semibold opacity-90">0 ITEMS</p>
             <p id="cartTotal" class="text-base font-extrabold">₹0</p>
         </div>
-        <button id="placeOrderBtn" onclick="placeOrder()" class="flex items-center gap-1 font-bold text-sm bg-white text-emerald-700 px-4 py-2 rounded-xl shadow active:scale-95">
-            Place Order ➔
+        <button onclick="toggleCartDrawer(true)" class="flex items-center gap-1 font-bold text-sm bg-white text-emerald-700 px-4 py-2 rounded-xl shadow active:scale-95">
+            View Cart ➔
         </button>
     </div>
 
     <!-- JAVASCRIPT -->
     <script>
-        let cart = [];
-        let total = 0;
+        const menuItems = [
+            { id: 1, name: "Classic Cold Coffee", category: "Coffee", price: 140, isVeg: true, rating: "4.8", tag: "BESTSELLER", desc: "Rich creamy brewed coffee served with ice.", img: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=300" },
+            { id: 2, name: "Hazelnut Cold Coffee", category: "Coffee", price: 170, isVeg: true, rating: "4.9", tag: "NEW", desc: "Signature cold coffee infused with hazelnut syrup.", img: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=300" },
+            { id: 3, name: "Cheese Burst Pizza", category: "Pizza", price: 280, isVeg: true, rating: "4.7", tag: "CHEF SPECIAL", desc: "Loaded with liquid mozzarella, capsicum, and corn.", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300" },
+            { id: 4, name: "Chicken BBQ Pizza", category: "Pizza", price: 340, isVeg: false, rating: "4.9", tag: "POPULAR", desc: "Smoky BBQ grilled chicken with fresh herbs.", img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300" },
+            { id: 5, name: "Crispy Veg Burger", category: "Burger", price: 120, isVeg: true, rating: "4.5", tag: "POPULAR", desc: "Crispy potato patty with creamy mayo and lettuce.", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300" },
+            { id: 6, name: "Molten Lava Cake", category: "Dessert", price: 150, isVeg: true, rating: "4.8", tag: "SWEET", desc: "Warm chocolate cake with gooey flowing center.", img: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=300" }
+        ];
+
+        let cart = {};
+        let currentCategory = 'All';
+        let searchQuery = '';
+        let isVegOnly = false;
+        let isCouponApplied = false;
         let isOrderPlaced = false;
+        let isWaiterCalled = false;
 
         function startApp() {
             document.getElementById('splashTheme').classList.add('hidden');
             document.getElementById('welcomeModal').classList.remove('hidden');
+            renderMenu();
         }
 
         function saveCustomerDetails() {
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
-            if(!name || !phone) return alert("Please enter your Name and Phone!");
+            if(!name || !phone) return alert("Please enter Name and Phone!");
             document.getElementById('welcomeModal').classList.add('hidden');
         }
 
-        function addToCart(itemName, price, triggerUpsell = false) {
-            if(isOrderPlaced) return alert("Order already placed! Please wait or ask waiter.");
-            cart.push({name: itemName, price: price});
-            total += price;
-            updateCartBar();
-            if(triggerUpsell) document.getElementById('upsellModal').classList.remove('hidden');
+        function toggleVegOnly() {
+            isVegOnly = !isVegOnly;
+            const btn = document.getElementById('vegToggleBtn');
+            if(isVegOnly) {
+                btn.className = "flex items-center gap-1 bg-emerald-600 text-white px-3 py-2.5 rounded-xl text-xs font-bold border border-emerald-600 shrink-0 shadow-md";
+            } else {
+                btn.className = "flex items-center gap-1 bg-slate-100 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-600 border border-slate-200 shrink-0";
+            }
+            renderMenu();
         }
 
-        function addUpsell(itemName, price) {
-            cart.push({name: itemName, price: price});
-            total += price;
-            updateCartBar();
-            closeUpsell();
+        function renderMenu() {
+            const container = document.getElementById('menuContainer');
+            container.innerHTML = '';
+
+            const filtered = menuItems.filter(item => {
+                const matchesCat = currentCategory === 'All' || item.category === currentCategory;
+                const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
+                const matchesVeg = !isVegOnly || item.isVeg;
+                return matchesCat && matchesSearch && matchesVeg;
+            });
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 text-slate-400 text-xs font-semibold">No dishes found.</div>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const qty = cart[item.id] || 0;
+                const vegBadge = item.isVeg 
+                    ? `<span class="w-3.5 h-3.5 border border-emerald-600 flex items-center justify-center p-0.5 rounded-sm"><span class="w-1.5 h-1.5 bg-emerald-600 rounded-full"></span></span>`
+                    : `<span class="w-3.5 h-3.5 border border-red-600 flex items-center justify-center p-0.5 rounded-sm"><span class="w-1.5 h-1.5 bg-red-600 rounded-full"></span></span>`;
+
+                let actionBtnHTML = qty === 0 
+                    ? `<button onclick="updateQty(${item.id}, 1)" class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white text-emerald-600 border border-emerald-500 font-bold px-4 py-1 rounded-lg text-xs shadow-md hover:bg-emerald-50 active:scale-95">+ ADD</button>`
+                    : `<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-emerald-600 text-white flex items-center gap-2 px-3 py-1 rounded-lg text-xs font-bold shadow-md">
+                        <button onclick="updateQty(${item.id}, -1)" class="px-1 text-sm font-extrabold">-</button>
+                        <span>${qty}</span>
+                        <button onclick="updateQty(${item.id}, 1)" class="px-1 text-sm font-extrabold">+</button>
+                    </div>`;
+
+                container.innerHTML += `
+                    <div class="bg-white p-3.5 rounded-2xl shadow-sm border border-slate-100 flex justify-between gap-3">
+                        <div class="space-y-1 flex-1">
+                            <div class="flex items-center gap-1.5">
+                                ${vegBadge}
+                                <span class="text-[10px] font-bold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">${item.tag}</span>
+                                <span class="text-[10px] font-bold text-slate-500">⭐ ${item.rating}</span>
+                            </div>
+                            <h3 class="font-bold text-slate-800 text-sm">${item.name}</h3>
+                            <p class="text-xs font-bold text-slate-900">₹${item.price}</p>
+                            <p class="text-[11px] text-slate-400 line-clamp-2">${item.desc}</p>
+                        </div>
+                        <div class="relative w-24 h-24 shrink-0">
+                            <img src="${item.img}" class="w-full h-full object-cover rounded-xl">
+                            ${actionBtnHTML}
+                        </div>
+                    </div>
+                `;
+            });
         }
 
-        function closeUpsell() {
-            document.getElementById('upsellModal').classList.add('hidden');
+        function filterCategory(cat, btn) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(b => b.className = "cat-btn px-4 py-1.5 bg-slate-100 text-slate-600 rounded-full shrink-0 transition-all");
+            btn.className = "cat-btn px-4 py-1.5 bg-slate-900 text-white rounded-full font-semibold shrink-0 transition-all";
+            renderMenu();
+        }
+
+        function filterMenu() {
+            searchQuery = document.getElementById('searchInput').value;
+            renderMenu();
+        }
+
+        function updateQty(itemId, change) {
+            if(isOrderPlaced) return alert("Order already placed!");
+            playPopSound();
+            if(!cart[itemId]) cart[itemId] = 0;
+            cart[itemId] += change;
+            if(cart[itemId] <= 0) delete cart[itemId];
+            renderMenu();
+            updateCartBar();
         }
 
         function updateCartBar() {
-            if(cart.length > 0) {
-                document.getElementById('cartBar').classList.remove('hidden');
-                document.getElementById('cartItemsCount').innerText = `${cart.length} ITEM${cart.length > 1 ? 'S' : ''} ADDED`;
-                document.getElementById('cartTotal').innerText = `₹${total}`;
+            let totalItems = 0, subtotal = 0;
+            for(let id in cart) {
+                const item = menuItems.find(i => i.id == id);
+                totalItems += cart[id];
+                subtotal += item.price * cart[id];
+            }
+
+            const bar = document.getElementById('cartBar');
+            if(totalItems > 0) {
+                bar.classList.remove('hidden');
+                document.getElementById('cartItemsCount').innerText = `${totalItems} ITEM${totalItems > 1 ? 'S' : ''}`;
+                document.getElementById('cartTotal').innerText = `₹${subtotal}`;
+            } else {
+                bar.classList.add('hidden');
+                toggleCartDrawer(false);
             }
         }
 
-        // ORDER PLACEMENT WITH SINGLE-LOCK & SOUND
+        function toggleCartDrawer(show) {
+            const drawer = document.getElementById('cartDrawer');
+            if(show) {
+                renderCartDrawerItems();
+                drawer.classList.remove('hidden');
+            } else {
+                drawer.classList.add('hidden');
+            }
+        }
+
+        function applyCoupon() {
+            const code = document.getElementById('couponInput').value.trim().toUpperCase();
+            if(code === 'WELCOME10') {
+                isCouponApplied = true;
+                alert("🎉 'WELCOME10' Applied! You saved 10%.");
+                renderCartDrawerItems();
+            } else {
+                alert("Invalid Coupon Code! Try WELCOME10");
+            }
+        }
+
+        function renderCartDrawerItems() {
+            const list = document.getElementById('cartItemsList');
+            list.innerHTML = '';
+            let subtotal = 0;
+
+            for(let id in cart) {
+                const item = menuItems.find(i => i.id == id);
+                const cost = item.price * cart[id];
+                subtotal += cost;
+
+                list.innerHTML += `
+                    <div class="flex justify-between items-center py-2 text-xs">
+                        <div>
+                            <p class="font-bold text-slate-800">${item.name}</p>
+                            <p class="text-slate-500">₹${item.price} × ${cart[id]}</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="font-bold text-slate-900">₹${cost}</span>
+                            <div class="flex items-center bg-emerald-600 text-white px-2 py-0.5 rounded-lg font-bold">
+                                <button onclick="updateQty(${id}, -1); renderCartDrawerItems();" class="px-1">-</button>
+                                <span class="px-1">${cart[id]}</span>
+                                <button onclick="updateQty(${id}, 1); renderCartDrawerItems();" class="px-1">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            let discount = isCouponApplied ? Math.round(subtotal * 0.10) : 0;
+            let tax = Math.round((subtotal - discount) * 0.05);
+            let grandTotal = subtotal - discount + tax;
+
+            document.getElementById('drawerSubtotal').innerText = `₹${subtotal}`;
+            if(isCouponApplied) {
+                document.getElementById('discountRow').classList.remove('hidden');
+                document.getElementById('drawerDiscount').innerText = `-₹${discount}`;
+            }
+            document.getElementById('drawerTax').innerText = `₹${tax}`;
+            document.getElementById('drawerGrandTotal').innerText = `₹${grandTotal}`;
+        }
+
+        // AUDIO EFFECTS
+        function playPopSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.05);
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.05);
+            } catch(e){}
+        }
+
+        // WAITER MODAL
+        function openWaiterModal() { if(!isWaiterCalled) document.getElementById('waiterModal').classList.remove('hidden'); }
+        function closeWaiterModal() { document.getElementById('waiterModal').classList.add('hidden'); }
+        function confirmCallWaiter() {
+            closeWaiterModal();
+            isWaiterCalled = true;
+            playWaiterBellSound();
+            const btn = document.getElementById('callWaiterHeaderBtn');
+            const txt = document.getElementById('waiterBtnText');
+            btn.className = "flex items-center gap-1.5 bg-gray-100 text-gray-500 border border-gray-200 px-3 py-1.5 rounded-full text-xs font-semibold cursor-not-allowed";
+            txt.innerText = "Waiter Called ✓";
+
+            let countdown = 30;
+            const timer = setInterval(() => {
+                countdown--;
+                if(countdown <= 0) {
+                    clearInterval(timer);
+                    isWaiterCalled = false;
+                    btn.className = "flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm active:scale-95 transition-all";
+                    txt.innerText = "Call Waiter";
+                }
+            }, 1000);
+        }
+
+        function playWaiterBellSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.6);
+            } catch(e) {}
+        }
+
         function placeOrder() {
             if(isOrderPlaced) return;
             isOrderPlaced = true;
+            toggleCartDrawer(false);
 
-            // 1. Lock Button (Prevents Double Order)
-            const btn = document.getElementById('placeOrderBtn');
-            btn.disabled = true;
-            btn.innerHTML = "⏳ Placing...";
-            btn.className = "opacity-70 cursor-not-allowed flex items-center gap-1 font-bold text-sm bg-gray-200 text-gray-700 px-4 py-2 rounded-xl";
+            let notes = document.getElementById('cookingNotes').value;
+            if(notes) {
+                document.getElementById('savedCookingNotes').innerText = notes;
+                document.getElementById('notesDisplayBox').classList.remove('hidden');
+            }
 
-            // 2. Play Sound Tune
+            let subtotal = 0;
+            for(let id in cart) {
+                const item = menuItems.find(i => i.id == id);
+                subtotal += item.price * cart[id];
+            }
+            let discount = isCouponApplied ? Math.round(subtotal * 0.10) : 0;
+            let grandTotal = subtotal - discount + Math.round((subtotal - discount) * 0.05);
+
             playOrderSuccessSound();
 
-            // 3. Open Tracker Modal
             setTimeout(() => {
-                document.getElementById('trackTotal').innerText = `₹${total}`;
-                document.getElementById('payAmount').innerText = `₹${total}`;
+                document.getElementById('trackTotal').innerText = `₹${grandTotal}`;
+                document.getElementById('payAmount').innerText = `₹${grandTotal}`;
                 document.getElementById('trackerModal').classList.remove('hidden');
-            }, 600);
+            }, 500);
         }
 
-        // WEB AUDIO SOUND SYNTHESIZER (Works instantly without external sound file)
         function playOrderSuccessSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-                
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // Note C5
-                osc.frequency.exponentialRampToValueAtTime(659.25, audioCtx.currentTime + 0.15); // Note E5
-                osc.frequency.exponentialRampToValueAtTime(783.99, audioCtx.currentTime + 0.3); // Note G5
-
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(783.99, audioCtx.currentTime + 0.3);
                 gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
-
                 osc.start();
                 osc.stop(audioCtx.currentTime + 0.5);
-            } catch(e) { console.log("Sound played"); }
+            } catch(e) {}
         }
 
         function simulateCounterPaid() {
             document.getElementById('paymentStatusBox').className = "bg-emerald-50 border border-emerald-200 p-3.5 rounded-2xl text-emerald-800 text-xs font-bold";
-            document.getElementById('paymentStatusBox').innerHTML = "🟢 BILL PAID ₹" + total + " — Thank You!";
-            document.getElementById('orderStatusTitle').innerText = "Enjoy Your Food!";
+            document.getElementById('paymentStatusBox').innerHTML = "🟢 BILL PAID SUCCESSFULLY!";
+            document.getElementById('orderStatusTitle').innerText = "Enjoy Your Meal!";
             document.getElementById('reviewSection').classList.remove('hidden');
         }
 
@@ -250,13 +516,9 @@
                 alert("Redirecting to Google Review...");
                 window.location.href = "https://maps.google.com";
             } else {
-                alert("Thank you for your private feedback!");
+                alert("Thank you for your feedback!");
                 location.reload();
             }
-        }
-
-        function callWaiter() {
-            alert("🔔 Waiter notified for Table #4!");
         }
     </script>
 </body>
