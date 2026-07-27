@@ -316,7 +316,7 @@
         </button>
     </div>
 
-    <!-- JAVASCRIPT WITH AUDIO & SELECTION PERSISTENCE FIXES -->
+    <!-- JAVASCRIPT WITH HIGH-PERFORMANCE TABLE-SPECIFIC FIREBASE QUERY -->
     <script>
         // Initialize Firebase
         const firebaseConfig = {
@@ -409,9 +409,25 @@
                 }
                 renderMenu();
             });
+
+            // ⚡ OPTIMIZED FIREBASE QUERY (Filters orders specifically by tableNo)
+            // This prevents downloading all orders in the DB and saves bandwidth/memory.
+            db.ref('orders').orderByChild('tableNo').equalTo(tableNo).on('value', (snapshot) => {
+                const data = snapshot.val();
+                if(data) {
+                    const tableOrders = Object.values(data);
+                    // Find the latest active order for this table
+                    const activeOrder = tableOrders.reverse().find(o => o.status !== 'PAID');
+                    if(activeOrder) {
+                        document.getElementById('displayOrderId').innerText = activeOrder.orderId || '#DC-000';
+                        document.getElementById('displayOrderType').innerText = activeOrder.orderType === 'Dine-In' ? '🍽️ Dine-In' : '🛍️ Takeaway';
+                        document.getElementById('payAmount').innerText = `₹${activeOrder.grandTotal || 0}`;
+                    }
+                }
+            });
         });
 
-        // 🔄 PERSISTENT LOGIN (Avoids login modal on refresh)
+        // 🔄 PERSISTENT LOGIN
         function startApp() {
             const splash = document.getElementById('splashTheme');
             splash.style.opacity = '0';
@@ -530,7 +546,6 @@
             handleSearchInput();
         }
 
-        // 🖼️ ENHANCED RENDER MENU WITH DIRECT ITEM SELECTION INDICATORS
         function renderMenu() {
             const container = document.getElementById('menuContainer');
             container.innerHTML = '';
@@ -860,4 +875,5 @@
     </script>
 </body>
 </html>
+
 
