@@ -28,7 +28,7 @@
                 ☕
             </div>
             <div class="space-y-2">
-                <span class="text-[11px] font-black uppercase tracking-widest text-amber-300 bg-amber-500/10 border border-amber-500/30 px-4 py-1.5 rounded-full shadow-inner">Table #4 Live</span>
+                <span id="splashTableText" class="text-[11px] font-black uppercase tracking-widest text-amber-300 bg-amber-500/10 border border-amber-500/30 px-4 py-1.5 rounded-full shadow-inner">Table #1 Live</span>
                 <h1 class="text-4xl font-black tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">DEMO CAFE</h1>
                 <p class="text-xs text-slate-400 font-medium tracking-wide">Crafted Coffee & Gourmet Dining</p>
             </div>
@@ -40,11 +40,11 @@
 
     <!-- 2. WELCOME MODAL -->
     <div id="welcomeModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md z-40 flex items-center justify-center p-4 hidden modal-transition">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-7 shadow-2xl text-center space-y-5 border border-slate-100 transform transition-all">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-7 shadow-2xl text-center space-y-5 border border-slate-100">
             <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-3xl shadow-inner">✨</div>
             <div>
                 <h2 class="text-xl font-black text-slate-900">Welcome to Demo Cafe</h2>
-                <p class="text-xs text-slate-500 mt-1 font-medium">Please enter your details for Table #4</p>
+                <p id="welcomeSubText" class="text-xs text-slate-500 mt-1 font-medium">Please enter your details for Table #1</p>
             </div>
             <div class="space-y-3.5 text-left">
                 <div>
@@ -68,7 +68,7 @@
             <div class="w-14 h-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-inner">🔔</div>
             <div>
                 <h3 class="text-base font-black text-slate-900">Call Waiter?</h3>
-                <p class="text-xs text-slate-500 mt-1">A staff member will be alerted for <strong class="text-slate-800">Table #4</strong>.</p>
+                <p id="waiterModalText" class="text-xs text-slate-500 mt-1">A staff member will be alerted for <strong class="text-slate-800">Table #1</strong>.</p>
             </div>
             <div class="flex gap-2.5 pt-1">
                 <button onclick="closeWaiterModal()" class="w-1/2 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all">Cancel</button>
@@ -83,7 +83,7 @@
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                 <div>
                     <h3 class="font-black text-slate-900 text-base tracking-tight">Your Order Summary</h3>
-                    <p class="text-[11px] text-slate-400 font-medium">Table #4 • Review items</p>
+                    <p id="cartTableText" class="text-[11px] text-slate-400 font-medium">Table #1 • Review items</p>
                 </div>
                 <button onclick="toggleCartDrawer(false)" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold hover:bg-slate-200 transition-all">✕</button>
             </div>
@@ -109,7 +109,7 @@
                 <input type="text" id="cookingNotes" placeholder="e.g. Less spicy, extra ice..." class="w-full mt-1 px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-slate-900 font-medium">
             </div>
 
-            <!-- BILL BREAKDOWN (EXACT TOTAL - NO GST) -->
+            <!-- BILL BREAKDOWN -->
             <div class="border-t border-slate-100 pt-3 space-y-2 text-xs text-slate-600">
                 <div class="flex justify-between font-medium"><span>Subtotal</span><span id="drawerSubtotal" class="font-bold text-slate-800">₹0</span></div>
                 <div id="discountRow" class="flex justify-between text-emerald-600 font-bold hidden"><span>Coupon Discount (10% OFF)</span><span id="drawerDiscount">-₹0</span></div>
@@ -183,7 +183,7 @@
                 <div class="w-10 h-10 bg-gradient-to-tr from-slate-900 to-slate-800 text-amber-400 rounded-2xl flex items-center justify-center font-black text-lg shadow-md border border-slate-700">☕</div>
                 <div>
                     <h1 class="text-base font-black text-slate-900 tracking-tight leading-tight">Demo Cafe</h1>
-                    <span class="text-[10px] font-extrabold bg-emerald-100 text-emerald-700 px-2.5 py-0.5 rounded-full tracking-wider uppercase">Table #4</span>
+                    <span id="headerTableBadge" class="text-[10px] font-extrabold bg-emerald-100 text-emerald-700 px-2.5 py-0.5 rounded-full tracking-wider uppercase">TABLE #1</span>
                 </div>
             </div>
             <button id="callWaiterHeaderBtn" onclick="openWaiterModal()" class="flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200/80 px-3.5 py-2 rounded-full text-xs font-bold shadow-2xs active:scale-95 transition-all">
@@ -230,6 +230,19 @@
 
     <!-- JAVASCRIPT -->
     <script>
+        // READ TABLE NUMBER FROM URL (e.g. ?table=1)
+        const urlParams = new URLSearchParams(window.location.search);
+        const tableNo = urlParams.get('table') || '1'; // Default to Table 1 if not specified
+
+        // Apply table number dynamically across the UI
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('splashTableText').innerText = `Table #${tableNo} Live`;
+            document.getElementById('welcomeSubText').innerText = `Please enter your details for Table #${tableNo}`;
+            document.getElementById('waiterModalText').innerHTML = `A staff member will be alerted for <strong class="text-slate-800">Table #${tableNo}</strong>.`;
+            document.getElementById('cartTableText').innerText = `Table #${tableNo} • Review items`;
+            document.getElementById('headerTableBadge').innerText = `TABLE #${tableNo}`;
+        });
+
         const menuItems = [
             { id: 1, name: "Classic Cold Coffee", category: "Coffee", price: 140, isVeg: true, rating: "4.8", tag: "BESTSELLER", desc: "Rich creamy brewed coffee served with crushed ice.", img: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=300" },
             { id: 2, name: "Hazelnut Cold Coffee", category: "Coffee", price: 170, isVeg: true, rating: "4.9", tag: "NEW", desc: "Signature cold coffee infused with hazelnut syrup.", img: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=300" },
@@ -429,7 +442,7 @@
             }
 
             let discount = isCouponApplied ? Math.round(subtotal * 0.10) : 0;
-            let grandTotal = subtotal - discount; // EXACT TOTAL - ZERO GST
+            let grandTotal = subtotal - discount;
 
             document.getElementById('drawerSubtotal').innerText = `₹${subtotal}`;
             if(isCouponApplied) {
@@ -486,7 +499,7 @@
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-                osc.type = 'sine';
+                osc.type.setValueAtTime('sine', audioCtx.currentTime);
                 osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime);
                 gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
@@ -510,9 +523,9 @@
             let discount = isCouponApplied ? Math.round(subtotal * 0.10) : 0;
             let grandTotal = subtotal - discount;
 
-            const randomId = "#DC-" + Math.floor(1000 + Math.random() * 9000);
+            const randomId = `#DC-${tableNo}-` + Math.floor(100 + Math.random() * 900);
             document.getElementById('displayOrderId').innerText = randomId;
-            document.getElementById('displayOrderType').innerText = selectedOrderType === 'Dine-In' ? '🍽️ Dine-In' : '🛍️ Takeaway';
+            document.getElementById('displayOrderType').innerText = selectedOrderType === 'Dine-In' ? `🍽️ Dine-In (Table #${tableNo})` : '🛍️ Takeaway';
 
             playOrderSuccessSound();
 
@@ -542,7 +555,7 @@
         function simulateCounterPaid() {
             document.getElementById('progressBar').className = "bg-emerald-500 h-full w-full transition-all duration-700 rounded-full";
             document.getElementById('paymentStatusBox').className = "bg-emerald-50 border border-emerald-200/80 p-4 rounded-2xl text-emerald-800 text-xs font-bold space-y-0.5";
-            document.getElementById('paymentStatusBox').innerHTML = `<span class="text-slate-500 text-[11px] font-medium">Status</span><div class="text-xl font-black text-emerald-700">PAYMENT RECEIVED ✓</div><p class="text-[10px] text-emerald-600 font-medium pt-1">Thank you for dining with us!</p>`;
+            document.getElementById('paymentStatusBox').innerHTML = `<span class="text-slate-500 text-[11px] font-medium">Status</span><div class="text-xl font-black text-emerald-700">PAYMENT RECEIVED ✓</div><p class="text-[10px] text-emerald-600 font-medium pt-1">Thank you for dining with us at Table #${tableNo}!</p>`;
             document.getElementById('orderStatusTitle').innerText = "Enjoy Your Meal!";
             document.getElementById('reviewSection').classList.remove('hidden');
         }
