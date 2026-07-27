@@ -62,7 +62,7 @@
         </div>
     </div>
 
-    <!-- 3. WAITER & BILL MODALS -->
+    <!-- 3. WAITER MODAL -->
     <div id="waiterModal" class="fixed inset-0 bg-stone-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden modal-transition">
         <div class="bg-white w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center space-y-4 border border-stone-100">
             <div class="w-14 h-14 bg-amber-50 text-amber-700 rounded-2xl flex items-center justify-center mx-auto text-2xl">🔔</div>
@@ -73,20 +73,6 @@
             <div class="flex gap-2.5 pt-1">
                 <button onclick="closeWaiterModal()" class="w-1/2 py-3 bg-stone-100 text-stone-700 font-bold text-xs rounded-xl">Cancel</button>
                 <button onclick="confirmCallWaiter()" class="w-1/2 py-3 bg-amber-500 text-stone-950 font-bold text-xs rounded-xl shadow-md">Yes, Call</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="billModal" class="fixed inset-0 bg-stone-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden modal-transition">
-        <div class="bg-white w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center space-y-4 border border-stone-100">
-            <div class="w-14 h-14 bg-emerald-50 text-emerald-700 rounded-2xl flex items-center justify-center mx-auto text-2xl">🧾</div>
-            <div>
-                <h3 class="text-base font-bold text-stone-900">Request Final Bill?</h3>
-                <p id="billModalText" class="text-xs text-stone-500 mt-1">Notify the counter to print and bring the bill to <strong class="text-stone-800">Table #1</strong>.</p>
-            </div>
-            <div class="flex gap-2.5 pt-1">
-                <button onclick="closeBillModal()" class="w-1/2 py-3 bg-stone-100 text-stone-700 font-bold text-xs rounded-xl">Cancel</button>
-                <button onclick="confirmRequestBill()" class="w-1/2 py-3 bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-md">Request Bill</button>
             </div>
         </div>
     </div>
@@ -161,7 +147,7 @@
         </div>
     </div>
 
-    <!-- 6. ORDER TRACKER MODAL WITH "VIEW MENU" OPTION -->
+    <!-- 6. ORDER TRACKER MODAL -->
     <div id="trackerModal" class="fixed inset-0 bg-stone-950/70 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden modal-transition">
         <div class="bg-white w-full max-w-sm rounded-3xl p-7 shadow-2xl text-center space-y-5 border border-stone-100">
             <div class="flex justify-between items-center bg-stone-50 p-3 rounded-2xl text-xs">
@@ -197,10 +183,9 @@
                 </div>
             </div>
 
-            <!-- BUTTONS: View Menu & Simulate Payment -->
             <div class="space-y-2">
                 <button onclick="closeTrackerAndReturnToMenu()" class="w-full py-3.5 bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs rounded-xl shadow active:scale-95 transition-all">
-                    🏠 Return to Home Menu
+                    🏠 Return to Home Menu (Order More)
                 </button>
                 <button onclick="simulateCounterPaid()" class="w-full py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-[11px] rounded-xl">
                     [Demo] Simulate Payment Received
@@ -209,10 +194,10 @@
         </div>
     </div>
 
-    <!-- 7. FLOATING LIVE ORDER STATUS WIDGET (VISIBLE ON HOME MENU AFTER ORDERING) -->
-    <div id="liveStatusWidget" onclick="openTrackerModal()" class="fixed top-3.5 right-4 bg-amber-500 text-stone-950 px-3 py-1.5 rounded-full shadow-lg text-[11px] font-extrabold items-center gap-1.5 cursor-pointer z-30 hidden animate-pulse border border-amber-300">
+    <!-- 7. FLOATING LIVE ORDER STATUS WIDGET -->
+    <div id="liveStatusWidget" onclick="openTrackerModal()" class="fixed top-3.5 right-4 bg-amber-500 text-stone-950 px-3.5 py-1.5 rounded-full shadow-lg text-[11px] font-extrabold items-center gap-1.5 cursor-pointer z-30 hidden animate-pulse border border-amber-300">
         <span class="w-2 h-2 rounded-full bg-stone-950"></span>
-        <span id="widgetStatusText">Order Active 👨‍🍳</span>
+        <span id="widgetStatusText">Active Order 👨‍🍳</span>
     </div>
 
     <!-- REAL CAFE HEADER -->
@@ -225,12 +210,13 @@
                     <span id="headerTableBadge" class="text-[10px] font-extrabold bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full uppercase">TABLE #1</span>
                 </div>
             </div>
+            <!-- RIGHT HEADER BUTTONS (Waiter & Order Status Button instead of Bill) -->
             <div class="flex items-center gap-1.5">
                 <button id="callWaiterHeaderBtn" onclick="openWaiterModal()" class="flex items-center gap-1 bg-amber-50 text-amber-800 border border-amber-200 px-3 py-1.5 rounded-full text-xs font-bold active:scale-95 transition-all">
                     <span>🔔</span> Waiter
                 </button>
-                <button onclick="openBillModal()" class="flex items-center gap-1 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-bold active:scale-95 transition-all">
-                    <span>🧾</span> Bill
+                <button onclick="openTrackerModal()" class="flex items-center gap-1 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-bold active:scale-95 transition-all shadow-2xs">
+                    <span>📊</span> Status
                 </button>
             </div>
         </div>
@@ -281,7 +267,6 @@
             document.getElementById('splashTableText').innerText = `Table #${tableNo} Live`;
             document.getElementById('welcomeSubText').innerText = `Please enter your contact details for Table #${tableNo}`;
             document.getElementById('waiterModalText').innerHTML = `A staff member will be alerted for <strong class="text-stone-800">Table #${tableNo}</strong>.`;
-            document.getElementById('billModalText').innerHTML = `Notify the counter to print and bring the bill to <strong class="text-stone-800">Table #${tableNo}</strong>.`;
             document.getElementById('cartTableText').innerText = `Table #${tableNo} • Review items`;
             document.getElementById('headerTableBadge').innerText = `TABLE #${tableNo}`;
             loadStorageData();
@@ -319,7 +304,6 @@
         let searchQuery = '';
         let isVegOnly = false;
         let isCouponApplied = false;
-        let isOrderPlaced = false;
         let isWaiterCalled = false;
         let selectedOrderType = 'Dine-In';
         let activeModalItem = null;
@@ -341,7 +325,6 @@
 
         function saveStorageData() {
             localStorage.setItem(`demoCafeCart_Table_${tableNo}`, JSON.stringify(cart));
-            localStorage.setItem(`demoCafeOrderPlaced_${tableNo}`, isOrderPlaced);
         }
 
         function loadStorageData() {
@@ -352,7 +335,6 @@
             }
             const savedOrderStatus = localStorage.getItem(`demoCafeOrderPlaced_${tableNo}`);
             if(savedOrderStatus === 'true') {
-                isOrderPlaced = true;
                 document.getElementById('liveStatusWidget').style.display = 'flex';
             }
         }
@@ -646,14 +628,6 @@
             }, 1000);
         }
 
-        function openBillModal() { document.getElementById('billModal').classList.remove('hidden'); }
-        function closeBillModal() { document.getElementById('billModal').classList.add('hidden'); }
-        function confirmRequestBill() {
-            closeBillModal();
-            playWaiterBellSound();
-            alert(`🧾 Bill requested for Table #${tableNo}. Our staff will bring it shortly.`);
-        }
-
         function playWaiterBellSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -671,14 +645,13 @@
         }
 
         function placeOrder() {
-            if(isOrderPlaced) return;
-            isOrderPlaced = true;
-            toggleCartDrawer(false);
-
             let subtotal = 0;
             for(let key in cart) {
                 subtotal += cart[key].finalPrice * cart[key].qty;
             }
+            if(subtotal === 0) return alert("Your cart is empty!");
+
+            toggleCartDrawer(false);
             let discount = isCouponApplied ? Math.round(subtotal * 0.10) : 0;
             let grandTotal = subtotal - discount;
 
@@ -692,11 +665,12 @@
                 document.getElementById('payAmount').innerText = `₹${grandTotal}`;
                 document.getElementById('trackerModal').classList.remove('hidden');
                 
-                // Save state and show live status widget on menu
+                // Clear current cart so user can order more items anytime!
                 cart = {};
                 saveStorageData();
                 updateCartBar();
                 document.getElementById('liveStatusWidget').style.display = 'flex';
+                localStorage.setItem(`demoCafeOrderPlaced_${tableNo}`, 'true');
             }, 400);
         }
 
@@ -732,7 +706,6 @@
             document.getElementById('orderStatusTitle').innerText = "Enjoy Your Meal!";
             document.getElementById('reviewSection').classList.remove('hidden');
             
-            // Hide live widget after full payment & review completion
             setTimeout(() => {
                 localStorage.removeItem(`demoCafeOrderPlaced_${tableNo}`);
                 document.getElementById('liveStatusWidget').style.display = 'none';
