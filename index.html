@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo Cafe - Customer Menu</title>
+    <title>Demo Cafe - Digital Menu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
@@ -13,42 +13,76 @@
 
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f7f5f0; color: #2c221e; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-header { background: rgba(247, 245, 240, 0.9); backdrop-filter: blur(16px); }
     </style>
 </head>
-<body class="pb-32 min-h-screen antialiased">
+<body class="pb-36 min-h-screen antialiased">
+
+    <!-- SPLASH SCREEN -->
+    <div id="splashTheme" class="fixed inset-0 bg-[#1c1816] z-50 flex flex-col items-center justify-between p-8 text-center text-white transition-opacity duration-700">
+        <div class="my-auto space-y-6">
+            <div class="w-28 h-28 bg-amber-500 rounded-full flex items-center justify-center mx-auto text-5xl shadow-2xl">☕</div>
+            <div class="space-y-2">
+                <span id="splashTableText" class="text-[10px] font-extrabold uppercase tracking-widest text-amber-400 bg-amber-950/80 px-4 py-1.5 rounded-full border border-amber-800">Table #1 Live</span>
+                <h1 class="text-3xl font-extrabold text-stone-100">DEMO CAFE</h1>
+                <p class="text-xs text-stone-400">Specialty Coffee & Handcrafted Eats</p>
+            </div>
+        </div>
+        <button onclick="startApp()" class="w-full max-w-xs py-4 bg-amber-500 text-stone-950 font-extrabold text-xs uppercase rounded-2xl shadow-xl active:scale-95 transition-transform">
+            Open Menu ➔
+        </button>
+    </div>
+
+    <!-- WELCOME MODAL -->
+    <div id="welcomeModal" class="fixed inset-0 bg-stone-950/60 backdrop-blur-sm z-40 flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-7 shadow-2xl text-center space-y-5">
+            <div class="w-12 h-12 bg-amber-100 text-amber-800 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">👋</div>
+            <div class="space-y-1">
+                <h2 class="text-xl font-bold text-stone-900">Welcome to Demo Cafe</h2>
+                <p class="text-xs text-stone-500">Please share your details for a personalized service.</p>
+            </div>
+            <div class="space-y-3 text-left">
+                <div>
+                    <label class="text-[10px] font-bold uppercase tracking-wider text-stone-400 ml-1">Your Name</label>
+                    <input type="text" id="custName" placeholder="e.g. Rahul Sharma" class="w-full mt-1 px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-xs font-semibold focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold uppercase tracking-wider text-stone-400 ml-1">Mobile Number</label>
+                    <input type="tel" id="custPhone" placeholder="e.g. 9876543210" class="w-full mt-1 px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-xs font-semibold focus:outline-none focus:border-amber-500">
+                </div>
+            </div>
+            <button onclick="saveCustomerDetails()" class="w-full py-3.5 bg-stone-900 text-white font-bold text-xs rounded-2xl shadow-lg active:scale-95 transition-transform">Continue to Menu ➔</button>
+        </div>
+    </div>
 
     <!-- HEADER -->
-    <header class="sticky top-0 bg-white/90 backdrop-blur-md z-20 border-b border-stone-200 px-4 py-3.5 flex justify-between items-center shadow-xs">
-        <div class="flex items-center gap-2.5">
-            <div class="w-10 h-10 bg-amber-500 text-stone-950 rounded-2xl flex items-center justify-center font-bold text-lg shadow-sm">☕</div>
-            <div>
-                <h1 class="text-base font-extrabold text-stone-900">Demo Cafe</h1>
-                <span id="tableBadge" class="text-[10px] font-extrabold bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full">TABLE #1</span>
+    <header class="sticky top-0 glass-header z-20 border-b border-stone-200/80 px-4 py-3.5">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 bg-[#1c1816] text-amber-400 rounded-2xl flex items-center justify-center font-bold text-base shadow-sm">☕</div>
+                <div>
+                    <h1 class="text-base font-extrabold text-stone-900">Demo Cafe</h1>
+                    <span id="headerTableBadge" class="text-[10px] font-extrabold bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full">TABLE #1</span>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- CUSTOMER DETAILS INPUT -->
-    <section class="p-4 bg-amber-500/10 border-b border-amber-200/50">
-        <div class="flex gap-2">
-            <input type="text" id="custName" placeholder="आपका नाम (Your Name)" class="w-1/2 px-3 py-2 bg-white border border-stone-200 rounded-xl text-xs font-semibold">
-            <input type="tel" id="custPhone" placeholder="फ़ोन नंबर (Mobile)" class="w-1/2 px-3 py-2 bg-white border border-stone-200 rounded-xl text-xs font-semibold">
-        </div>
-    </section>
-
-    <!-- MENU LIST -->
-    <main class="p-4">
-        <h2 class="text-xs font-extrabold text-stone-400 uppercase tracking-wider mb-3">Today's Special Menu</h2>
-        <div id="menuContainer" class="space-y-3"></div>
+    <!-- MENU CONTAINER -->
+    <main class="p-4 space-y-4">
+        <h2 class="text-xs font-extrabold text-stone-400 uppercase tracking-wider">Today's Handcrafted Menu</h2>
+        <div id="menuContainer" class="space-y-4"></div>
     </main>
 
     <!-- FLOATING CART BAR -->
-    <div id="cartBar" class="fixed bottom-5 left-4 right-4 bg-stone-900 text-white rounded-2xl p-4 shadow-2xl flex justify-between items-center hidden z-30">
+    <div id="cartBar" class="fixed bottom-5 left-4 right-4 bg-stone-900 text-white rounded-2xl p-4 shadow-2xl flex justify-between items-center hidden z-30 border border-stone-800">
         <div>
-            <p id="cartItemsCount" class="text-[10px] font-bold text-amber-400">0 ITEMS</p>
+            <p id="cartItemsCount" class="text-[10px] font-bold text-amber-400">0 ITEMS ADDED</p>
             <p id="cartTotal" class="text-lg font-black text-white">₹0</p>
         </div>
-        <button onclick="placeOrder()" class="font-bold text-xs bg-amber-500 text-stone-950 px-5 py-3 rounded-xl shadow-lg">Place Order ➔</button>
+        <button onclick="placeOrder()" class="font-bold text-xs bg-amber-500 text-stone-950 px-5 py-3 rounded-xl shadow-lg active:scale-95 transition-transform">Place Order ➔</button>
     </div>
 
     <script>
@@ -71,9 +105,10 @@
         let cart = {};
 
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('tableBadge').innerText = `TABLE #${tableNo}`;
+            document.getElementById('splashTableText').innerText = `Table #${tableNo} Live`;
+            document.getElementById('headerTableBadge').innerText = `TABLE #${tableNo}`;
             
-            // Listen to Live Menu from Firebase
+            // Firebase Realtime Listener
             db.ref('menu').on('value', (snapshot) => {
                 const data = snapshot.val();
                 menuItems = [];
@@ -86,25 +121,39 @@
             });
         });
 
+        function startApp() {
+            document.getElementById('splashTheme').style.opacity = '0';
+            setTimeout(() => document.getElementById('splashTheme').classList.add('hidden'), 700);
+            document.getElementById('welcomeModal').classList.remove('hidden');
+        }
+
+        function saveCustomerDetails() {
+            document.getElementById('welcomeModal').classList.add('hidden');
+        }
+
         function renderMenu() {
             const container = document.getElementById('menuContainer');
             container.innerHTML = '';
 
             if(menuItems.length === 0) {
-                container.innerHTML = `<div class="text-center py-16 text-stone-400 text-xs font-semibold">मेनू लोड हो रहा है या अभी कोई डिश उपलब्ध नहीं है...</div>`;
+                container.innerHTML = `<div class="text-center py-20 text-stone-400 text-xs font-semibold">मेनू लोड हो रहा है या अभी कोई डिश नहीं है...</div>`;
                 return;
             }
 
             menuItems.forEach(item => {
                 const isAvailable = item.inStock !== false;
+                const imgUrl = item.img || "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=300";
+
                 container.innerHTML += `
-                    <div class="bg-white p-3.5 rounded-2xl border border-stone-200/80 flex justify-between gap-3 items-center shadow-xs ${!isAvailable ? 'opacity-40' : ''}">
-                        <div class="space-y-1 flex-1">
+                    <div class="bg-white p-4 rounded-3xl border border-stone-200/80 flex justify-between gap-4 shadow-xs ${!isAvailable ? 'opacity-50' : ''}">
+                        <div class="space-y-1.5 flex-1">
                             <h3 class="font-bold text-stone-900 text-sm">${item.name}</h3>
-                            <p class="text-xs font-black text-stone-800">₹${item.price}</p>
+                            <p class="text-xs font-extrabold text-stone-900">₹${item.price}</p>
+                            <p class="text-[11px] text-stone-400 leading-relaxed">${item.desc || 'Freshly prepared specialty dish.'}</p>
                         </div>
-                        <div class="shrink-0">
-                            ${isAvailable ? `<button onclick="addToCart('${item.firebaseKey}')" class="bg-amber-500 text-stone-950 font-extrabold px-4 py-2 rounded-xl text-xs shadow-xs active:scale-95 transition-transform">+ Add</button>` : '<span class="text-[9px] font-black bg-red-100 text-red-600 px-2 py-1 rounded-lg">OUT OF STOCK</span>'}
+                        <div class="relative w-24 h-24 shrink-0">
+                            <img src="${imgUrl}" class="w-full h-full object-cover rounded-2xl shadow-inner">
+                            ${isAvailable ? `<button onclick="addToCart('${item.firebaseKey}')" class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white text-stone-900 border border-stone-200 font-extrabold px-3.5 py-1 rounded-xl text-xs shadow-md active:scale-95 transition-transform">+ Add</button>` : '<span class="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] font-black bg-red-100 text-red-600 px-2 py-0.5 rounded shadow-xs">OUT OF STOCK</span>'}
                         </div>
                     </div>
                 `;
