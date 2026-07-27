@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo Cafe - Luxury Digital Menu</title>
+    <title>Demo Cafe - Ultra Luxury Digital Menu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap" rel="stylesheet">
     
@@ -12,53 +12,66 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <style>
+        :root {
+            --bg-color: #faf8f5;
+            --text-color: #231d19;
+            --card-bg: #ffffff;
+            --card-border: rgba(35, 29, 25, 0.08);
+            --header-bg: rgba(250, 248, 245, 0.92);
+            --input-bg: #f5f2eb;
+        }
+
+        body.dark-mode {
+            --bg-color: #120e0c;
+            --text-color: #f3ece7;
+            --card-bg: #1c1613;
+            --card-border: rgba(243, 236, 231, 0.1);
+            --header-bg: rgba(18, 14, 12, 0.92);
+            --input-bg: #271f1b;
+        }
+
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #faf8f5; 
-            color: #231d19; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
             -webkit-tap-highlight-color: transparent; 
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
-        .font-serif-accent {
-            font-family: 'Playfair Display', serif;
-        }
+
+        .font-serif-accent { font-family: 'Playfair Display', serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        @keyframes subtleGlow {
-            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 18px rgba(217, 119, 6, 0.35)); }
-            50% { transform: scale(1.04); filter: drop-shadow(0 0 28px rgba(245, 158, 11, 0.65)); }
+        .card-bg-custom { background-color: var(--card-bg); border-color: var(--card-border); }
+        .glass-header { background: var(--header-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        .input-bg-custom { background-color: var(--input-bg); }
+
+        /* Skeleton Shimmer Animation */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
         }
-        .animate-glow { animation: subtleGlow 3.5s infinite ease-in-out; }
-        .modal-transition { transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
-        
-        .glass-header { 
-            background: rgba(250, 248, 245, 0.92); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px); 
+        .skeleton {
+            background: linear-gradient(90deg, var(--input-bg) 25%, var(--card-bg) 50%, var(--input-bg) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
         }
-        .search-glass {
-            background: #ffffff;
-            box-shadow: 0 4px 20px -2px rgba(35, 29, 25, 0.05);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+        @keyframes cartPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
-        .search-glass:focus-within {
-            box-shadow: 0 12px 30px -5px rgba(217, 119, 6, 0.18);
-            border-color: #d97706;
-        }
+        .animate-cart-pop { animation: cartPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
         .gold-gradient-text {
             background: linear-gradient(135deg, #d97706 0%, #b45309 50%, #78350f 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .gold-gradient-dark-text {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #f59e0b 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
         .gold-border-glow {
             border-color: rgba(217, 119, 6, 0.6) !important;
-            box-shadow: 0 10px 25px -5px rgba(217, 119, 6, 0.15), 0 0 0 1px rgba(217, 119, 6, 0.3);
-            background-color: #fffdfa !important;
+            box-shadow: 0 10px 25px -5px rgba(217, 119, 6, 0.2);
         }
     </style>
 </head>
@@ -69,7 +82,7 @@
         <div class="my-auto space-y-6">
             <div class="relative w-36 h-36 mx-auto">
                 <div class="absolute inset-0 bg-amber-500/20 rounded-full blur-2xl animate-pulse"></div>
-                <div class="relative w-36 h-36 bg-gradient-to-tr from-amber-700 via-amber-500 to-amber-300 rounded-3xl flex items-center justify-center text-7xl shadow-2xl animate-glow border-2 border-amber-400/40 transform rotate-3">
+                <div class="relative w-36 h-36 bg-gradient-to-tr from-amber-700 via-amber-500 to-amber-300 rounded-3xl flex items-center justify-center text-7xl shadow-2xl border-2 border-amber-400/40 transform rotate-3">
                     ☕
                 </div>
             </div>
@@ -78,7 +91,7 @@
                     ✨ Table #1 Live
                 </span>
                 <h1 class="text-4xl sm:text-5xl font-black tracking-tight text-white font-serif-accent">
-                    <span class="gold-gradient-dark-text">DEMO CAFE</span>
+                    <span class="gold-gradient-text">DEMO CAFE</span>
                 </h1>
                 <div class="h-0.5 w-14 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto rounded-full"></div>
                 <p class="text-[11px] text-stone-400 tracking-widest font-bold uppercase">Specialty Brews & Gourmet Dining</p>
@@ -90,164 +103,168 @@
     </div>
 
     <!-- 2. WELCOME MODAL -->
-    <div id="welcomeModal" class="fixed inset-0 bg-stone-950/80 backdrop-blur-md z-40 flex items-center justify-center p-4 hidden modal-transition">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-7 shadow-2xl text-center space-y-5 border border-stone-100">
+    <div id="welcomeModal" class="fixed inset-0 bg-stone-950/80 backdrop-blur-md z-40 flex items-center justify-center p-4 hidden">
+        <div class="card-bg-custom w-full max-w-sm rounded-3xl p-7 shadow-2xl text-center space-y-5 border">
             <div class="w-16 h-16 bg-amber-50 text-amber-700 rounded-2xl flex items-center justify-center mx-auto text-3xl font-bold shadow-inner border border-amber-200/50">✨</div>
             <div>
-                <h2 class="text-2xl font-black text-stone-900 font-serif-accent">Welcome to <span class="gold-gradient-text">Demo Cafe</span></h2>
-                <p id="welcomeSubText" class="text-xs text-stone-500 mt-1 font-medium">Please enter your details for Table #1</p>
+                <h2 class="text-2xl font-black font-serif-accent">Welcome to <span class="gold-gradient-text">Demo Cafe</span></h2>
+                <p id="welcomeSubText" class="text-xs text-stone-400 mt-1 font-medium">Please enter your details for Table #1</p>
             </div>
             <div class="space-y-3.5 text-left">
                 <div>
-                    <label class="text-[11px] font-extrabold uppercase tracking-wider text-stone-600 ml-1">Your Name</label>
-                    <input type="text" id="custName" placeholder="e.g. Rahul Sharma" class="w-full mt-1 px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-xs focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold transition-all">
+                    <label class="text-[11px] font-extrabold uppercase tracking-wider opacity-70 ml-1">Your Name</label>
+                    <input type="text" id="custName" placeholder="e.g. Rahul Sharma" class="w-full mt-1 px-4 py-3 input-bg-custom border border-stone-200/20 rounded-2xl text-xs focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold transition-all">
                 </div>
                 <div>
-                    <label class="text-[11px] font-extrabold uppercase tracking-wider text-stone-600 ml-1">Mobile Number</label>
-                    <input type="tel" id="custPhone" placeholder="10-digit mobile number" class="w-full mt-1 px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-xs focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold transition-all">
+                    <label class="text-[11px] font-extrabold uppercase tracking-wider opacity-70 ml-1">Mobile Number</label>
+                    <input type="tel" id="custPhone" placeholder="10-digit mobile number" class="w-full mt-1 px-4 py-3 input-bg-custom border border-stone-200/20 rounded-2xl text-xs focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold transition-all">
                 </div>
             </div>
-            <button onclick="saveCustomerDetails()" class="w-full py-4 bg-stone-900 hover:bg-stone-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-2xl shadow-lg active:scale-95 transition-all">
+            <button onclick="saveCustomerDetails()" class="w-full py-4 bg-amber-500 text-stone-950 font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg active:scale-95 transition-all">
                 Continue to Menu ➔
             </button>
         </div>
     </div>
 
     <!-- 3. WAITER MODAL -->
-    <div id="waiterModal" class="fixed inset-0 bg-stone-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden modal-transition">
-        <div class="bg-white w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center space-y-4 border border-stone-100">
+    <div id="waiterModal" class="fixed inset-0 bg-stone-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="card-bg-custom w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center space-y-4 border">
             <div class="w-14 h-14 bg-amber-50 text-amber-700 rounded-2xl flex items-center justify-center mx-auto text-2xl border border-amber-200/60 shadow-sm">🔔</div>
             <div>
-                <h3 class="text-lg font-bold text-stone-900 font-serif-accent">Call Waiter?</h3>
-                <p id="waiterModalText" class="text-xs text-stone-500 mt-1">A staff member will be alerted for <strong class="text-stone-800">Table #1</strong>.</p>
+                <h3 class="text-lg font-bold font-serif-accent">Call Waiter?</h3>
+                <p id="waiterModalText" class="text-xs text-stone-400 mt-1">A staff member will be alerted for Table #1.</p>
             </div>
             <div class="flex gap-2.5 pt-1">
-                <button onclick="closeWaiterModal()" class="w-1/2 py-3 bg-stone-100 text-stone-700 font-bold text-xs rounded-xl hover:bg-stone-200 transition-all">Cancel</button>
-                <button onclick="confirmCallWaiter()" class="w-1/2 py-3 bg-amber-500 hover:bg-amber-400 text-stone-950 font-extrabold text-xs rounded-xl shadow-md transition-all">Yes, Call</button>
+                <button onclick="closeWaiterModal()" class="w-1/2 py-3 input-bg-custom font-bold text-xs rounded-xl transition-all">Cancel</button>
+                <button onclick="confirmCallWaiter()" class="w-1/2 py-3 bg-amber-500 text-stone-950 font-extrabold text-xs rounded-xl shadow-md transition-all">Yes, Call</button>
             </div>
         </div>
     </div>
 
     <!-- 4. ITEM CUSTOMIZATION MODAL -->
-    <div id="itemModal" class="fixed inset-0 bg-stone-950/80 backdrop-blur-md z-50 flex items-end sm:items-center justify-center hidden modal-transition">
-        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div class="relative w-full h-56 rounded-2xl overflow-hidden shadow-inner border border-stone-100">
+    <div id="itemModal" class="fixed inset-0 bg-stone-950/80 backdrop-blur-md z-50 flex items-end sm:items-center justify-center hidden">
+        <div class="card-bg-custom w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto border">
+            <div class="relative w-full h-56 rounded-2xl overflow-hidden shadow-inner border border-stone-100/10">
                 <img id="modalImg" src="" class="w-full h-full object-cover">
-                <button onclick="closeItemModal()" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-stone-900/80 hover:bg-stone-900 text-white flex items-center justify-center font-bold text-sm backdrop-blur-sm transition-all">✕</button>
+                <button onclick="closeItemModal()" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-stone-900/80 text-white flex items-center justify-center font-bold text-sm backdrop-blur-sm transition-all">✕</button>
             </div>
             <div>
                 <div class="flex justify-between items-start">
-                    <h3 id="modalName" class="font-extrabold text-stone-900 text-lg"></h3>
-                    <span id="modalPrice" class="font-black text-amber-800 text-lg"></span>
+                    <h3 id="modalName" class="font-extrabold text-lg"></h3>
+                    <span id="modalPrice" class="font-black text-amber-500 text-lg"></span>
                 </div>
-                <p id="modalDesc" class="text-xs text-stone-500 mt-1 leading-relaxed font-medium"></p>
+                <p id="modalDesc" class="text-xs text-stone-400 mt-1 leading-relaxed font-medium"></p>
             </div>
 
-            <div id="customizationSection" class="border-t border-stone-100 pt-3 space-y-3">
-                <p class="text-xs font-extrabold uppercase tracking-wider text-stone-700">Choose Add-ons / Customization:</p>
+            <div id="customizationSection" class="border-t border-stone-200/10 pt-3 space-y-3">
+                <p class="text-xs font-extrabold uppercase tracking-wider">Choose Add-ons / Customization:</p>
                 <div id="addonList" class="space-y-2"></div>
             </div>
 
-            <button id="modalAddBtn" onclick="addItemFromModal()" class="w-full py-4 bg-stone-900 hover:bg-stone-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-2xl shadow-lg active:scale-95 transition-all">
+            <button id="modalAddBtn" onclick="addItemFromModal()" class="w-full py-4 bg-amber-500 text-stone-950 font-extrabold text-xs uppercase tracking-wider rounded-2xl shadow-lg active:scale-95 transition-all">
                 Add to Cart
             </button>
         </div>
     </div>
 
     <!-- 5. CART DRAWER -->
-    <div id="cartDrawer" class="fixed inset-0 bg-stone-950/80 backdrop-blur-sm z-50 flex items-end hidden modal-transition">
-        <div class="bg-white w-full rounded-t-3xl p-6 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto border-t border-stone-200">
-            <div class="flex justify-between items-center border-b border-stone-100 pb-3">
+    <div id="cartDrawer" class="fixed inset-0 bg-stone-950/80 backdrop-blur-sm z-50 flex items-end hidden">
+        <div class="card-bg-custom w-full rounded-t-3xl p-6 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto border-t">
+            <div class="flex justify-between items-center border-b border-stone-200/10 pb-3">
                 <div>
-                    <h3 class="font-black text-stone-900 text-lg font-serif-accent">Your Cart Summary</h3>
+                    <h3 class="font-black text-lg font-serif-accent">Your Cart Summary</h3>
                     <p id="cartTableText" class="text-[11px] text-stone-400 font-bold uppercase tracking-wider">Table #1</p>
                 </div>
-                <button onclick="toggleCartDrawer(false)" class="w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center text-stone-500 font-bold hover:bg-stone-200">✕</button>
+                <button onclick="toggleCartDrawer(false)" class="w-8 h-8 rounded-full input-bg-custom flex items-center justify-center font-bold">✕</button>
             </div>
 
-            <div class="bg-stone-100 p-1.5 rounded-2xl flex gap-1 text-xs font-bold">
-                <button id="typeDineIn" onclick="setOrderType('Dine-In')" class="flex-1 py-2.5 rounded-xl bg-white text-stone-900 shadow-xs transition-all">🍽️ Dine-In</button>
-                <button id="typeTakeaway" onclick="setOrderType('Takeaway')" class="flex-1 py-2.5 rounded-xl text-stone-500 transition-all">🛍️ Takeaway</button>
+            <div class="input-bg-custom p-1.5 rounded-2xl flex gap-1 text-xs font-bold">
+                <button id="typeDineIn" onclick="setOrderType('Dine-In')" class="flex-1 py-2.5 rounded-xl bg-amber-500 text-stone-950 shadow-xs transition-all">🍽️ Dine-In</button>
+                <button id="typeTakeaway" onclick="setOrderType('Takeaway')" class="flex-1 py-2.5 rounded-xl opacity-60 transition-all">🛍️ Takeaway</button>
             </div>
             
-            <div id="cartItemsList" class="space-y-3 divide-y divide-stone-100"></div>
+            <div id="cartItemsList" class="space-y-3 divide-y divide-stone-200/10"></div>
 
-            <div class="bg-amber-50/50 p-3 rounded-2xl border border-amber-200/60 flex gap-2 items-center">
+            <div class="bg-amber-500/10 p-3 rounded-2xl border border-amber-500/20 flex gap-2 items-center">
                 <span class="text-sm pl-1">🎟️</span>
-                <input type="text" id="couponInput" placeholder="Try WELCOME10" class="uppercase text-xs font-extrabold bg-transparent flex-1 focus:outline-none text-amber-900 placeholder:text-stone-400">
-                <button onclick="applyCoupon()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs transition-all">Apply</button>
+                <input type="text" id="couponInput" placeholder="Try WELCOME10" class="uppercase text-xs font-extrabold bg-transparent flex-1 focus:outline-none text-amber-500 placeholder:text-stone-500">
+                <button onclick="applyCoupon()" class="bg-amber-500 text-stone-950 text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs transition-all">Apply</button>
             </div>
 
             <div>
-                <label class="text-[11px] font-extrabold uppercase tracking-wider text-stone-500 ml-1">✍️ Kitchen Notes</label>
-                <input type="text" id="cookingNotes" placeholder="e.g. less ice, extra warm..." class="w-full mt-1 px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500">
+                <label class="text-[11px] font-extrabold uppercase tracking-wider opacity-70 ml-1">✍️ Kitchen Notes</label>
+                <input type="text" id="cookingNotes" placeholder="e.g. less ice, extra warm..." class="w-full mt-1 px-3.5 py-2.5 input-bg-custom border border-stone-200/20 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500">
             </div>
 
-            <div class="border-t border-stone-100 pt-3 space-y-2 text-xs text-stone-600">
-                <div class="flex justify-between"><span>Subtotal</span><span id="drawerSubtotal" class="font-bold text-stone-800">₹0</span></div>
-                <div id="discountRow" class="flex justify-between text-emerald-700 font-bold hidden"><span>Discount (10% OFF)</span><span id="drawerDiscount">-₹0</span></div>
-                <div class="flex justify-between font-black text-stone-900 text-lg pt-2 border-t border-stone-200">
+            <div class="border-t border-stone-200/10 pt-3 space-y-2 text-xs opacity-80">
+                <div class="flex justify-between"><span>Subtotal</span><span id="drawerSubtotal" class="font-bold">₹0</span></div>
+                <div id="discountRow" class="flex justify-between text-emerald-500 font-bold hidden"><span>Discount (10% OFF)</span><span id="drawerDiscount">-₹0</span></div>
+                <div class="flex justify-between font-black text-lg pt-2 border-t border-stone-200/10 text-amber-500">
                     <span>Total Amount</span>
-                    <span id="drawerGrandTotal" class="text-amber-800">₹0</span>
+                    <span id="drawerGrandTotal">₹0</span>
                 </div>
             </div>
 
-            <button onclick="placeOrder()" class="w-full py-4 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-stone-950 font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl active:scale-95 transition-all">
+            <button onclick="placeOrder()" class="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-400 text-stone-950 font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl active:scale-95 transition-all">
                 Place Order Now ➔
             </button>
         </div>
     </div>
 
-    <!-- 6. ORDER TRACKER MODAL -->
-    <div id="trackerModal" class="fixed inset-0 bg-stone-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden modal-transition">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-7 shadow-2xl text-center space-y-5 border border-stone-100">
-            <div class="flex justify-between items-center bg-stone-50 p-3 rounded-2xl text-xs border border-stone-100">
-                <span class="font-bold text-stone-500">Order ID: <strong id="displayOrderId" class="text-stone-900 font-extrabold">#DC-000</strong></span>
-                <span id="displayOrderType" class="bg-amber-100 text-amber-800 font-extrabold px-3 py-1 rounded-full text-[10px] uppercase">🍽️ Dine-In</span>
-            </div>
-
-            <div class="w-20 h-20 bg-amber-50 text-amber-700 rounded-3xl flex items-center justify-center mx-auto text-4xl animate-bounce shadow-inner border border-amber-200/50">👨‍🍳</div>
-            
-            <div>
-                <h3 id="orderStatusTitle" class="text-xl font-extrabold text-stone-900 font-serif-accent">Order Sent to Kitchen!</h3>
-                <p class="text-xs text-stone-500 mt-1 font-medium">Est. Preparation Time: <strong class="text-amber-700 font-extrabold">⏱️ 12-15 Mins</strong></p>
-            </div>
-
-            <div class="w-full bg-stone-100 h-2.5 rounded-full overflow-hidden flex p-0.5">
-                <div id="progressBar" class="bg-amber-500 h-full w-1/2 rounded-full transition-all duration-700 shadow-xs"></div>
-            </div>
-
-            <div id="paymentStatusBox" class="bg-gradient-to-b from-stone-50 to-stone-100/80 border border-stone-200/80 p-4 rounded-2xl text-stone-800 text-xs font-bold space-y-1 shadow-2xs">
-                <span class="text-stone-400 text-[10px] font-extrabold uppercase tracking-widest">Total Bill Amount</span>
-                <div id="payAmount" class="text-2xl font-black text-amber-900">₹0</div>
-                <p class="text-[10px] text-stone-500 font-medium">Pay securely at counter or via waiter</p>
-            </div>
-            
-            <div id="reviewSection" class="border-t border-stone-100 pt-3 space-y-2 hidden">
-                <p class="text-xs font-extrabold uppercase tracking-wider text-stone-700">Rate your experience!</p>
-                <div class="flex justify-center gap-2 text-2xl">
-                    <span onclick="submitRating(1)" class="cursor-pointer hover:scale-125 transition-all">⭐</span>
-                    <span onclick="submitRating(2)" class="cursor-pointer hover:scale-125 transition-all">⭐</span>
-                    <span onclick="submitRating(3)" class="cursor-pointer hover:scale-125 transition-all">⭐</span>
-                    <span onclick="submitRating(4)" class="cursor-pointer hover:scale-125 transition-all">⭐</span>
-                    <span onclick="submitRating(5)" class="cursor-pointer hover:scale-125 transition-all">⭐</span>
+    <!-- 6. ORDER HISTORY DRAWER (POINT NO. 4) -->
+    <div id="historyDrawer" class="fixed inset-0 bg-stone-950/80 backdrop-blur-sm z-50 flex items-end hidden">
+        <div class="card-bg-custom w-full rounded-t-3xl p-6 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto border-t">
+            <div class="flex justify-between items-center border-b border-stone-200/10 pb-3">
+                <div>
+                    <h3 class="font-black text-lg font-serif-accent">📜 Past Orders</h3>
+                    <p class="text-[11px] text-stone-400 font-bold uppercase">Quick 1-Click Re-order</p>
                 </div>
+                <button onclick="toggleHistoryDrawer(false)" class="w-8 h-8 rounded-full input-bg-custom flex items-center justify-center font-bold">✕</button>
             </div>
-
-            <div class="space-y-2">
-                <button onclick="closeTrackerAndReturnToMenu()" class="w-full py-3.5 bg-stone-900 hover:bg-stone-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-2xl shadow active:scale-95 transition-all">
-                    🏠 Return to Menu
-                </button>
+            
+            <div id="historyItemsList" class="space-y-4">
+                <!-- Dynamic Past Orders -->
             </div>
         </div>
     </div>
 
-    <!-- HEADER WITH LUXURY BRANDING -->
-    <header class="sticky top-0 glass-header z-20 border-b border-stone-200/80 px-4 py-3.5 shadow-2xs">
+    <!-- 7. ORDER TRACKER MODAL -->
+    <div id="trackerModal" class="fixed inset-0 bg-stone-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="card-bg-custom w-full max-w-sm rounded-3xl p-7 shadow-2xl text-center space-y-5 border">
+            <div class="flex justify-between items-center input-bg-custom p-3 rounded-2xl text-xs border border-stone-200/10">
+                <span class="font-bold opacity-70">Order ID: <strong id="displayOrderId" class="font-extrabold text-amber-500">#DC-000</strong></span>
+                <span id="displayOrderType" class="bg-amber-500/20 text-amber-500 font-extrabold px-3 py-1 rounded-full text-[10px] uppercase">🍽️ Dine-In</span>
+            </div>
+
+            <div class="w-20 h-20 bg-amber-500/10 text-amber-500 rounded-3xl flex items-center justify-center mx-auto text-4xl animate-bounce shadow-inner border border-amber-500/20">👨‍🍳</div>
+            
+            <div>
+                <h3 id="orderStatusTitle" class="text-xl font-extrabold font-serif-accent">Order Sent to Kitchen!</h3>
+                <p class="text-xs text-stone-400 mt-1 font-medium">Est. Preparation Time: <strong class="text-amber-500 font-extrabold">⏱️ 12-15 Mins</strong></p>
+            </div>
+
+            <div class="w-full input-bg-custom h-2.5 rounded-full overflow-hidden flex p-0.5">
+                <div id="progressBar" class="bg-amber-500 h-full w-1/2 rounded-full transition-all duration-700"></div>
+            </div>
+
+            <div id="paymentStatusBox" class="input-bg-custom border border-stone-200/10 p-4 rounded-2xl text-xs font-bold space-y-1">
+                <span class="text-stone-400 text-[10px] font-extrabold uppercase tracking-widest">Total Bill Amount</span>
+                <div id="payAmount" class="text-2xl font-black text-amber-500">₹0</div>
+                <p class="text-[10px] text-stone-400 font-medium">Pay securely at counter or via waiter</p>
+            </div>
+
+            <button onclick="closeTrackerAndReturnToMenu()" class="w-full py-3.5 bg-stone-900 text-white font-extrabold text-xs uppercase tracking-wider rounded-2xl active:scale-95 transition-all">
+                🏠 Return to Menu
+            </button>
+        </div>
+    </div>
+
+    <!-- HEADER WITH CONTROLS -->
+    <header class="sticky top-0 glass-header z-20 border-b border-stone-200/10 px-4 py-3.5 shadow-2xs">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="relative">
-                    <div class="w-11 h-11 bg-[#181311] text-amber-400 rounded-2xl flex items-center justify-center font-bold text-lg shadow-md border border-amber-900/20">☕</div>
+                    <div class="w-11 h-11 bg-stone-950 text-amber-400 rounded-2xl flex items-center justify-center font-bold text-lg shadow-md border border-amber-900/30">☕</div>
                     <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></span>
                 </div>
                 <div>
@@ -255,70 +272,87 @@
                         <h1 class="text-xl font-black tracking-tight font-serif-accent leading-none">
                             <span class="gold-gradient-text">DEMO CAFE</span>
                         </h1>
-                        <span class="text-[8px] bg-amber-950 text-amber-300 font-black px-1.5 py-0.5 rounded border border-amber-500/30 uppercase tracking-widest">LUXURY</span>
                     </div>
                     <div class="flex items-center gap-2 mt-1">
-                        <span id="headerTableBadge" class="text-[9px] font-black bg-stone-900 text-amber-400 px-2.5 py-0.5 rounded-full uppercase tracking-wider">TABLE #1</span>
-                        <span class="text-[10px] text-stone-400 font-semibold">• Specialty Brews</span>
+                        <span id="headerTableBadge" class="text-[9px] font-black bg-amber-500 text-stone-950 px-2.5 py-0.5 rounded-full uppercase tracking-wider">TABLE #1</span>
                     </div>
                 </div>
             </div>
             
-            <div class="flex items-center gap-2">
-                <button id="callWaiterHeaderBtn" onclick="openWaiterModal()" class="flex items-center gap-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 px-3 py-1.5 rounded-full text-xs font-bold active:scale-95 transition-all shadow-2xs">
-                    <span>🔔</span> Waiter
+            <div class="flex items-center gap-1.5">
+                <!-- Theme Switcher (Dark/Light) -->
+                <button onclick="toggleTheme()" class="p-2 input-bg-custom rounded-full text-xs font-bold active:scale-95 transition-all" title="Toggle Theme">
+                    <span id="themeIcon">🌙</span>
                 </button>
-                <button onclick="openTrackerModal()" class="flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-bold active:scale-95 transition-all shadow-2xs">
-                    <span>📊</span> Status
+                <!-- Order History Button -->
+                <button onclick="toggleHistoryDrawer(true)" class="p-2 input-bg-custom rounded-full text-xs font-bold active:scale-95 transition-all" title="Order History">
+                    📜
+                </button>
+                <button id="callWaiterHeaderBtn" onclick="openWaiterModal()" class="bg-amber-500/10 text-amber-500 border border-amber-500/20 px-3 py-1.5 rounded-full text-xs font-bold active:scale-95 transition-all">
+                    🔔 Waiter
                 </button>
             </div>
         </div>
 
-        <!-- SEARCH BAR & VEG TOGGLE -->
+        <!-- SEARCH BAR & VIEW SWITCHER -->
         <div class="mt-3.5 flex gap-2 items-center">
-            <div class="relative flex-1 search-glass rounded-2xl border border-stone-200/90">
-                <span class="absolute left-3.5 top-3 text-sm text-amber-700/70 pointer-events-none">🔍</span>
-                <input type="text" id="searchInput" oninput="handleSearchInput()" placeholder="Search artisan coffee, pizzas, desserts..." class="w-full pl-10 pr-16 py-2.5 bg-transparent rounded-2xl text-xs text-stone-900 focus:outline-none font-bold placeholder:text-stone-400 placeholder:font-medium">
+            <div class="relative flex-1 input-bg-custom rounded-2xl border border-stone-200/10">
+                <span class="absolute left-3.5 top-3 text-sm opacity-50 pointer-events-none">🔍</span>
+                <input type="text" id="searchInput" oninput="handleSearchInput()" placeholder="Search coffee, pizzas..." class="w-full pl-10 pr-16 py-2.5 bg-transparent rounded-2xl text-xs focus:outline-none font-bold">
                 
                 <div class="absolute right-2 top-2 flex items-center gap-1">
-                    <span id="searchResultsBadge" class="hidden text-[9px] font-extrabold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">0</span>
-                    <button id="clearSearchBtn" onclick="clearSearch()" class="hidden text-stone-400 hover:text-stone-700 w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs bg-stone-100">✕</button>
+                    <span id="searchResultsBadge" class="hidden text-[9px] font-extrabold bg-amber-500 text-stone-950 px-2 py-0.5 rounded-full">0</span>
+                    <button id="clearSearchBtn" onclick="clearSearch()" class="hidden opacity-50 w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs input-bg-custom">✕</button>
                 </div>
             </div>
             
-            <button id="vegToggleBtn" onclick="toggleVegOnly()" class="flex items-center gap-1.5 bg-white px-3.5 py-2.5 rounded-2xl text-xs font-bold text-stone-700 border border-stone-200 shadow-2xs shrink-0 active:scale-95 transition-all">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> Veg
+            <!-- Grid/List View Toggle Button -->
+            <button id="viewToggleBtn" onclick="toggleViewLayout()" class="input-bg-custom px-3 py-2.5 rounded-2xl text-xs font-bold border border-stone-200/10 shrink-0 active:scale-95 transition-all">
+                🔲 Grid
+            </button>
+
+            <button id="vegToggleBtn" onclick="toggleVegOnly()" class="input-bg-custom px-3 py-2.5 rounded-2xl text-xs font-bold border border-stone-200/10 shrink-0 active:scale-95 transition-all">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600 inline-block mr-1"></span> Veg
             </button>
         </div>
 
         <!-- CATEGORY CHIPS -->
         <div class="flex gap-2 mt-3 overflow-x-auto no-scrollbar pb-1 text-xs font-semibold">
-            <button onclick="filterCategory('All', this)" class="cat-btn px-4 py-2 bg-stone-900 text-white rounded-full font-extrabold shrink-0 transition-all shadow-sm">🔥 All Items</button>
-            <button onclick="filterCategory('Coffee', this)" class="cat-btn px-4 py-2 bg-white text-stone-600 rounded-full shrink-0 border border-stone-200 transition-all hover:bg-stone-50 font-bold">☕ Coffees</button>
-            <button onclick="filterCategory('Pizza', this)" class="cat-btn px-4 py-2 bg-white text-stone-600 rounded-full shrink-0 border border-stone-200 transition-all hover:bg-stone-50 font-bold">🍕 Pizzas</button>
-            <button onclick="filterCategory('Burger', this)" class="cat-btn px-4 py-2 bg-white text-stone-600 rounded-full shrink-0 border border-stone-200 transition-all hover:bg-stone-50 font-bold">🍔 Burgers</button>
-            <button onclick="filterCategory('Dessert', this)" class="cat-btn px-4 py-2 bg-white text-stone-600 rounded-full shrink-0 border border-stone-200 transition-all hover:bg-stone-50 font-bold">🍨 Desserts</button>
+            <button onclick="filterCategory('All', this)" class="cat-btn px-4 py-2 bg-amber-500 text-stone-950 rounded-full font-extrabold shrink-0 transition-all shadow-sm">🔥 All Items</button>
+            <button onclick="filterCategory('Coffee', this)" class="cat-btn px-4 py-2 input-bg-custom opacity-70 rounded-full shrink-0 border border-stone-200/10 transition-all font-bold">☕ Coffees</button>
+            <button onclick="filterCategory('Pizza', this)" class="cat-btn px-4 py-2 input-bg-custom opacity-70 rounded-full shrink-0 border border-stone-200/10 transition-all font-bold">🍕 Pizzas</button>
+            <button onclick="filterCategory('Burger', this)" class="cat-btn px-4 py-2 input-bg-custom opacity-70 rounded-full shrink-0 border border-stone-200/10 transition-all font-bold">🍔 Burgers</button>
+            <button onclick="filterCategory('Dessert', this)" class="cat-btn px-4 py-2 input-bg-custom opacity-70 rounded-full shrink-0 border border-stone-200/10 transition-all font-bold">🍨 Desserts</button>
         </div>
     </header>
 
     <main id="menuContainer" class="p-4 space-y-4">
-        <!-- Dynamic Menu Content -->
+        <!-- Skeleton Loaders initial state -->
+        <div class="space-y-4">
+            <div class="card-bg-custom p-4 rounded-3xl border flex justify-between gap-4">
+                <div class="space-y-2 flex-1">
+                    <div class="h-4 w-24 skeleton rounded-md"></div>
+                    <div class="h-5 w-36 skeleton rounded-md"></div>
+                    <div class="h-3 w-16 skeleton rounded-md"></div>
+                </div>
+                <div class="w-28 h-28 skeleton rounded-2xl shrink-0"></div>
+            </div>
+        </div>
     </main>
 
-    <!-- FLOATING CART BAR -->
-    <div id="cartBar" class="fixed bottom-5 left-4 right-4 bg-[#181311] text-white rounded-2xl p-4 shadow-2xl flex justify-between items-center hidden z-30 transition-all border border-amber-900/30">
+    <!-- FLOATING CART BAR WITH POP ANIMATION -->
+    <div id="cartBar" class="fixed bottom-5 left-4 right-4 bg-stone-950 text-white rounded-2xl p-4 shadow-2xl flex justify-between items-center hidden z-30 transition-all border border-amber-500/30">
         <div>
             <p id="cartItemsCount" class="text-[10px] font-black text-amber-400 tracking-widest uppercase">0 ITEMS</p>
             <p id="cartTotal" class="text-xl font-black tracking-tight text-white">₹0</p>
         </div>
-        <button onclick="toggleCartDrawer(true)" class="flex items-center gap-1.5 font-extrabold text-xs bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-stone-950 px-5 py-3 rounded-xl shadow-lg active:scale-95 transition-all uppercase tracking-wider">
+        <button onclick="toggleCartDrawer(true)" class="flex items-center gap-1.5 font-extrabold text-xs bg-gradient-to-r from-amber-500 to-amber-400 text-stone-950 px-5 py-3 rounded-xl shadow-lg active:scale-95 transition-all uppercase tracking-wider">
             View Cart ➔
         </button>
     </div>
 
-    <!-- JAVASCRIPT WITH HIGH-PERFORMANCE TABLE-SPECIFIC FIREBASE QUERY -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // Initialize Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyAeZq246X-z908x-Il0F-m86c1DaTXlgI4",
             authDomain: "fir-cafe-bd31f.firebaseapp.com",
@@ -334,43 +368,20 @@
         const urlParams = new URLSearchParams(window.location.search);
         const tableNo = urlParams.get('table') || '1';
 
-        // 🔊 SHARED GLOBAL AUDIO CONTEXT
         let sharedAudioCtx = null;
         function getAudioContext() {
-            if (!sharedAudioCtx) {
-                sharedAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (sharedAudioCtx.state === 'suspended') {
-                sharedAudioCtx.resume();
-            }
+            if (!sharedAudioCtx) sharedAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (sharedAudioCtx.state === 'suspended') sharedAudioCtx.resume();
             return sharedAudioCtx;
         }
 
         let menuItems = [
-            { 
-                id: 1, name: "Classic Cold Coffee", category: "Coffee", price: 140, isVeg: true, rating: "4.8", tag: "BESTSELLER", desc: "Rich creamy brewed espresso served with crushed ice and rich cream.", img: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=300",
-                addons: [{name: "Oat Milk", price: 40}, {name: "Less Sugar", price: 0}, {name: "Extra Coffee Shot", price: 30}]
-            },
-            { 
-                id: 2, name: "Hazelnut Cold Coffee", category: "Coffee", price: 170, isVeg: true, rating: "4.9", tag: "SIGNATURE", desc: "Signature cold coffee infused with aromatic hazelnut syrup.", img: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=300",
-                addons: [{name: "Oat Milk", price: 40}, {name: "Extra Hazelnut Syrup", price: 25}, {name: "Whipped Cream", price: 30}]
-            },
-            { 
-                id: 3, name: "Cheese Burst Pizza", category: "Pizza", price: 280, isVeg: true, rating: "4.7", tag: "CHEF SPECIAL", desc: "Loaded with liquid mozzarella, sweet corn, and aromatic herbs.", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300",
-                addons: [{name: "Extra Cheese", price: 50}, {name: "Jalapenos", price: 25}, {name: "Olives", price: 30}]
-            },
-            { 
-                id: 4, name: "Chicken BBQ Pizza", category: "Pizza", price: 340, isVeg: false, rating: "4.9", tag: "POPULAR", desc: "Smoky BBQ grilled chicken with fresh herbs and caramelized onions.", img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300",
-                addons: [{name: "Extra Chicken", price: 70}, {name: "Extra Cheese", price: 50}, {name: "Spicy Peri Peri Drizzle", price: 20}]
-            },
-            { 
-                id: 5, name: "Crispy Veg Burger", category: "Burger", price: 120, isVeg: true, rating: "4.5", tag: "POPULAR", desc: "Crispy herb potato patty with creamy mayo and fresh lettuce.", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300",
-                addons: [{name: "Cheese Slice", price: 25}, {name: "Extra Patty", price: 50}, {name: "Jalapeno Mayo", price: 20}]
-            },
-            { 
-                id: 6, name: "Molten Lava Cake", category: "Dessert", price: 150, isVeg: true, rating: "4.8", tag: "DELIGHT", desc: "Warm chocolate cake with gooey flowing dark chocolate center.", img: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=300",
-                addons: [{name: "Vanilla Ice Cream Scoop", price: 40}, {name: "Extra Chocolate Fudge", price: 30}]
-            }
+            { id: 1, name: "Classic Cold Coffee", category: "Coffee", price: 140, isVeg: true, rating: "4.8", tag: "BESTSELLER", desc: "Rich creamy brewed espresso served with crushed ice.", img: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=300", addons: [{name: "Oat Milk", price: 40}, {name: "Extra Shot", price: 30}] },
+            { id: 2, name: "Hazelnut Cold Coffee", category: "Coffee", price: 170, isVeg: true, rating: "4.9", tag: "SIGNATURE", desc: "Signature cold coffee infused with aromatic hazelnut syrup.", img: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=300", addons: [{name: "Oat Milk", price: 40}, {name: "Whipped Cream", price: 30}] },
+            { id: 3, name: "Cheese Burst Pizza", category: "Pizza", price: 280, isVeg: true, rating: "4.7", tag: "CHEF SPECIAL", desc: "Loaded with liquid mozzarella, sweet corn, and herbs.", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300", addons: [{name: "Extra Cheese", price: 50}, {name: "Jalapenos", price: 25}] },
+            { id: 4, name: "Chicken BBQ Pizza", category: "Pizza", price: 340, isVeg: false, rating: "4.9", tag: "POPULAR", desc: "Smoky BBQ grilled chicken with fresh herbs and onions.", img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300", addons: [{name: "Extra Chicken", price: 70}] },
+            { id: 5, name: "Crispy Veg Burger", category: "Burger", price: 120, isVeg: true, rating: "4.5", tag: "POPULAR", desc: "Crispy herb potato patty with creamy mayo and lettuce.", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300", addons: [{name: "Cheese Slice", price: 25}] },
+            { id: 6, name: "Molten Lava Cake", category: "Dessert", price: 150, isVeg: true, rating: "4.8", tag: "DELIGHT", desc: "Warm chocolate cake with gooey flowing dark chocolate center.", img: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=300", addons: [{name: "Vanilla Ice Cream", price: 40}] }
         ];
 
         let cart = {};
@@ -380,16 +391,20 @@
         let isCouponApplied = false;
         let isWaiterCalled = false;
         let selectedOrderType = 'Dine-In';
-        let activeModalItem = null;
+        let isGridView = false; // Layout View Switcher State
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Apply saved Theme preference
+            const savedTheme = localStorage.getItem('demoCafe_theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('themeIcon').innerText = '☀️';
+            }
+
             document.getElementById('splashTableText').innerText = `✨ Table #${tableNo} Live`;
-            document.getElementById('welcomeSubText').innerText = `Please enter your contact details for Table #${tableNo}`;
-            document.getElementById('waiterModalText').innerHTML = `A staff member will be alerted for <strong class="text-stone-800">Table #${tableNo}</strong>.`;
-            document.getElementById('cartTableText').innerText = `Table #${tableNo} • Review items`;
+            document.getElementById('welcomeSubText').innerText = `Please enter details for Table #${tableNo}`;
             document.getElementById('headerTableBadge').innerText = `TABLE #${tableNo}`;
             
-            // Auto-fill saved login details if available
             const savedName = localStorage.getItem('demoCafe_custName');
             const savedPhone = localStorage.getItem('demoCafe_custPhone');
             if(savedName && savedPhone) {
@@ -397,37 +412,45 @@
                 document.getElementById('custPhone').value = savedPhone;
             }
 
-            // Listen to Live Menu updates from Firebase
+            // Realtime DB Sync
             db.ref('menu').on('value', (snapshot) => {
                 const data = snapshot.val();
                 if(data) {
                     const fbItems = [];
-                    Object.keys(data).forEach(key => {
-                        fbItems.push({ id: key, ...data[key] });
-                    });
+                    Object.keys(data).forEach(key => fbItems.push({ id: key, ...data[key] }));
                     if(fbItems.length > 0) menuItems = fbItems;
                 }
                 renderMenu();
             });
 
-            // ⚡ OPTIMIZED FIREBASE QUERY (Filters orders specifically by tableNo)
-            // This prevents downloading all orders in the DB and saves bandwidth/memory.
             db.ref('orders').orderByChild('tableNo').equalTo(tableNo).on('value', (snapshot) => {
                 const data = snapshot.val();
                 if(data) {
                     const tableOrders = Object.values(data);
-                    // Find the latest active order for this table
                     const activeOrder = tableOrders.reverse().find(o => o.status !== 'PAID');
                     if(activeOrder) {
                         document.getElementById('displayOrderId').innerText = activeOrder.orderId || '#DC-000';
-                        document.getElementById('displayOrderType').innerText = activeOrder.orderType === 'Dine-In' ? '🍽️ Dine-In' : '🛍️ Takeaway';
                         document.getElementById('payAmount').innerText = `₹${activeOrder.grandTotal || 0}`;
                     }
                 }
             });
         });
 
-        // 🔄 PERSISTENT LOGIN
+        // 🌙 DARK/LIGHT MODE TOGGLE
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('demoCafe_theme', isDark ? 'dark' : 'light');
+            document.getElementById('themeIcon').innerText = isDark ? '☀️' : '🌙';
+        }
+
+        // 🔲 GRID VS LIST VIEW TOGGLE
+        function toggleViewLayout() {
+            isGridView = !isGridView;
+            document.getElementById('viewToggleBtn').innerText = isGridView ? '☰ List' : '🔲 Grid';
+            renderMenu();
+        }
+
         function startApp() {
             const splash = document.getElementById('splashTheme');
             splash.style.opacity = '0';
@@ -435,10 +458,7 @@
 
             const savedName = localStorage.getItem('demoCafe_custName');
             const savedPhone = localStorage.getItem('demoCafe_custPhone');
-
-            if(savedName && savedPhone) {
-                document.getElementById('welcomeModal').classList.add('hidden');
-            } else {
+            if(!savedName || !savedPhone) {
                 document.getElementById('welcomeModal').classList.remove('hidden');
             }
             renderMenu();
@@ -447,22 +467,102 @@
         function saveCustomerDetails() {
             const name = document.getElementById('custName').value.trim();
             const phone = document.getElementById('custPhone').value.trim();
-            if(!name || !phone) return alert("Please enter your Name and Phone Number!");
-            
+            if(!name || !phone) return alert("Please enter Name and Phone!");
             localStorage.setItem('demoCafe_custName', name);
             localStorage.setItem('demoCafe_custPhone', phone);
-
             document.getElementById('welcomeModal').classList.add('hidden');
+        }
+
+        function renderMenu() {
+            const container = document.getElementById('menuContainer');
+            container.innerHTML = '';
+
+            const filtered = menuItems.filter(item => {
+                const matchesCat = currentCategory === 'All' || item.category === currentCategory;
+                const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
+                const matchesVeg = !isVegOnly || item.isVeg !== false;
+                return matchesCat && matchesSearch && matchesVeg;
+            });
+
+            document.getElementById('searchResultsBadge').innerText = `${filtered.length}`;
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-16 opacity-50 font-bold">No delicious items found!</div>`;
+                return;
+            }
+
+            // Apply Layout (Grid vs List)
+            if(isGridView) {
+                container.className = "p-4 grid grid-cols-2 gap-3.5";
+            } else {
+                container.className = "p-4 space-y-4";
+            }
+
+            filtered.forEach(item => {
+                let totalQty = 0;
+                for(let key in cart) { if(cart[key].id == item.id) totalQty += cart[key].qty; }
+
+                const isVeg = item.isVeg !== false;
+                const vegBadge = isVeg 
+                    ? `<span class="w-3.5 h-3.5 border border-emerald-600 flex items-center justify-center p-0.5 rounded-sm"><span class="w-1.5 h-1.5 bg-emerald-600 rounded-full"></span></span>`
+                    : `<span class="w-3.5 h-3.5 border border-red-600 flex items-center justify-center p-0.5 rounded-sm"><span class="w-1.5 h-1.5 bg-red-600 rounded-full"></span></span>`;
+
+                const isSelected = totalQty > 0;
+                const borderClass = isSelected ? 'gold-border-glow' : 'border-stone-200/10';
+
+                if(isGridView) {
+                    // GRID VIEW CARD
+                    container.innerHTML += `
+                        <div class="card-bg-custom p-3 rounded-3xl border ${borderClass} flex flex-col justify-between shadow-2xs relative overflow-hidden">
+                            <div class="relative w-full h-28 rounded-2xl overflow-hidden mb-2">
+                                <img src="${item.img}" class="w-full h-full object-cover" onclick="openItemModal('${item.id}')">
+                                ${isSelected ? `<span class="absolute top-1.5 right-1.5 bg-stone-900 text-amber-400 font-black text-[9px] px-2 py-0.5 rounded-full border border-amber-500/40">✨ ${totalQty}</span>` : ''}
+                            </div>
+                            <div class="space-y-1 cursor-pointer" onclick="openItemModal('${item.id}')">
+                                <div class="flex items-center gap-1">${vegBadge} <span class="text-[9px] font-bold opacity-60">⭐ ${item.rating}</span></div>
+                                <h3 class="font-extrabold text-xs line-clamp-1">${item.name}</h3>
+                                <p class="text-xs font-black text-amber-500">₹${item.price}</p>
+                            </div>
+                            <button onclick="openItemModal('${item.id}')" class="w-full mt-2 py-1.5 bg-amber-500 text-stone-950 font-black rounded-xl text-[11px] shadow-sm active:scale-95 transition-all">
+                                ${totalQty > 0 ? `${totalQty} in Cart +` : '+ Add'}
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    // LIST VIEW CARD
+                    container.innerHTML += `
+                        <div class="card-bg-custom p-4 rounded-3xl border ${borderClass} flex justify-between gap-4 shadow-2xs relative overflow-hidden">
+                            <div class="space-y-1.5 flex-1 cursor-pointer" onclick="openItemModal('${item.id}')">
+                                <div class="flex items-center gap-2">
+                                    ${vegBadge}
+                                    <span class="text-[9px] font-black bg-amber-500/10 text-amber-500 border border-amber-500/20 px-2 py-0.5 rounded-md uppercase">${item.tag || 'SPECIAL'}</span>
+                                    <span class="text-[10px] font-bold opacity-60">⭐ ${item.rating}</span>
+                                </div>
+                                <h3 class="font-extrabold text-sm tracking-tight">${item.name}</h3>
+                                <p class="text-xs font-black text-amber-500">₹${item.price}</p>
+                                <p class="text-[11px] opacity-60 line-clamp-2 leading-relaxed font-medium">${item.desc}</p>
+                            </div>
+                            <div class="relative w-28 h-28 shrink-0">
+                                ${isSelected ? `<span class="absolute top-2 right-2 bg-stone-900 text-amber-400 font-black text-[10px] px-2 py-0.5 rounded-full border border-amber-500/40 z-10">✨ ${totalQty}</span>` : ''}
+                                <img src="${item.img}" class="w-full h-full object-cover rounded-2xl border border-stone-100/10 cursor-pointer" onclick="openItemModal('${item.id}')">
+                                <button onclick="openItemModal('${item.id}')" class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-amber-500 text-stone-950 font-black px-4 py-1.5 rounded-xl text-xs shadow-md active:scale-95 transition-all shrink-0 whitespace-nowrap">
+                                    ${totalQty > 0 ? `${totalQty} in Cart +` : '+ Add'}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
         }
 
         function openItemModal(itemId) {
             activeModalItem = menuItems.find(i => i.id == itemId);
             if(!activeModalItem) return;
 
-            document.getElementById('modalImg').src = activeModalItem.img || "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=300";
+            document.getElementById('modalImg').src = activeModalItem.img;
             document.getElementById('modalName').innerText = activeModalItem.name;
             document.getElementById('modalPrice').innerText = `₹${activeModalItem.price}`;
-            document.getElementById('modalDesc').innerText = activeModalItem.desc || 'Freshly prepared specialty dish.';
+            document.getElementById('modalDesc').innerText = activeModalItem.desc;
 
             const addonList = document.getElementById('addonList');
             addonList.innerHTML = '';
@@ -471,26 +571,22 @@
                 document.getElementById('customizationSection').classList.remove('hidden');
                 activeModalItem.addons.forEach((addon, idx) => {
                     addonList.innerHTML += `
-                        <label class="flex items-center justify-between p-3 bg-stone-50 hover:bg-stone-100 rounded-xl border border-stone-200/80 cursor-pointer text-xs font-bold transition-all">
+                        <label class="flex items-center justify-between p-3 input-bg-custom rounded-xl cursor-pointer text-xs font-bold">
                             <div class="flex items-center gap-2.5">
-                                <input type="checkbox" value="${idx}" class="modal-addon-chk w-4 h-4 text-amber-600 rounded focus:ring-amber-500">
-                                <span class="text-stone-800">${addon.name}</span>
+                                <input type="checkbox" value="${idx}" class="modal-addon-chk w-4 h-4 text-amber-500 rounded">
+                                <span>${addon.name}</span>
                             </div>
-                            <span class="font-extrabold text-amber-900">${addon.price > 0 ? '+₹' + addon.price : 'Free'}</span>
+                            <span class="text-amber-500">${addon.price > 0 ? '+₹' + addon.price : 'Free'}</span>
                         </label>
                     `;
                 });
             } else {
                 document.getElementById('customizationSection').classList.add('hidden');
             }
-
             document.getElementById('itemModal').classList.remove('hidden');
         }
 
-        function closeItemModal() {
-            document.getElementById('itemModal').classList.add('hidden');
-            activeModalItem = null;
-        }
+        function closeItemModal() { document.getElementById('itemModal').classList.add('hidden'); }
 
         function addItemFromModal() {
             if(!activeModalItem) return;
@@ -498,8 +594,7 @@
 
             let selectedAddons = [];
             let extraCost = 0;
-            const checkboxes = document.querySelectorAll('.modal-addon-chk:checked');
-            checkboxes.forEach(chk => {
+            document.querySelectorAll('.modal-addon-chk:checked').forEach(chk => {
                 const addonObj = activeModalItem.addons[chk.value];
                 selectedAddons.push(addonObj.name);
                 extraCost += addonObj.price;
@@ -512,11 +607,9 @@
                 cart[cartKey] = {
                     id: activeModalItem.id,
                     name: activeModalItem.name,
-                    basePrice: activeModalItem.price,
                     finalPrice: finalPrice,
                     addons: selectedAddons,
-                    qty: 0,
-                    img: activeModalItem.img
+                    qty: 0
                 };
             }
             cart[cartKey].qty += 1;
@@ -524,133 +617,6 @@
             closeItemModal();
             updateCartBar();
             renderMenu();
-        }
-
-        function handleSearchInput() {
-            searchQuery = document.getElementById('searchInput').value.trim();
-            const clearBtn = document.getElementById('clearSearchBtn');
-            const badge = document.getElementById('searchResultsBadge');
-
-            if(searchQuery.length > 0) {
-                clearBtn.classList.remove('hidden');
-                badge.classList.remove('hidden');
-            } else {
-                clearBtn.classList.add('hidden');
-                badge.classList.add('hidden');
-            }
-            renderMenu();
-        }
-
-        function clearSearch() {
-            document.getElementById('searchInput').value = '';
-            handleSearchInput();
-        }
-
-        function renderMenu() {
-            const container = document.getElementById('menuContainer');
-            container.innerHTML = '';
-
-            const filtered = menuItems.filter(item => {
-                const matchesCat = currentCategory === 'All' || item.category === currentCategory;
-                const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                                     (item.desc && item.desc.toLowerCase().includes(searchQuery.toLowerCase()));
-                const matchesVeg = !isVegOnly || item.isVeg !== false;
-                return matchesCat && matchesSearch && matchesVeg;
-            });
-
-            document.getElementById('searchResultsBadge').innerText = `${filtered.length}`;
-
-            if(filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-16 space-y-3">
-                        <div class="text-4xl">🔍</div>
-                        <h4 class="font-extrabold text-stone-700 text-sm">No delicious items found!</h4>
-                        <p class="text-xs text-stone-400 font-medium">Try searching for coffee, pizza, or burger</p>
-                        <button onclick="clearSearch()" class="text-xs font-bold bg-amber-100 text-amber-800 px-4 py-2 rounded-xl mt-2">Clear Search</button>
-                    </div>
-                `;
-                return;
-            }
-
-            filtered.forEach(item => {
-                let totalQty = 0;
-                for(let key in cart) {
-                    if(cart[key].id == item.id) totalQty += cart[key].qty;
-                }
-
-                const isVeg = item.isVeg !== false;
-                const vegBadge = isVeg 
-                    ? `<span class="w-3.5 h-3.5 border border-emerald-600 flex items-center justify-center p-0.5 rounded-sm"><span class="w-1.5 h-1.5 bg-emerald-600 rounded-full"></span></span>`
-                    : `<span class="w-3.5 h-3.5 border border-red-600 flex items-center justify-center p-0.5 rounded-sm"><span class="w-1.5 h-1.5 bg-red-600 rounded-full"></span></span>`;
-
-                const isSelected = totalQty > 0;
-                const cardClass = isSelected 
-                    ? "bg-white p-4 rounded-3xl border gold-border-glow flex justify-between gap-4 shadow-md transition-all relative overflow-hidden"
-                    : "bg-white p-4 rounded-3xl border border-stone-200/80 flex justify-between gap-4 shadow-2xs hover:shadow-md transition-all relative overflow-hidden";
-
-                const selectedImageBadge = isSelected 
-                    ? `<span class="absolute top-2 right-2 bg-stone-900 text-amber-400 font-black text-[10px] px-2.5 py-1 rounded-full shadow-lg border border-amber-500/40 z-10 flex items-center gap-1">✨ ${totalQty} Selected</span>`
-                    : '';
-
-                const buttonMarkup = isSelected
-                    ? `<button onclick="openItemModal('${item.id}')" class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-amber-400 text-stone-950 font-black px-3.5 py-1.5 rounded-xl text-xs shadow-lg active:scale-95 transition-all shrink-0 whitespace-nowrap border border-amber-300">
-                        ${totalQty} in Cart +
-                       </button>`
-                    : `<button onclick="openItemModal('${item.id}')" class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-white text-stone-900 border border-stone-300 font-extrabold px-4 py-1.5 rounded-xl text-xs shadow-md hover:bg-stone-50 active:scale-95 transition-all shrink-0 whitespace-nowrap">
-                        + Add
-                       </button>`;
-
-                container.innerHTML += `
-                    <div class="${cardClass}">
-                        <div class="space-y-1.5 flex-1 cursor-pointer" onclick="openItemModal('${item.id}')">
-                            <div class="flex items-center gap-2">
-                                ${vegBadge}
-                                <span class="text-[9px] font-black bg-amber-50 text-amber-800 border border-amber-200/80 px-2 py-0.5 rounded-md uppercase tracking-wider">${item.tag || 'SPECIAL'}</span>
-                                <span class="text-[10px] font-bold text-stone-500">⭐ ${item.rating || '4.8'}</span>
-                            </div>
-                            <h3 class="font-extrabold text-stone-900 text-sm tracking-tight">${item.name}</h3>
-                            <p class="text-xs font-black text-amber-900">₹${item.price}</p>
-                            <p class="text-[11px] text-stone-400 line-clamp-2 leading-relaxed font-medium">${item.desc || 'Freshly prepared specialty dish.'}</p>
-                        </div>
-                        <div class="relative w-28 h-28 shrink-0">
-                            ${selectedImageBadge}
-                            <img src="${item.img || 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=300'}" class="w-full h-full object-cover rounded-2xl shadow-xs cursor-pointer border border-stone-100" onclick="openItemModal('${item.id}')">
-                            ${buttonMarkup}
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function filterCategory(cat, btn) {
-            currentCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(b => {
-                b.className = "cat-btn px-4 py-2 bg-white text-stone-600 rounded-full shrink-0 border border-stone-200 transition-all hover:bg-stone-50 font-bold";
-            });
-            btn.className = "cat-btn px-4 py-2 bg-stone-900 text-white rounded-full font-extrabold shrink-0 transition-all shadow-sm";
-            renderMenu();
-        }
-
-        function toggleVegOnly() {
-            isVegOnly = !isVegOnly;
-            const btn = document.getElementById('vegToggleBtn');
-            btn.className = isVegOnly 
-                ? "flex items-center gap-1.5 bg-emerald-600 text-white px-3.5 py-2.5 rounded-2xl text-xs font-bold border border-emerald-600 shrink-0 shadow-sm transition-all"
-                : "flex items-center gap-1.5 bg-white px-3.5 py-2.5 rounded-2xl text-xs font-bold text-stone-700 border border-stone-200 shrink-0 transition-all";
-            renderMenu();
-        }
-
-        function setOrderType(type) {
-            selectedOrderType = type;
-            const dineBtn = document.getElementById('typeDineIn');
-            const takeBtn = document.getElementById('typeTakeaway');
-            if(type === 'Dine-In') {
-                dineBtn.className = "flex-1 py-2.5 rounded-xl bg-white text-stone-900 shadow-xs transition-all";
-                takeBtn.className = "flex-1 py-2.5 rounded-xl text-stone-500 transition-all";
-            } else {
-                takeBtn.className = "flex-1 py-2.5 rounded-xl bg-white text-stone-900 shadow-xs transition-all";
-                dineBtn.className = "flex-1 py-2.5 rounded-xl text-stone-500 transition-all";
-            }
         }
 
         function updateCartBar() {
@@ -663,6 +629,8 @@
             const bar = document.getElementById('cartBar');
             if(totalItems > 0) {
                 bar.classList.remove('hidden');
+                bar.classList.add('animate-cart-pop');
+                setTimeout(() => bar.classList.remove('animate-cart-pop'), 300);
                 document.getElementById('cartItemsCount').innerText = `${totalItems} ITEM${totalItems > 1 ? 'S' : ''}`;
                 document.getElementById('cartTotal').innerText = `₹${subtotal}`;
             } else {
@@ -673,23 +641,8 @@
 
         function toggleCartDrawer(show) {
             const drawer = document.getElementById('cartDrawer');
-            if(show) {
-                renderCartDrawerItems();
-                drawer.classList.remove('hidden');
-            } else {
-                drawer.classList.add('hidden');
-            }
-        }
-
-        function applyCoupon() {
-            const code = document.getElementById('couponInput').value.trim().toUpperCase();
-            if(code === 'WELCOME10') {
-                isCouponApplied = true;
-                alert("🎉 'WELCOME10' Applied successfully!");
-                renderCartDrawerItems();
-            } else {
-                alert("Invalid Coupon Code! Try WELCOME10");
-            }
+            if(show) { renderCartDrawerItems(); drawer.classList.remove('hidden'); } 
+            else { drawer.classList.add('hidden'); }
         }
 
         function renderCartDrawerItems() {
@@ -701,21 +654,20 @@
                 const item = cart[key];
                 const cost = item.finalPrice * item.qty;
                 subtotal += cost;
-
-                const addonsText = item.addons.length > 0 ? `<br><span class="text-[10px] text-amber-700 font-medium">Add-ons: ${item.addons.join(', ')}</span>` : '';
+                const addonsText = item.addons.length > 0 ? `<br><span class="text-[10px] text-amber-500">Add-ons: ${item.addons.join(', ')}</span>` : '';
 
                 list.innerHTML += `
                     <div class="flex justify-between items-center py-2.5 text-xs">
                         <div class="flex-1 pr-2">
-                            <p class="font-bold text-stone-900">${item.name}</p>
-                            <p class="text-stone-400 text-[11px]">₹${item.finalPrice} each${addonsText}</p>
+                            <p class="font-bold">${item.name}</p>
+                            <p class="opacity-60 text-[11px]">₹${item.finalPrice} each${addonsText}</p>
                         </div>
                         <div class="flex items-center gap-3 shrink-0">
-                            <span class="font-extrabold text-stone-900">₹${cost}</span>
-                            <div class="flex items-center bg-stone-900 text-white px-2.5 py-1 rounded-xl font-bold">
-                                <button onclick="changeCartQty('${key}', -1)" class="px-1.5 hover:text-amber-400">-</button>
-                                <span class="px-1.5 text-amber-400">${item.qty}</span>
-                                <button onclick="changeCartQty('${key}', 1)" class="px-1.5 hover:text-amber-400">+</button>
+                            <span class="font-extrabold">₹${cost}</span>
+                            <div class="flex items-center bg-amber-500 text-stone-950 px-2.5 py-1 rounded-xl font-bold">
+                                <button onclick="changeCartQty('${key}', -1)" class="px-1.5">-</button>
+                                <span class="px-1.5">${item.qty}</span>
+                                <button onclick="changeCartQty('${key}', 1)" class="px-1.5">+</button>
                             </div>
                         </div>
                     </div>
@@ -746,6 +698,7 @@
             renderMenu();
         }
 
+        // 📜 POINT NO. 4: SAVE ORDER TO LOCAL HISTORY & RE-ORDER
         function placeOrder() {
             let subtotal = 0;
             let itemsList = [];
@@ -753,12 +706,7 @@
             for(let key in cart) {
                 const item = cart[key];
                 subtotal += item.finalPrice * item.qty;
-                itemsList.push({
-                    name: item.name,
-                    qty: item.qty,
-                    price: item.finalPrice,
-                    addons: item.addons || []
-                });
+                itemsList.push({ name: item.name, qty: item.qty, price: item.finalPrice, addons: item.addons || [] });
             }
             if(itemsList.length === 0) return alert("Your cart is empty!");
 
@@ -775,19 +723,21 @@
                 customerPhone: document.getElementById('custPhone').value || '',
                 orderType: selectedOrderType,
                 items: itemsList,
-                cookingNotes: document.getElementById('cookingNotes').value || '',
-                subtotal: subtotal,
-                discount: discount,
                 grandTotal: grandTotal,
                 status: 'PREPARING',
                 timestamp: Date.now(),
-                timeStr: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                dateStr: new Date().toLocaleDateString([], {month:'short', day:'numeric'})
             };
 
+            // Save to Firebase
             db.ref('orders').push(orderPayload);
 
+            // Save to Local Order History (Point No. 4)
+            let existingHistory = JSON.parse(localStorage.getItem('demoCafe_orderHistory') || '[]');
+            existingHistory.unshift(orderPayload);
+            localStorage.setItem('demoCafe_orderHistory', JSON.stringify(existingHistory));
+
             document.getElementById('displayOrderId').innerText = generatedOrderId;
-            document.getElementById('displayOrderType').innerText = selectedOrderType === 'Dine-In' ? '🍽️ Dine-In' : '🛍️ Takeaway';
             document.getElementById('payAmount').innerText = `₹${grandTotal}`;
 
             cart = {};
@@ -796,50 +746,108 @@
             openTrackerModal();
         }
 
-        function openTrackerModal() {
-            document.getElementById('trackerModal').classList.remove('hidden');
+        // 📜 TOGGLE & RENDER ORDER HISTORY (POINT NO. 4)
+        function toggleHistoryDrawer(show) {
+            const drawer = document.getElementById('historyDrawer');
+            if(show) {
+                renderOrderHistory();
+                drawer.classList.remove('hidden');
+            } else {
+                drawer.classList.add('hidden');
+            }
         }
 
-        function closeTrackerAndReturnToMenu() {
-            document.getElementById('trackerModal').classList.add('hidden');
+        function renderOrderHistory() {
+            const list = document.getElementById('historyItemsList');
+            const history = JSON.parse(localStorage.getItem('demoCafe_orderHistory') || '[]');
+
+            if(history.length === 0) {
+                list.innerHTML = `<div class="text-center py-10 opacity-50 text-xs font-bold">No past orders found!</div>`;
+                return;
+            }
+
+            list.innerHTML = '';
+            history.forEach((order, idx) => {
+                const itemNames = order.items.map(i => `${i.qty}x ${i.name}`).join(', ');
+                list.innerHTML += `
+                    <div class="input-bg-custom p-4 rounded-2xl border border-stone-200/10 space-y-2">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="font-extrabold text-amber-500">${order.orderId}</span>
+                            <span class="opacity-50 font-bold">${order.dateStr || 'Recent'}</span>
+                        </div>
+                        <p class="text-xs font-medium opacity-80 line-clamp-2">${itemNames}</p>
+                        <div class="flex justify-between items-center pt-2 border-t border-stone-200/10">
+                            <span class="font-black text-xs">Total: ₹${order.grandTotal}</span>
+                            <button onclick="reorderFromHistory(${idx})" class="bg-amber-500 text-stone-950 font-black px-3.5 py-1.5 rounded-xl text-xs shadow-sm active:scale-95 transition-all">
+                                🔄 Re-order All
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
         }
 
-        function submitRating(stars) {
-            alert(`Thank you for rating us ${stars} Stars! ⭐`);
-            document.getElementById('reviewSection').classList.add('hidden');
+        // 🔄 1-CLICK RE-ORDER FUNCTIONALITY
+        function reorderFromHistory(index) {
+            const history = JSON.parse(localStorage.getItem('demoCafe_orderHistory') || '[]');
+            const order = history[index];
+            if(!order) return;
+
+            order.items.forEach(pastItem => {
+                const matchMenu = menuItems.find(m => m.name === pastItem.name);
+                if(matchMenu) {
+                    const cartKey = `${matchMenu.id}_${(pastItem.addons || []).sort().join('_')}`;
+                    if(!cart[cartKey]) {
+                        cart[cartKey] = {
+                            id: matchMenu.id,
+                            name: matchMenu.name,
+                            finalPrice: pastItem.price,
+                            addons: pastItem.addons || [],
+                            qty: 0
+                        };
+                    }
+                    cart[cartKey].qty += pastItem.qty;
+                }
+            });
+
+            toggleHistoryDrawer(false);
+            updateCartBar();
+            renderMenu();
+            playPopSound();
+            alert("🎉 Items added back to your cart!");
         }
 
+        function filterCategory(cat, btn) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(b => b.className = "cat-btn px-4 py-2 input-bg-custom opacity-70 rounded-full shrink-0 border border-stone-200/10 transition-all font-bold");
+            btn.className = "cat-btn px-4 py-2 bg-amber-500 text-stone-950 rounded-full font-extrabold shrink-0 transition-all shadow-sm";
+            renderMenu();
+        }
+
+        function handleSearchInput() {
+            searchQuery = document.getElementById('searchInput').value.trim();
+            document.getElementById('clearSearchBtn').classList.toggle('hidden', searchQuery.length === 0);
+            document.getElementById('searchResultsBadge').classList.toggle('hidden', searchQuery.length === 0);
+            renderMenu();
+        }
+
+        function clearSearch() { document.getElementById('searchInput').value = ''; handleSearchInput(); }
+        function toggleVegOnly() { isVegOnly = !isVegOnly; renderMenu(); }
+        function openTrackerModal() { document.getElementById('trackerModal').classList.remove('hidden'); }
+        function closeTrackerAndReturnToMenu() { document.getElementById('trackerModal').classList.add('hidden'); }
         function openWaiterModal() { if(!isWaiterCalled) document.getElementById('waiterModal').classList.remove('hidden'); }
         function closeWaiterModal() { document.getElementById('waiterModal').classList.add('hidden'); }
-        
+
         function confirmCallWaiter() {
             closeWaiterModal();
             isWaiterCalled = true;
             playWaiterBellSound();
-
-            db.ref('waiterCalls').push({
-                tableNo: tableNo,
-                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-                timestamp: Date.now()
-            });
-
+            db.ref('waiterCalls').push({ tableNo: tableNo, time: new Date().toLocaleTimeString() });
             const btn = document.getElementById('callWaiterHeaderBtn');
-            btn.className = "flex items-center gap-1 bg-stone-100 text-stone-400 border border-stone-200 px-3 py-1.5 rounded-full text-xs font-bold cursor-not-allowed";
-            btn.innerHTML = "<span>✓</span> Called";
-
-            let countdown = 30;
-            const timer = setInterval(() => {
-                countdown--;
-                if(countdown <= 0) {
-                    clearInterval(timer);
-                    isWaiterCalled = false;
-                    btn.className = "flex items-center gap-1 bg-amber-50 text-amber-800 border border-amber-200 px-3 py-1.5 rounded-full text-xs font-bold active:scale-95 transition-all";
-                    btn.innerHTML = "<span>🔔</span> Waiter";
-                }
-            }, 1000);
+            btn.innerHTML = "✓ Called";
+            setTimeout(() => { isWaiterCalled = false; btn.innerHTML = "🔔 Waiter"; }, 30000);
         }
 
-        // 🔊 OPTIMIZED SOUND FUNCTIONS
         function playPopSound() {
             try {
                 const ctx = getAudioContext();
@@ -850,10 +858,8 @@
                 osc.frequency.exponentialRampToValueAtTime(350, ctx.currentTime + 0.05);
                 gain.gain.setValueAtTime(0.2, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.05);
+                osc.connect(gain); osc.connect(ctx.destination);
+                osc.start(); osc.stop(ctx.currentTime + 0.05);
             } catch(e){}
         }
 
@@ -866,14 +872,11 @@
                 osc.frequency.setValueAtTime(1046.50, ctx.currentTime);
                 gain.gain.setValueAtTime(0.4, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.6);
-            } catch(e) {}
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(); osc.stop(ctx.currentTime + 0.6);
+            } catch(e){}
         }
     </script>
 </body>
 </html>
-
 
