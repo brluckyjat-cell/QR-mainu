@@ -515,6 +515,7 @@ function placeFirebaseOrder(){
 
 function sendOrderToFirebase(){
 alert("Function working");
+    alert(JSON.stringify(cart));
     if(!cart || cart.length === 0){
         alert("Cart empty");
         return;
