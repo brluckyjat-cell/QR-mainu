@@ -1,1 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
 
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Demo Cafe | Digital Menu</title>
+
+<meta name="theme-color" content="#111827">
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<header class="navbar">
+
+<div class="logo">
+☕ Demo Cafe
+</div>
+
+
+<div class="nav-actions">
+
+<button onclick="toggleTheme()">
+🌙
+</button>
+
+<button onclick="openCart()">
+🛒 <span id="cartCount">0</span>
+</button>
+
+</div>
+
+</header>
+
+
+
+
+<section class="hero">
+
+
+<div class="hero-content">
+
+<span class="badge">
+🔥 Premium Cafe Experience
+</span>
+
+
+<h1>
+Fresh Food.
+<br>
+Better Moments.
+</h1>
+
+
+<p>
+Scan • Order • Enjoy
+</p>
+
+
+<button class="primary-btn"
+onclick="scrollMenu()">
+
+Explore Menu
+
+</button>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+<section class="categories">
+
+
+<h2>
+Categories
+</h2>
+
+
+<div class="category-box">
+
+
+<button>
+☕ Coffee
+</button>
+
+
+<button>
+🍕 Food
+</button>
+
+
+<button>
+🍰 Dessert
+</button>
+
+
+<button>
+🥤 Drinks
+</button>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+<section class="menu">
+
+
+<div class="section-title">
+
+<h2>
+🔥 Popular Items
+</h2>
+
+</div>
+
+
+<div id="menuList"
+class="menu-grid">
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<div id="cartDrawer"
+class="cart">
+
+
+<div class="cart-header">
+
+<h2>
+Your Order
+</h2>
+
+
+<button onclick="closeCart()">
+❌
+</button>
+
+</div>
+
+
+<div id="cartItems">
+
+</div>
+
+
+<div class="cart-footer">
+
+<h3>
+Total:
+₹<span id="cartTotal">
+0
+</span>
+</h3>
+
+
+<button class="primary-btn">
+Place Order
+</button>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div id="toast">
+
+</div>
+
+
+
+<script src="firebase.js"></script>
+<script src="app.js"></script>
+
+
+</body>
+</html>
