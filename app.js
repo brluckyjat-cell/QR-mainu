@@ -509,3 +509,78 @@ function placeFirebaseOrder(){
 
 
 }
+// =================================
+// PART 6C - SEND ORDER TO FIREBASE
+// =================================
+
+function sendOrderToFirebase(){
+
+    if(!cart || cart.length === 0){
+        alert("Cart empty");
+        return;
+    }
+
+
+    const order = {
+
+        customer:
+        localStorage.getItem("customerName") || "Guest",
+
+        mobile:
+        localStorage.getItem("customerMobile") || "",
+
+        table:
+        localStorage.getItem("tableNumber") || "1",
+
+
+        items:
+        cart.map(item => ({
+            name: item.name,
+            price: item.price,
+            qty: item.qty || 1
+        })),
+
+
+        total:
+        cart.reduce(
+            (sum,item)=>
+            sum + (item.price * (item.qty || 1)),
+            0
+        ),
+
+
+        status:"Pending",
+
+
+        time:
+        new Date().toISOString()
+
+    };
+
+
+
+    cafeDB.ref("orders")
+    .push(order)
+
+    .then(()=>{
+
+        alert("Order placed successfully ✅");
+
+        cart=[];
+
+        if(typeof updateCart === "function"){
+            updateCart();
+        }
+
+    })
+
+    .catch(error=>{
+
+        console.log(error);
+
+        alert("Order failed");
+
+    });
+
+
+}
