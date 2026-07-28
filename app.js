@@ -514,7 +514,7 @@ function placeFirebaseOrder(){
 // =================================
 
 function sendOrderToFirebase(){
-
+alert("Function working");
     if(!cart || cart.length === 0){
         alert("Cart empty");
         return;
