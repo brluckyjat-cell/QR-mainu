@@ -397,3 +397,115 @@ loadMenu();
 
 
 });
+
+// =================================
+// PART 6 - SEND ORDER TO FIREBASE
+// =================================
+
+
+function placeFirebaseOrder(){
+
+
+    if(cart.length === 0){
+
+        showToast("Cart is empty");
+
+        return;
+
+    }
+
+
+
+    let orderData = {
+
+
+        id: Date.now(),
+
+
+        customer:
+        localStorage.getItem("customerName") || "Guest",
+
+
+        mobile:
+        localStorage.getItem("customerMobile") || "",
+
+
+        table:
+        localStorage.getItem("tableNumber") || "1",
+
+
+        items:
+        cart.map(item => item.name).join(", "),
+
+
+        total:
+        cart.reduce(
+            (sum,item)=>sum + item.price,
+            0
+        ),
+
+
+        status:
+        "Pending",
+
+
+        time:
+        new Date().toLocaleString()
+
+
+    };
+
+
+
+
+
+    if(!window.cafeDB){
+
+
+        showToast("Firebase not connected");
+
+        return;
+
+    }
+
+
+
+
+
+    cafeDB
+    .ref("orders/" + orderData.id)
+    .set(orderData)
+
+    .then(()=>{
+
+
+        showToast(
+        "Order Sent Successfully"
+        );
+
+
+        cart=[];
+
+
+        updateCart();
+
+
+    })
+
+
+    .catch(error=>{
+
+
+        console.log(error);
+
+
+        showToast(
+        "Order Failed"
+        );
+
+
+    });
+
+
+
+}
