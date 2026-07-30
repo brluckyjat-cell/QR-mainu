@@ -1,443 +1,69 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Chai Ceremony Café | Desi Glass Chai & Bites</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☕</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<style>
-:root {
-  --brand-orange: #e06d1a;
-  --brand-dark: #1b100a;
-  --bg-cream: #f8f4ee;
-  --card-white: #ffffff;
-  --text-main: #2b1d14;
-  --text-muted: #7a6e65;
-  --veg-green: #2e7d32;
-  --success-green: #2e7d32;
-}
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  -webkit-tap-highlight-color: transparent;
-}
-body {
-  background-color: var(--bg-cream);
-  color: var(--text-main);
-  padding-bottom: 90px;
-}
 
-/* Header */
-header {
-  background-color: var(--brand-dark);
-  padding: 12px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-}
-.brand-info { display: flex; align-items: center; gap: 10px; }
-.brand-logo { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--brand-orange); object-fit: cover; }
-.brand-title h1 { color: #fff; font-size: 1.05rem; font-weight: 700; line-height: 1.1; }
-.brand-title span { color: var(--brand-orange); font-size: 0.65rem; letter-spacing: 1px; font-weight: 600; }
-.table-badge {
-  background: rgba(224, 109, 26, 0.2);
-  border: 1px solid var(--brand-orange);
-  color: var(--brand-orange);
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  white-space: nowrap;
-}
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
 
-/* Hero */
-.hero-banner {
-  background: linear-gradient(180deg, var(--brand-dark) 0%, #2e1a10 100%);
-  padding: 20px 16px 25px;
-  color: #fff;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-.hero-text { flex: 1; }
-.hero-text h2 { font-size: 1.4rem; font-weight: 800; line-height: 1.2; color: #fff; }
-.hero-text h2 span { color: var(--brand-orange); }
-.hero-text p { font-size: 0.78rem; color: #d1c5b8; margin-top: 6px; }
-.hero-img { width: 110px; height: 110px; border-radius: 15px; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border: 2px solid var(--brand-orange); }
+<title>Chaya Ceremony</title>
 
-/* Search & filters */
-.search-box { padding: 0 16px; margin-top: -18px; }
-.search-input-wrapper {
-  background: var(--card-white);
-  border: 1px solid #e0d7cd;
-  border-radius: 25px;
-  padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-.search-input-wrapper input { border: none; outline: none; width: 100%; font-size: 0.88rem; background: transparent; }
-.categories-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 15px 16px 5px; scrollbar-width: none; }
-.categories-scroll::-webkit-scrollbar { display: none; }
-.cat-pill {
-  background: #e8e0d5; border: none; padding: 8px 14px; border-radius: 18px;
-  font-size: 0.8rem; font-weight: 600; white-space: nowrap; color: var(--text-main);
-  display: flex; align-items: center; gap: 6px; cursor: pointer;
-}
-.cat-pill.active { background: var(--brand-orange); color: #fff; }
-.cat-pill:focus-visible, .add-btn:focus-visible, .view-cart-btn:focus-visible, .pay-btn:focus-visible, .qty-btn:focus-visible, .close-btn:focus-visible {
-  outline: 2px solid var(--brand-orange); outline-offset: 2px;
-}
+<link
+rel="stylesheet"
+href="style.css">
 
-/* Menu */
-.menu-section { padding: 15px 16px; }
-.section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
-.menu-list { display: flex; flex-direction: column; gap: 12px; }
-.food-item {
-  background: var(--card-white); border-radius: 14px; padding: 12px;
-  display: flex; gap: 12px; align-items: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.03); border: 1px solid #f0e9e0;
-}
-.food-img { width: 85px; height: 85px; border-radius: 10px; object-fit: cover; flex-shrink: 0; background: #f0e9e0; }
-.food-details { flex: 1; min-width: 0; }
-.veg-symbol { width: 12px; height: 12px; border: 1px solid var(--veg-green); display: flex; align-items: center; justify-content: center; border-radius: 2px; margin-bottom: 4px; }
-.veg-symbol::after { content: ''; width: 6px; height: 6px; background: var(--veg-green); border-radius: 50%; }
-.food-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 2px; }
-.food-desc { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 6px; line-height: 1.2; }
-.food-price-row { display: flex; justify-content: space-between; align-items: center; }
-.price { font-weight: 800; font-size: 0.95rem; color: var(--brand-dark); }
-.add-btn { background: #fff; border: 1px solid var(--brand-orange); color: var(--brand-orange); padding: 6px 16px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all .15s; }
-.add-btn:active, .add-btn.added { background: var(--brand-orange); color: #fff; }
-.qty-stepper { display: flex; align-items: center; gap: 10px; background: var(--brand-orange); border-radius: 8px; padding: 4px 10px; }
-.qty-stepper button { background: none; border: none; color: #fff; font-weight: 800; font-size: 0.95rem; cursor: pointer; }
-.qty-stepper span { color: #fff; font-weight: 700; font-size: 0.85rem; min-width: 14px; text-align: center; }
-.empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
-.empty-state i { font-size: 2rem; margin-bottom: 10px; color: #d9cdbf; }
+<link
+rel="preconnect"
+href="https://fonts.googleapis.com">
 
-/* Sticky cart bar */
-.sticky-cart-bar {
-  position: fixed; bottom: 0; left: 0; right: 0; background: var(--brand-dark);
-  padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
-  z-index: 200; box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
-  transform: translateY(100%); transition: transform .25s ease;
-}
-.sticky-cart-bar.visible { transform: translateY(0); }
-.cart-info { color: #fff; }
-.cart-count-text { font-size: 0.75rem; color: var(--brand-orange); font-weight: 600; }
-.cart-price-text { font-size: 1.1rem; font-weight: 800; }
-.view-cart-btn { background: var(--brand-orange); color: #fff; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+<link
+href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+rel="stylesheet">
 
-/* Cart drawer */
-.cart-drawer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 300; display: none; flex-direction: column; justify-content: flex-end; }
-.drawer-content { background: var(--bg-cream); border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 20px 16px; max-height: 85vh; overflow-y: auto; }
-.drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #e0d7cd; }
-.drawer-header h3 { font-size: 1.1rem; font-weight: 700; }
-.close-btn { font-size: 1.3rem; color: var(--text-muted); cursor: pointer; background: none; border: none; }
-.drawer-item { background: #fff; padding: 10px 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.qty-control { display: flex; align-items: center; gap: 8px; background: var(--bg-cream); padding: 4px 8px; border-radius: 6px; }
-.qty-btn { background: none; border: none; font-weight: 800; font-size: 0.9rem; color: var(--brand-orange); width: 20px; cursor: pointer; }
-.form-group { margin-top: 12px; }
-.form-group label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
-.form-input { width: 100%; padding: 10px 12px; border: 1px solid #dcd1c4; border-radius: 8px; font-size: 0.85rem; outline: none; background: #fff; }
-.form-input:focus { border-color: var(--brand-orange); }
-.field-error { color: #c0392b; font-size: 0.7rem; margin-top: 3px; display: none; }
-.pay-btn { width: 100%; background: var(--brand-orange); color: #fff; border: none; padding: 12px; border-radius: 10px; font-weight: 800; font-size: 1rem; margin-top: 15px; cursor: pointer; }
-.pay-btn:disabled { background: #d9cdbf; cursor: not-allowed; }
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
-/* Order status screen */
-.status-drawer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 400; display: none; flex-direction: column; justify-content: flex-end; }
-.status-content { background: var(--bg-cream); border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 28px 20px; text-align: center; }
-.status-icon { width: 64px; height: 64px; border-radius: 50%; background: rgba(46,125,50,0.12); color: var(--success-green); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 14px; }
-.status-content h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: 4px; }
-.status-content p { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 18px; }
-.status-steps { display: flex; justify-content: space-between; margin: 0 auto 20px; max-width: 320px; position: relative; }
-.status-steps::before { content: ''; position: absolute; top: 15px; left: 30px; right: 30px; height: 2px; background: #e0d7cd; z-index: 0; }
-.status-step { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
-.status-step .dot { width: 30px; height: 30px; border-radius: 50%; background: #e0d7cd; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; }
-.status-step.done .dot { background: var(--success-green); }
-.status-step.current .dot { background: var(--brand-orange); }
-.status-step span.label { font-size: 0.65rem; color: var(--text-muted); font-weight: 600; }
-.status-close-btn { width: 100%; background: var(--brand-dark); color: #fff; border: none; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; }
-</style>
 </head>
+
 <body>
 
-<header>
-  <div class="brand-info">
-    <img src="logo.jpg" class="brand-logo" alt="Logo" onerror="this.src='https://images.unsplash.com/photo-1561336313-0bd5e0b27ec8?auto=format&fit=crop&w=100&q=80'">
-    <div class="brand-title">
-      <h1>चाय Ceremony</h1>
-      <span>SIP • RELAX • CONNECT</span>
-    </div>
-  </div>
-  <div class="table-badge"><i class="fa-solid fa-utensils"></i> <span id="table-label">Table</span></div>
+<header id="header">
+
 </header>
 
-<div class="hero-banner">
-  <div class="hero-text">
-    <h2>Ek Glass <span>Kanch Chai</span>, Aur Baki Sab First Class!</h2>
-    <p>Kanch ke glass me kadak elaichi aur adrak chai ka asli desi swad.</p>
-  </div>
-  <img src="https://images.unsplash.com/photo-1561336313-0bd5e0b27ec8?auto=format&fit=crop&w=300&q=80" class="hero-img" alt="Cutting Chai Glass">
+<section id="hero">
+
+</section>
+
+<section id="searchSection">
+
+</section>
+
+<section id="categorySection">
+
+</section>
+
+<section id="menuContainer">
+
+</section>
+
+<div id="floatingCart">
+
 </div>
 
-<div class="search-box">
-  <div class="search-input-wrapper">
-    <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
-    <input type="text" id="search-input" placeholder="Search glass chai, bun maska, snacks..." onkeyup="renderMenu()">
-  </div>
+<div id="cartDrawer">
+
 </div>
 
-<div class="categories-scroll">
-  <button class="cat-pill active" onclick="filterCategory('All', this)"><i class="fa-solid fa-mug-hot"></i> All</button>
-  <button class="cat-pill" onclick="filterCategory('Glass Chai', this)">☕ Glass Chai</button>
-  <button class="cat-pill" onclick="filterCategory('Snacks', this)">🥪 Bun & Maska</button>
-  <button class="cat-pill" onclick="filterCategory('Cold Drinks', this)">🥤 Cold Drinks</button>
+<div id="orderSuccess">
+
 </div>
 
-<div class="menu-section">
-  <div class="section-title">
-    <span>Menu Items</span>
-    <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">100% Fresh Brew</span>
-  </div>
-  <div class="menu-list" id="menu-container"></div>
-</div>
+<script src="app.js"></script>
 
-<div class="sticky-cart-bar" id="sticky-cart-bar">
-  <div class="cart-info">
-    <div class="cart-count-text"><span id="cart-qty-count">0</span> ITEMS ADDED</div>
-    <div class="cart-price-text">₹<span id="cart-total-price">0</span></div>
-  </div>
-  <button class="view-cart-btn" onclick="openDrawer()">View Cart <i class="fa-solid fa-chevron-right"></i></button>
-</div>
-
-<div class="cart-drawer" id="cart-drawer">
-  <div class="drawer-content">
-    <div class="drawer-header">
-      <h3>Your Order Summary</h3>
-      <button class="close-btn" onclick="closeDrawer()"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div id="drawer-items-list"></div>
-    <div style="margin-top: 15px; border-top: 1px dashed #dcd1c4; padding-top: 10px;">
-      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted);">
-        <span>Item Total</span><span>₹<span id="sub-total">0</span></span>
-      </div>
-      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
-        <span>Taxes & Charges</span><span>₹<span id="tax-amount">0</span></span>
-      </div>
-      <div style="display: flex; justify-content: space-between; font-size: 1.05rem; font-weight: 800; margin-top: 8px;">
-        <span>Grand Total</span><span style="color: var(--brand-orange);">₹<span id="grand-total">0</span></span>
-      </div>
-    </div>
-
-    <form id="order-form" style="margin-top: 15px;" onsubmit="placeOrder(event)">
-      <div class="form-group">
-        <label>Your Name</label>
-        <input type="text" id="cust-name" class="form-input" placeholder="e.g. Rahul Sharma" required>
-      </div>
-      <div class="form-group">
-        <label>Mobile Number</label>
-        <input type="tel" id="cust-mobile" class="form-input" placeholder="10-digit mobile number" maxlength="10" inputmode="numeric" required>
-        <div class="field-error" id="mobile-error">Please enter a valid 10-digit mobile number</div>
-      </div>
-      <button type="submit" class="pay-btn" id="pay-btn" disabled>Place Order <i class="fa-solid fa-arrow-right"></i></button>
-    </form>
-  </div>
-</div>
-
-<div class="status-drawer" id="status-drawer">
-  <div class="status-content">
-    <div class="status-icon"><i class="fa-solid fa-check"></i></div>
-    <h3>Order Placed!</h3>
-    <p id="status-order-id">Rasoi (Kitchen) ko order bhej diya gaya hai</p>
-    <div class="status-steps" id="status-steps">
-      <div class="status-step current" data-step="1"><div class="dot"><i class="fa-solid fa-receipt"></i></div><span class="label">Placed</span></div>
-      <div class="status-step" data-step="2"><div class="dot"><i class="fa-solid fa-fire-burner"></i></div><span class="label">Preparing</span></div>
-      <div class="status-step" data-step="3"><div class="dot"><i class="fa-solid fa-mug-saucer"></i></div><span class="label">Ready</span></div>
-    </div>
-    <button class="status-close-btn" onclick="closeStatus()">Done</button>
-  </div>
-</div>
-
-<script>
-const menuData = [
-  { id: 1, name: "Cutting Kanch Glass Chai", category: "Glass Chai", price: 20, desc: "Traditional cutting chai served in authentic glass.", img: "https://images.unsplash.com/photo-1561336313-0bd5e0b27ec8?auto=format&fit=crop&w=300&q=80" },
-  { id: 2, name: "Special Ginger Elaichi Chai", category: "Glass Chai", price: 25, desc: "Brewed with fresh ginger & green cardamom.", img: "https://images.unsplash.com/photo-1571934811356-5cc531a66924?auto=format&fit=crop&w=300&q=80" },
-  { id: 3, name: "Butter Bun Maska", category: "Snacks", price: 35, desc: "Fresh soft bun filled with heavy Amul butter.", img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=300&q=80" },
-  { id: 4, name: "Desi Veg Grilled Sandwich", category: "Snacks", price: 70, desc: "Loaded with veggies, mint chutney & cheese.", img: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=300&q=80" },
-  { id: 5, name: "Cold Coffee Shake", category: "Cold Drinks", price: 80, desc: "Chilled creamy coffee topped with chocolate syrup.", img: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=300&q=80" },
-  { id: 6, name: "Masala Chaas", category: "Cold Drinks", price: 30, desc: "Spiced buttermilk with roasted jeera & mint.", img: "https://images.unsplash.com/photo-1626200435398-4b3a3f8b5b2f?auto=format&fit=crop&w=300&q=80" }
-];
-
-const TAX_FLAT = 10;
-let cart = [];
-let activeCat = "All";
-
-// Table number comes from the QR code URL, e.g. ?table=4
-const params = new URLSearchParams(window.location.search);
-const tableNo = params.get('table') || '—';
-document.getElementById('table-label').textContent = tableNo === '—' ? 'Table' : `Table #${tableNo}`;
-
-function renderMenu() {
-  const container = document.getElementById('menu-container');
-  const searchVal = document.getElementById('search-input').value.toLowerCase();
-  const filtered = menuData.filter(item => {
-    const matchCat = activeCat === "All" || item.category === activeCat;
-    const matchSearch = item.name.toLowerCase().includes(searchVal) || item.desc.toLowerCase().includes(searchVal);
-    return matchCat && matchSearch;
-  });
-
-  if (filtered.length === 0) {
-    container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-mug-hot"></i><p>Koi item nahi mila. Kuch aur search karke dekhein.</p></div>`;
-    return;
-  }
-
-  container.innerHTML = filtered.map(item => {
-    const inCart = cart.find(c => c.id === item.id);
-    const controls = inCart
-      ? `<div class="qty-stepper">
-           <button type="button" onclick="changeQty(${item.id}, -1)" aria-label="Remove one">−</button>
-           <span>${inCart.qty}</span>
-           <button type="button" onclick="changeQty(${item.id}, 1)" aria-label="Add one">+</button>
-         </div>`
-      : `<button class="add-btn" onclick="addToCart(${item.id})">+ ADD</button>`;
-    return `
-    <div class="food-item">
-      <img src="${item.img}" class="food-img" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1571934811356-5cc531a66924?auto=format&fit=crop&w=300&q=80'">
-      <div class="food-details">
-        <div class="veg-symbol"></div>
-        <div class="food-title">${item.name}</div>
-        <div class="food-desc">${item.desc}</div>
-        <div class="food-price-row">
-          <span class="price">₹${item.price}</span>
-          ${controls}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function filterCategory(cat, element) {
-  activeCat = cat;
-  document.querySelectorAll('.cat-pill').forEach(el => el.classList.remove('active'));
-  element.classList.add('active');
-  renderMenu();
-}
-
-function addToCart(id) {
-  const existing = cart.find(x => x.id === id);
-  if (existing) { existing.qty++; }
-  else { const product = menuData.find(x => x.id === id); cart.push({ ...product, qty: 1 }); }
-  updateCartUI();
-  renderMenu();
-}
-
-function changeQty(id, delta) {
-  const item = cart.find(x => x.id === id);
-  if (item) {
-    item.qty += delta;
-    if (item.qty <= 0) cart = cart.filter(x => x.id !== id);
-  }
-  updateCartUI();
-  renderMenu();
-}
-
-function updateCartUI() {
-  const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
-  const subTotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-  const tax = subTotal > 0 ? TAX_FLAT : 0;
-
-  document.getElementById('cart-qty-count').innerText = totalItems;
-  document.getElementById('cart-total-price').innerText = subTotal;
-  document.getElementById('sub-total').innerText = subTotal;
-  document.getElementById('tax-amount').innerText = tax;
-  document.getElementById('grand-total').innerText = subTotal + tax;
-
-  document.getElementById('sticky-cart-bar').classList.toggle('visible', totalItems > 0);
-  document.getElementById('pay-btn').disabled = totalItems === 0;
-
-  const list = document.getElementById('drawer-items-list');
-  if (cart.length === 0) {
-    list.innerHTML = `<p style="text-align:center; color: var(--text-muted); font-size:0.85rem; padding: 20px 0;">Cart is empty! Menu se items add karein.</p>`;
-  } else {
-    list.innerHTML = cart.map(item => `
-      <div class="drawer-item">
-        <div>
-          <div style="font-weight: 700; font-size: 0.85rem;">${item.name}</div>
-          <div style="font-size: 0.78rem; color: var(--brand-orange); font-weight:700;">₹${item.price * item.qty}</div>
-        </div>
-        <div class="qty-control">
-          <button type="button" class="qty-btn" onclick="changeQty(${item.id}, -1)" aria-label="Remove one">-</button>
-          <span style="font-size:0.8rem; font-weight:700;">${item.qty}</span>
-          <button type="button" class="qty-btn" onclick="changeQty(${item.id}, 1)" aria-label="Add one">+</button>
-        </div>
-      </div>`).join('');
-  }
-}
-
-function openDrawer() { document.getElementById('cart-drawer').style.display = 'flex'; }
-function closeDrawer() { document.getElementById('cart-drawer').style.display = 'none'; }
-
-// Mobile number live validation
-document.getElementById('cust-mobile').addEventListener('input', function () {
-  this.value = this.value.replace(/\D/g, '').slice(0, 10);
-  const valid = /^[6-9]\d{9}$/.test(this.value);
-  document.getElementById('mobile-error').style.display = (this.value.length === 10 && !valid) ? 'block' : 'none';
-});
-
-function placeOrder(e) {
-  e.preventDefault();
-  if (cart.length === 0) return;
-
-  const mobile = document.getElementById('cust-mobile').value;
-  if (!/^[6-9]\d{9}$/.test(mobile)) {
-    document.getElementById('mobile-error').style.display = 'block';
-    document.getElementById('cust-mobile').focus();
-    return;
-  }
-
-  const orderId = 'CC' + Date.now().toString().slice(-6);
-  document.getElementById('status-order-id').textContent = `Order #${orderId} — ${tableNo !== '—' ? 'Table #' + tableNo : ''} ke liye Rasoi ko bhej diya gaya hai`;
-
-  closeDrawer();
-  openStatus();
-
-  // Reset for next order
-  cart = [];
-  document.getElementById('order-form').reset();
-  updateCartUI();
-  renderMenu();
-}
-
-function openStatus() {
-  const steps = document.querySelectorAll('.status-step');
-  steps.forEach(s => s.classList.remove('done', 'current'));
-  steps[0].classList.add('current');
-  document.getElementById('status-drawer').style.display = 'flex';
-
-  // Simulated progress (replace with real backend status once orders are wired to Firebase)
-  setTimeout(() => { steps[0].classList.replace('current', 'done'); steps[1].classList.add('current'); }, 2500);
-  setTimeout(() => { steps[1].classList.replace('current', 'done'); steps[2].classList.add('current'); }, 5500);
-}
-
-function closeStatus() { document.getElementById('status-drawer').style.display = 'none'; }
-
-// Init
-renderMenu();
-updateCartUI();
-</script>
 </body>
+
 </html>
-
-
