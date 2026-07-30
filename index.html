@@ -1,991 +1,676 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-<meta name="theme-color" content="#1c130d" />
-<title>Demo Cafe — Digital Menu</title>
-<meta name="description" content="Ultra-luxury digital QR menu for Demo Cafe. Browse, customize, and order from your table." />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chai Ceremony Cafe | Sip • Relax • Connect</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0f0f0f;
+      --card-bg: #1a1a1a;
+      --accent-gold: #e5b869;
+      --accent-hover: #c49a50;
+      --text-light: #f5f5f5;
+      --text-muted: #a0a0a0;
+      --green-leaf: #556b2f;
+    }
 
-<!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com"></script>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-<!-- Firebase Compat SDK v9.22.1 -->
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      padding-bottom: 70px;
+    }
 
-<!-- Google Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    /* Navbar */
+    header {
+      background-color: #000;
+      border-bottom: 1px solid #333;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-<script>
-  tailwind.config = {
-    darkMode: 'class',
-    theme: {
-      extend: {
-        fontFamily: {
-          serif: ['"Playfair Display"', 'serif'],
-          sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
-        },
-        colors: {
-          espresso: {
-            50: '#faf6f1', 100: '#f3e9dd', 200: '#e6d0b8', 300: '#d6b189',
-            400: '#c4905d', 500: '#b6773f', 600: '#a06134', 700: '#814b2d',
-            800: '#6a3e2a', 900: '#573424', 950: '#2e1a11',
-          },
-          gold: {
-            300: '#f2d59a', 400: '#e9c273', 500: '#d9a94e', 600: '#c08e35',
-          },
-        },
-        keyframes: {
-          'cart-pop': {
-            '0%': { transform: 'scale(1)' },
-            '40%': { transform: 'scale(1.14)' },
-            '100%': { transform: 'scale(1)' },
-          },
-          'shimmer': {
-            '100%': { transform: 'translateX(100%)' },
-          },
-          'fade-up': {
-            '0%': { opacity: '0', transform: 'translateY(12px)' },
-            '100%': { opacity: '1', transform: 'translateY(0)' },
-          },
-          'slide-up': {
-            '0%': { transform: 'translateY(100%)' },
-            '100%': { transform: 'translateY(0)' },
-          },
-          'scale-in': {
-            '0%': { opacity: '0', transform: 'scale(.94)' },
-            '100%': { opacity: '1', transform: 'scale(1)' },
-          },
-        },
-        animation: {
-          'cart-pop': 'cart-pop .4s ease',
-          'fade-up': 'fade-up .45s ease both',
-          'slide-up': 'slide-up .35s cubic-bezier(.16,1,.3,1) both',
-          'scale-in': 'scale-in .3s cubic-bezier(.16,1,.3,1) both',
-        },
-      },
-    },
-  };
-</script>
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-<style>
-  :root { color-scheme: light; }
-  html.dark { color-scheme: dark; }
-  body { -webkit-tap-highlight-color: transparent; }
+    .brand img {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      border: 1px solid var(--accent-gold);
+    }
 
-  /* Gold gradient text */
-  .text-gold-gradient {
-    background: linear-gradient(100deg, #c08e35 0%, #f2d59a 45%, #e9c273 60%, #c08e35 100%);
-    -webkit-background-clip: text; background-clip: text;
-    -webkit-text-fill-color: transparent; color: transparent;
-  }
-  /* Glassmorphism header */
-  .glass {
-    backdrop-filter: saturate(160%) blur(16px);
-    -webkit-backdrop-filter: saturate(160%) blur(16px);
-  }
-  /* Gold border glow for selected items */
-  .gold-border-glow {
-    border-color: #d9a94e !important;
-    box-shadow: 0 0 0 1px #d9a94e, 0 10px 34px -10px rgba(217,169,78,.55);
-  }
-  /* Shimmer skeleton */
-  .skeleton { position: relative; overflow: hidden; }
-  .skeleton::after {
-    content: ''; position: absolute; inset: 0; transform: translateX(-100%);
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
-    animation: shimmer 1.4s infinite;
-  }
-  html.dark .skeleton::after {
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
-  }
-  .no-scrollbar::-webkit-scrollbar { display: none; }
-  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .brand-text h1 {
+      font-size: 1.1rem;
+      color: var(--accent-gold);
+      letter-spacing: 1px;
+    }
 
-  /* Toggle switch */
-  .switch-track { transition: background .3s ease; }
-  .switch-thumb { transition: transform .3s cubic-bezier(.16,1,.3,1); }
+    .brand-text span {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
 
-  /* hide number spinners */
-  input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-</style>
+    .cart-btn {
+      position: relative;
+      background: var(--accent-gold);
+      color: #000;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #e74c3c;
+      color: white;
+      font-size: 0.7rem;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Hero Banner */
+    .hero {
+      text-align: center;
+      padding: 30px 20px;
+      background: linear-gradient(180deg, rgba(229,184,105,0.08) 0%, rgba(15,15,15,1) 100%);
+      border-bottom: 1px solid #222;
+    }
+
+    .hero h2 {
+      font-size: 1.8rem;
+      color: var(--accent-gold);
+      margin-bottom: 8px;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .info-bar {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 15px;
+      font-size: 0.8rem;
+      color: var(--accent-gold);
+    }
+
+    /* Section Styling */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      color: var(--accent-gold);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Menu Controls */
+    .search-box {
+      width: 100%;
+      padding: 12px 15px;
+      background: var(--card-bg);
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      margin-bottom: 15px;
+      outline: none;
+    }
+
+    .categories {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    .cat-btn {
+      background: var(--card-bg);
+      color: var(--text-muted);
+      border: 1px solid #333;
+      padding: 8px 16px;
+      border-radius: 20px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .cat-btn.active {
+      background: var(--accent-gold);
+      color: #000;
+      font-weight: bold;
+      border-color: var(--accent-gold);
+    }
+
+    /* Menu Grid */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 15px;
+    }
+
+    .item-card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #262626;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .item-img {
+      width: 100%;
+      height: 130px;
+      object-fit: cover;
+    }
+
+    .item-details {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .item-title {
+      font-weight: bold;
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+
+    .item-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      flex-grow: 1;
+    }
+
+    .item-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 5px;
+    }
+
+    .price {
+      color: var(--accent-gold);
+      font-weight: bold;
+    }
+
+    .add-btn {
+      background: transparent;
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+      padding: 5px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .add-btn:hover {
+      background: var(--accent-gold);
+      color: #000;
+    }
+
+    /* Modal / Drawer */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .modal-content {
+      background: var(--bg-dark);
+      width: 100%;
+      max-width: 600px;
+      max-height: 85vh;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      padding: 20px;
+      overflow-y: auto;
+      border-top: 2px solid var(--accent-gold);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .close-btn {
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #222;
+    }
+
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .qty-btn {
+      background: #333;
+      color: #fff;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px;
+      background: var(--card-bg);
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: #fff;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 15px;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      background: var(--accent-gold);
+      color: #000;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    /* Tracking Stepper */
+    .tracker {
+      display: flex;
+      justify-content: space-between;
+      margin: 25px 0;
+      position: relative;
+    }
+
+    .tracker::before {
+      content: '';
+      position: absolute;
+      top: 15px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #333;
+      z-index: 1;
+    }
+
+    .step {
+      position: relative;
+      z-index: 2;
+      background: var(--bg-dark);
+      text-align: center;
+      padding: 0 5px;
+    }
+
+    .step-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #333;
+      color: #888;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 5px;
+      font-size: 0.8rem;
+    }
+
+    .step.active .step-icon {
+      background: var(--accent-gold);
+      color: #000;
+    }
+
+    .step-text {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .step.active .step-text {
+      color: var(--accent-gold);
+      font-weight: bold;
+    }
+  </style>
 </head>
+<body>
 
-<body class="bg-espresso-50 text-espresso-950 dark:bg-espresso-950 dark:text-espresso-50 font-sans antialiased transition-colors duration-300">
-
-<!-- ============ HEADER ============ -->
-<header class="glass sticky top-0 z-40 border-b border-espresso-200/60 bg-espresso-50/70 dark:border-white/10 dark:bg-espresso-950/60">
-  <div class="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3">
-    <div class="flex items-center gap-3 min-w-0">
-      <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-espresso-950 text-gold-400 ring-1 ring-gold-500/40 dark:bg-espresso-900">
-        <span class="font-serif text-lg font-bold">D</span>
-      </div>
-      <div class="leading-tight min-w-0">
-        <h1 class="font-serif text-lg font-bold text-gold-gradient truncate">Demo Cafe</h1>
-        <p class="text-[11px] font-medium text-espresso-500 dark:text-espresso-300">
-          Table <span id="tableBadge" class="font-bold text-espresso-800 dark:text-gold-300">1</span> · Dine-in
-        </p>
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <img src="logo.jpg" alt="Chai Ceremony Logo">
+      <div class="brand-text">
+        <h1>चाय CEREMONY</h1>
+        <span>Sip • Relax • Connect</span>
       </div>
     </div>
-
-    <div class="flex items-center gap-1.5">
-      <!-- Waiter call -->
-      <button id="waiterBtn" title="Call waiter"
-        class="flex h-9 items-center gap-1.5 rounded-full border border-espresso-300/70 bg-white/70 px-3 text-sm font-semibold text-espresso-800 transition hover:border-gold-500 hover:text-espresso-950 active:scale-95 dark:border-white/10 dark:bg-white/5 dark:text-espresso-100">
-        <span class="text-base leading-none">🔔</span>
-        <span class="hidden sm:inline" id="waiterLabel">Waiter</span>
-      </button>
-      <!-- History -->
-      <button id="historyBtn" title="Order history" aria-label="Order history"
-        class="grid size-9 place-items-center rounded-full border border-espresso-300/70 bg-white/70 text-base transition hover:border-gold-500 active:scale-95 dark:border-white/10 dark:bg-white/5">📜</button>
-      <!-- Theme toggle -->
-      <button id="themeBtn" title="Toggle theme" aria-label="Toggle dark mode"
-        class="grid size-9 place-items-center rounded-full border border-espresso-300/70 bg-white/70 text-base transition hover:border-gold-500 active:scale-95 dark:border-white/10 dark:bg-white/5">
-        <span id="themeIcon">🌙</span>
-      </button>
-    </div>
-  </div>
-</header>
-
-<!-- ============ HERO / SEARCH / CONTROLS ============ -->
-<div class="mx-auto max-w-5xl px-4 pt-5">
-  <div class="mb-4">
-    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-gold-600 dark:text-gold-400">Est. 2024 · Fine Coffee & Kitchen</p>
-    <h2 class="mt-1 font-serif text-2xl font-bold leading-tight text-espresso-950 dark:text-espresso-50 sm:text-3xl text-balance">
-      A curated menu, crafted for <span class="text-gold-gradient">your table</span>
-    </h2>
-  </div>
-
-  <!-- Search -->
-  <div class="relative">
-    <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-espresso-400">🔍</span>
-    <input id="searchInput" type="search" inputmode="search" placeholder="Search dishes, drinks, desserts…"
-      class="w-full rounded-2xl border border-espresso-200 bg-white py-3.5 pl-11 pr-24 text-sm font-medium text-espresso-950 shadow-sm outline-none ring-gold-500/30 transition placeholder:text-espresso-400 focus:border-gold-500 focus:ring-2 dark:border-white/10 dark:bg-espresso-900 dark:text-espresso-50" />
-    <span id="resultCount" class="absolute right-11 top-1/2 hidden -translate-y-1/2 rounded-full bg-espresso-100 px-2 py-0.5 text-[11px] font-bold text-espresso-600 dark:bg-white/10 dark:text-espresso-200"></span>
-    <button id="clearSearch" aria-label="Clear search"
-      class="absolute right-3 top-1/2 hidden size-6 -translate-y-1/2 place-items-center rounded-full bg-espresso-100 text-espresso-600 transition hover:bg-espresso-200 dark:bg-white/10 dark:text-espresso-200">✕</button>
-  </div>
-
-  <!-- Controls row -->
-  <div class="mt-3 flex items-center justify-between gap-3">
-    <!-- Veg toggle -->
-    <button id="vegToggle"
-      class="flex items-center gap-2 rounded-full border border-espresso-200 bg-white px-3 py-2 text-xs font-semibold text-espresso-700 transition dark:border-white/10 dark:bg-espresso-900 dark:text-espresso-200">
-      <span class="grid size-4 place-items-center rounded-sm border-2 border-green-600">
-        <span class="size-1.5 rounded-full bg-green-600"></span>
-      </span>
-      Veg only
+    <button class="cart-btn" onclick="openCart()">
+      <i class="fa-solid fa-cart-shopping"></i>
+      <span class="cart-badge" id="cart-count">0</span>
     </button>
+  </header>
 
-    <!-- Layout switch -->
-    <div class="flex items-center rounded-full border border-espresso-200 bg-white p-1 dark:border-white/10 dark:bg-espresso-900">
-      <button id="gridViewBtn" title="Grid view" aria-label="Grid view"
-        class="grid size-8 place-items-center rounded-full text-sm transition">🔲</button>
-      <button id="listViewBtn" title="List view" aria-label="List view"
-        class="grid size-8 place-items-center rounded-full text-sm transition">☰</button>
+  <!-- Hero Section -->
+  <section class="hero">
+    <h2>Welcome to Chai Ceremony Cafe</h2>
+    <p>Freshly brewed teas, hot coffee & delicious bites.</p>
+    <div class="info-bar">
+      <span><i class="fa-regular fa-clock"></i> 9:00 AM - 10:00 PM</span>
+      <span><i class="fa-solid fa-location-dot"></i> Jaipur</span>
     </div>
+  </section>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="section-title"><i class="fa-solid fa-utensils"></i> Our Menu</div>
+    
+    <input type="text" id="search-input" class="search-box" placeholder="Search tea, snacks, coffee..." onkeyup="filterMenu()">
+
+    <div class="categories">
+      <button class="cat-btn active" onclick="filterCategory('All', this)">All</button>
+      <button class="cat-btn" onclick="filterCategory('Tea', this)">Special Tea</button>
+      <button class="cat-btn" onclick="filterCategory('Coffee', this)">Coffee</button>
+      <button class="cat-btn" onclick="filterCategory('Snacks', this)">Snacks</button>
+    </div>
+
+    <div class="menu-grid" id="menu-container"></div>
   </div>
 
-  <!-- Category chips -->
-  <div id="categoryChips" class="no-scrollbar mt-4 flex gap-2 overflow-x-auto pb-1"></div>
-</div>
-
-<!-- ============ MENU GRID ============ -->
-<main class="mx-auto max-w-5xl px-4 pb-40 pt-4">
-  <div id="menuContainer" class="grid grid-cols-2 gap-3"></div>
-  <div id="emptyState" class="hidden py-20 text-center">
-    <div class="mx-auto mb-3 grid size-16 place-items-center rounded-full bg-espresso-100 text-3xl dark:bg-white/5">🍽️</div>
-    <p class="font-serif text-xl font-semibold">No dishes found</p>
-    <p class="mt-1 text-sm text-espresso-500 dark:text-espresso-300">Try a different search or category.</p>
-  </div>
-</main>
-
-<!-- ============ FLOATING CART BAR ============ -->
-<div id="cartBar" class="fixed inset-x-0 bottom-0 z-40 hidden px-3 pb-3">
-  <button id="openCart" class="glass mx-auto flex w-full max-w-5xl items-center justify-between gap-3 rounded-2xl bg-espresso-950/95 px-4 py-3.5 text-left text-white shadow-2xl ring-1 ring-gold-500/40 transition active:scale-[.99] dark:bg-espresso-900/95">
-    <div class="flex items-center gap-3">
-      <span id="cartCount" class="grid size-9 place-items-center rounded-full bg-gold-500 text-sm font-bold text-espresso-950">0</span>
-      <div class="leading-tight">
-        <p class="text-[11px] font-medium text-gold-300">View your order</p>
-        <p id="cartItemsLabel" class="text-sm font-semibold">0 items</p>
+  <!-- Cart / Checkout Modal -->
+  <div class="modal" id="cart-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Your Order</h3>
+        <span class="close-btn" onclick="closeCart()">&times;</span>
       </div>
-    </div>
-    <div class="flex items-center gap-2">
-      <span id="cartTotal" class="font-serif text-lg font-bold text-gold-gradient">₹0</span>
-      <span class="text-gold-400">→</span>
-    </div>
-  </button>
-</div>
 
-<!-- ============ WELCOME / LOGIN MODAL ============ -->
-<div id="welcomeModal" class="fixed inset-0 z-[60] hidden items-end justify-center bg-espresso-950/70 backdrop-blur-sm sm:items-center">
-  <div class="w-full max-w-md animate-slide-up rounded-t-3xl bg-white p-6 shadow-2xl dark:bg-espresso-900 sm:animate-scale-in sm:rounded-3xl">
-    <div class="mb-5 text-center">
-      <div class="mx-auto mb-3 grid size-14 place-items-center rounded-2xl bg-espresso-950 text-2xl text-gold-400 ring-1 ring-gold-500/40">☕</div>
-      <h2 class="font-serif text-2xl font-bold text-gold-gradient">Welcome to Demo Cafe</h2>
-      <p class="mt-1 text-sm text-espresso-500 dark:text-espresso-300">Tell us who you are to begin your order.</p>
-    </div>
-    <form id="welcomeForm" class="space-y-3">
-      <div>
-        <label class="mb-1 block text-xs font-semibold text-espresso-600 dark:text-espresso-300">Your name</label>
-        <input id="custName" required type="text" autocomplete="name" placeholder="e.g. Aarav Sharma"
-          class="w-full rounded-xl border border-espresso-200 bg-espresso-50 px-4 py-3 text-sm font-medium outline-none ring-gold-500/30 focus:border-gold-500 focus:ring-2 dark:border-white/10 dark:bg-espresso-950" />
+      <div id="cart-items-list"></div>
+      
+      <div style="margin-top: 15px; font-weight: bold; font-size: 1.1rem; text-align: right;">
+        Total: ₹<span id="cart-total">0</span>
       </div>
-      <div>
-        <label class="mb-1 block text-xs font-semibold text-espresso-600 dark:text-espresso-300">Mobile number</label>
-        <input id="custMobile" required type="tel" inputmode="numeric" maxlength="10" autocomplete="tel" placeholder="10-digit number"
-          class="w-full rounded-xl border border-espresso-200 bg-espresso-50 px-4 py-3 text-sm font-medium outline-none ring-gold-500/30 focus:border-gold-500 focus:ring-2 dark:border-white/10 dark:bg-espresso-950" />
-      </div>
-      <button type="submit"
-        class="mt-2 w-full rounded-xl bg-espresso-950 py-3.5 text-sm font-bold text-gold-300 shadow-lg ring-1 ring-gold-500/40 transition hover:bg-espresso-900 active:scale-[.98] dark:bg-gold-500 dark:text-espresso-950">
-        Explore the Menu →
-      </button>
-    </form>
-  </div>
-</div>
 
-<!-- ============ ITEM CUSTOMIZATION MODAL ============ -->
-<div id="itemModal" class="fixed inset-0 z-[60] hidden items-end justify-center bg-espresso-950/70 backdrop-blur-sm sm:items-center">
-  <div class="flex max-h-[90vh] w-full max-w-md animate-slide-up flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl dark:bg-espresso-900 sm:animate-scale-in sm:rounded-3xl">
-    <div id="itemModalImg" class="relative h-44 shrink-0 bg-espresso-100">
-      <button id="closeItemModal" aria-label="Close" class="glass absolute right-3 top-3 grid size-9 place-items-center rounded-full bg-black/30 text-white transition hover:bg-black/50">✕</button>
-    </div>
-    <div class="flex-1 overflow-y-auto p-5">
-      <div class="flex items-start justify-between gap-3">
-        <div>
-          <h3 id="itemModalName" class="font-serif text-xl font-bold"></h3>
-          <p id="itemModalDesc" class="mt-1 text-sm text-espresso-500 dark:text-espresso-300"></p>
+      <hr style="border-color: #333; margin: 15px 0;">
+
+      <h4>Checkout Details</h4>
+      <form id="checkout-form" onsubmit="handleCheckout(event)" style="margin-top: 10px;">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" class="form-input" id="cust-name" required placeholder="Enter your name">
         </div>
-        <span id="itemModalPrice" class="whitespace-nowrap font-serif text-xl font-bold text-gold-gradient"></span>
-      </div>
-      <div id="addonsWrap" class="mt-5">
-        <p class="mb-2 text-xs font-bold uppercase tracking-wider text-espresso-500 dark:text-espresso-300">Customize your order</p>
-        <div id="addonsList" class="space-y-2"></div>
-      </div>
-    </div>
-    <div class="border-t border-espresso-100 p-4 dark:border-white/10">
-      <button id="modalAddBtn"
-        class="flex w-full items-center justify-between rounded-xl bg-espresso-950 px-5 py-3.5 text-sm font-bold text-gold-300 shadow-lg ring-1 ring-gold-500/40 transition active:scale-[.98] dark:bg-gold-500 dark:text-espresso-950">
-        <span>Add to Order</span>
-        <span id="modalAddPrice"></span>
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ============ CART DRAWER ============ -->
-<div id="cartDrawer" class="fixed inset-0 z-[60] hidden items-end justify-center bg-espresso-950/70 backdrop-blur-sm sm:items-center">
-  <div class="flex max-h-[92vh] w-full max-w-md animate-slide-up flex-col overflow-hidden rounded-t-3xl bg-espresso-50 shadow-2xl dark:bg-espresso-950 sm:animate-scale-in sm:rounded-3xl">
-    <div class="flex shrink-0 items-center justify-between border-b border-espresso-200 px-5 py-4 dark:border-white/10">
-      <h3 class="font-serif text-xl font-bold">Your Order</h3>
-      <button id="closeCart" aria-label="Close" class="grid size-8 place-items-center rounded-full bg-espresso-100 text-espresso-600 dark:bg-white/10 dark:text-espresso-200">✕</button>
-    </div>
-
-    <div class="flex-1 overflow-y-auto px-5 py-4">
-      <!-- Order type -->
-      <div class="mb-4 flex rounded-xl border border-espresso-200 bg-white p-1 dark:border-white/10 dark:bg-espresso-900">
-        <button data-ordertype="dinein" class="orderTypeBtn flex-1 rounded-lg py-2 text-sm font-semibold transition">🍽️ Dine-In</button>
-        <button data-ordertype="takeaway" class="orderTypeBtn flex-1 rounded-lg py-2 text-sm font-semibold transition">🥡 Takeaway</button>
-      </div>
-
-      <div id="cartItems" class="space-y-3"></div>
-
-      <!-- Promo -->
-      <div class="mt-5">
-        <label class="mb-1 block text-xs font-semibold text-espresso-600 dark:text-espresso-300">Promo code</label>
-        <div class="flex gap-2">
-          <input id="promoInput" type="text" placeholder="e.g. WELCOME10"
-            class="flex-1 rounded-xl border border-espresso-200 bg-white px-3 py-2.5 text-sm font-medium uppercase outline-none ring-gold-500/30 focus:border-gold-500 focus:ring-2 dark:border-white/10 dark:bg-espresso-900" />
-          <button id="applyPromo" class="rounded-xl bg-espresso-950 px-4 py-2.5 text-sm font-bold text-gold-300 dark:bg-gold-500 dark:text-espresso-950">Apply</button>
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="tel" class="form-input" id="cust-phone" required placeholder="Enter 10-digit number">
         </div>
-        <p id="promoMsg" class="mt-1 hidden text-xs font-semibold"></p>
-      </div>
-
-      <!-- Notes -->
-      <div class="mt-4">
-        <label class="mb-1 block text-xs font-semibold text-espresso-600 dark:text-espresso-300">🧑‍🍳 Cooking notes for the kitchen</label>
-        <textarea id="notesInput" rows="2" placeholder="e.g. Less spicy, no onions…"
-          class="w-full resize-none rounded-xl border border-espresso-200 bg-white px-3 py-2.5 text-sm outline-none ring-gold-500/30 focus:border-gold-500 focus:ring-2 dark:border-white/10 dark:bg-espresso-900"></textarea>
-      </div>
-    </div>
-
-    <!-- Totals + checkout -->
-    <div class="shrink-0 border-t border-espresso-200 bg-white px-5 py-4 dark:border-white/10 dark:bg-espresso-900">
-      <div class="space-y-1.5 text-sm">
-        <div class="flex justify-between text-espresso-600 dark:text-espresso-300"><span>Subtotal</span><span id="sumSubtotal">₹0</span></div>
-        <div id="discountRow" class="hidden justify-between font-semibold text-green-600"><span>Discount</span><span id="sumDiscount">−₹0</span></div>
-        <div class="flex justify-between border-t border-dashed border-espresso-200 pt-2 dark:border-white/10">
-          <span class="font-serif text-base font-bold">Grand Total</span>
-          <span id="sumTotal" class="font-serif text-lg font-bold text-gold-gradient">₹0</span>
-        </div>
-      </div>
-      <button id="placeOrder"
-        class="mt-3 w-full rounded-xl bg-espresso-950 py-3.5 text-sm font-bold text-gold-300 shadow-lg ring-1 ring-gold-500/40 transition active:scale-[.98] dark:bg-gold-500 dark:text-espresso-950">
-        Place Order →
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ============ HISTORY DRAWER ============ -->
-<div id="historyDrawer" class="fixed inset-0 z-[60] hidden items-end justify-center bg-espresso-950/70 backdrop-blur-sm sm:items-center">
-  <div class="flex max-h-[85vh] w-full max-w-md animate-slide-up flex-col overflow-hidden rounded-t-3xl bg-espresso-50 shadow-2xl dark:bg-espresso-950 sm:animate-scale-in sm:rounded-3xl">
-    <div class="flex shrink-0 items-center justify-between border-b border-espresso-200 px-5 py-4 dark:border-white/10">
-      <h3 class="font-serif text-xl font-bold">📜 Order History</h3>
-      <button id="closeHistory" aria-label="Close" class="grid size-8 place-items-center rounded-full bg-espresso-100 text-espresso-600 dark:bg-white/10 dark:text-espresso-200">✕</button>
-    </div>
-    <div id="historyList" class="flex-1 overflow-y-auto px-5 py-4"></div>
-  </div>
-</div>
-
-<!-- ============ ORDER STATUS MODAL ============ -->
-<div id="statusModal" class="fixed inset-0 z-[70] hidden items-end justify-center bg-espresso-950/70 backdrop-blur-sm sm:items-center">
-  <div class="w-full max-w-md animate-slide-up overflow-hidden rounded-t-3xl bg-white shadow-2xl dark:bg-espresso-900 sm:animate-scale-in sm:rounded-3xl">
-    <div class="bg-espresso-950 px-6 py-6 text-center text-white dark:bg-espresso-950">
-      <div class="mx-auto mb-2 grid size-14 place-items-center rounded-full bg-gold-500/20 text-3xl">✅</div>
-      <h3 class="font-serif text-2xl font-bold text-gold-gradient">Order Confirmed!</h3>
-      <p class="mt-1 text-sm text-espresso-200">Order <span id="statusOrderId" class="font-bold text-gold-300"></span></p>
-      <div class="mt-2 flex items-center justify-center gap-2">
-        <span id="statusType" class="rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-gold-300"></span>
-        <span id="statusAmount" class="rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-gold-300"></span>
-      </div>
-    </div>
-    <div class="p-6">
-      <div class="mb-2 flex items-center justify-between text-xs font-semibold text-espresso-500 dark:text-espresso-300">
-        <span>Preparing your order</span><span id="progressPct">10%</span>
-      </div>
-      <div class="h-2.5 overflow-hidden rounded-full bg-espresso-100 dark:bg-white/10">
-        <div id="progressBar" class="h-full rounded-full bg-gradient-to-r from-espresso-600 to-gold-500 transition-all duration-700" style="width:10%"></div>
-      </div>
-      <p id="statusStage" class="mt-2 text-center text-sm font-medium text-espresso-600 dark:text-espresso-300">Order received 👨‍🍳</p>
-
-      <div class="mt-6 text-center">
-        <p class="text-xs font-semibold uppercase tracking-wider text-espresso-500 dark:text-espresso-300">Rate your experience</p>
-        <div id="starRating" class="mt-2 flex justify-center gap-1 text-3xl"></div>
-      </div>
-
-      <button id="closeStatus"
-        class="mt-6 w-full rounded-xl border border-espresso-200 py-3 text-sm font-bold text-espresso-700 transition hover:bg-espresso-50 dark:border-white/10 dark:text-espresso-200 dark:hover:bg-white/5">
-        Back to Menu
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ============ TOAST ============ -->
-<div id="toast" class="glass pointer-events-none fixed left-1/2 top-20 z-[80] hidden -translate-x-1/2 rounded-full bg-espresso-950/95 px-5 py-2.5 text-sm font-semibold text-white shadow-xl ring-1 ring-gold-500/40"></div>
-
-<script>
-/* ============================================================
-   DEMO CAFE — Ultra Luxury QR Menu
-   ============================================================ */
-
-/* ---------- 0. FIREBASE CONFIG ----------
-   Replace the placeholder values below with your Firebase
-   project's Realtime Database credentials. The app degrades
-   gracefully to a local demo mode if Firebase is unavailable. */
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-  projectId: "YOUR_PROJECT",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID",
-};
-
-let db = null, dbAvailable = false;
-try {
-  if (firebaseConfig.databaseURL && !firebaseConfig.databaseURL.includes("YOUR_PROJECT")) {
-    firebase.initializeApp(firebaseConfig);
-    db = firebase.database();
-    dbAvailable = true;
-  }
-} catch (e) { console.warn("[v0] Firebase init skipped:", e.message); }
-
-/* ---------- 1. STATE ---------- */
-const params = new URLSearchParams(location.search);
-const tableNo = params.get("table") || "1";
-document.getElementById("tableBadge").textContent = tableNo;
-
-const LS = {
-  customer: "dc_customer",
-  theme: "dc_theme",
-  view: "dc_view",
-  history: "dc_history",
-};
-
-const state = {
-  customer: JSON.parse(localStorage.getItem(LS.customer) || "null"),
-  view: localStorage.getItem(LS.view) || "grid",
-  category: "all",
-  search: "",
-  vegOnly: false,
-  orderType: "dinein",
-  cart: {},              // id -> { item, qty, addons:[] }
-  promo: null,           // { code, pct }
-  loading: true,
-};
-
-/* ---------- 2. MENU DATA ---------- */
-const CATEGORIES = [
-  { id: "all", label: "All Items", icon: "✨" },
-  { id: "coffees", label: "Coffees", icon: "☕" },
-  { id: "pizzas", label: "Pizzas", icon: "🍕" },
-  { id: "burgers", label: "Burgers", icon: "🍔" },
-  { id: "desserts", label: "Desserts", icon: "🍰" },
-];
-
-const ADDONS = {
-  coffees: [{ name: "Oat Milk", price: 40 }, { name: "Extra Shot", price: 60 }, { name: "Vanilla Syrup", price: 35 }],
-  pizzas: [{ name: "Extra Cheese", price: 80 }, { name: "Stuffed Crust", price: 120 }, { name: "Jalapeños", price: 45 }],
-  burgers: [{ name: "Extra Patty", price: 110 }, { name: "Cheese Slice", price: 40 }, { name: "Loaded Fries", price: 90 }],
-  desserts: [{ name: "Ice Cream Scoop", price: 60 }, { name: "Choco Drizzle", price: 30 }],
-};
-
-const MENU = [
-  { id: "c1", cat: "coffees", name: "Signature Espresso", price: 180, veg: true, grad: "from-amber-700 to-espresso-900", emoji: "☕", desc: "A bold double shot with a velvety crema, sourced from single-origin beans." },
-  { id: "c2", cat: "coffees", name: "Golden Cappuccino", price: 220, veg: true, grad: "from-amber-500 to-amber-800", emoji: "☕", desc: "Silky steamed milk over rich espresso, dusted with 24k-inspired cocoa gold." },
-  { id: "c3", cat: "coffees", name: "Caramel Cold Brew", price: 260, veg: true, grad: "from-yellow-700 to-espresso-950", emoji: "🧋", desc: "Slow-steeped 18 hours, finished with house caramel and cream." },
-  { id: "c4", cat: "coffees", name: "Hazelnut Latte", price: 240, veg: true, grad: "from-amber-600 to-espresso-800", emoji: "☕", desc: "Smooth espresso, roasted hazelnut and micro-foam artistry." },
-  { id: "p1", cat: "pizzas", name: "Truffle Margherita", price: 420, veg: true, grad: "from-red-600 to-orange-700", emoji: "🍕", desc: "San Marzano tomato, fresh mozzarella, basil and a whisper of truffle oil." },
-  { id: "p2", cat: "pizzas", name: "Smoky BBQ Chicken", price: 480, veg: false, grad: "from-orange-700 to-red-800", emoji: "🍕", desc: "Char-grilled chicken, smoked BBQ glaze, red onion and mozzarella." },
-  { id: "p3", cat: "pizzas", name: "Quattro Formaggi", price: 460, veg: true, grad: "from-yellow-600 to-amber-800", emoji: "🍕", desc: "Four-cheese indulgence: mozzarella, gorgonzola, parmesan and fontina." },
-  { id: "b1", cat: "burgers", name: "Wagyu Gold Burger", price: 520, veg: false, grad: "from-amber-800 to-espresso-950", emoji: "🍔", desc: "Premium wagyu patty, caramelized onion, aged cheddar and truffle aioli." },
-  { id: "b2", cat: "burgers", name: "Paneer Tikka Burger", price: 360, veg: true, grad: "from-orange-600 to-red-700", emoji: "🍔", desc: "Spiced grilled paneer, mint chutney and crisp slaw in a brioche bun." },
-  { id: "b3", cat: "burgers", name: "Crispy Chicken Deluxe", price: 400, veg: false, grad: "from-yellow-700 to-orange-800", emoji: "🍔", desc: "Buttermilk-fried chicken, pickles and smoky mayo." },
-  { id: "d1", cat: "desserts", name: "Molten Choco Lava", price: 280, veg: true, grad: "from-espresso-800 to-espresso-950", emoji: "🍫", desc: "Warm dark-chocolate cake with a flowing molten centre." },
-  { id: "d2", cat: "desserts", name: "Classic Tiramisu", price: 300, veg: true, grad: "from-amber-600 to-espresso-900", emoji: "🍰", desc: "Espresso-soaked ladyfingers layered with mascarpone cream." },
-  { id: "d3", cat: "desserts", name: "Berry Cheesecake", price: 320, veg: true, grad: "from-rose-500 to-red-700", emoji: "🍰", desc: "New York-style cheesecake crowned with a wild-berry compote." },
-];
-
-/* ---------- 3. AUDIO (single shared context) ---------- */
-let audioCtx = null;
-function getAudioCtx() {
-  if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
-  if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
-  return audioCtx;
-}
-function playTone({ freq = 880, dur = 0.15, type = "sine", vol = 0.18, when = 0 }) {
-  const ctx = getAudioCtx(); if (!ctx) return;
-  const t = ctx.currentTime + when;
-  const osc = ctx.createOscillator(), gain = ctx.createGain();
-  osc.type = type; osc.frequency.setValueAtTime(freq, t);
-  gain.gain.setValueAtTime(0, t);
-  gain.gain.linearRampToValueAtTime(vol, t + 0.02);
-  gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-  osc.connect(gain); gain.connect(ctx.destination);
-  osc.start(t); osc.stop(t + dur + 0.02);
-}
-function popSound() { playTone({ freq: 660, dur: 0.09, type: "triangle", vol: 0.14 }); }
-function bellSound() {
-  playTone({ freq: 1320, dur: 0.5, type: "sine", vol: 0.2, when: 0 });
-  playTone({ freq: 1760, dur: 0.6, type: "sine", vol: 0.12, when: 0.06 });
-  playTone({ freq: 990, dur: 0.7, type: "sine", vol: 0.1, when: 0.12 });
-}
-
-/* ---------- 4. HELPERS ---------- */
-const $ = (id) => document.getElementById(id);
-const rupee = (n) => "₹" + Math.round(n).toLocaleString("en-IN");
-function toast(msg) {
-  const t = $("toast"); t.textContent = msg; t.classList.remove("hidden");
-  clearTimeout(t._t); t._t = setTimeout(() => t.classList.add("hidden"), 2000);
-}
-
-/* ---------- 5. THEME ---------- */
-function applyTheme(theme) {
-  const dark = theme === "dark";
-  document.documentElement.classList.toggle("dark", dark);
-  $("themeIcon").textContent = dark ? "☀️" : "🌙";
-  document.querySelector('meta[name=theme-color]').setAttribute("content", dark ? "#2e1a11" : "#faf6f1");
-  localStorage.setItem(LS.theme, theme);
-}
-(function initTheme() {
-  const saved = localStorage.getItem(LS.theme);
-  const prefers = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-  applyTheme(saved || prefers);
-})();
-$("themeBtn").addEventListener("click", () =>
-  applyTheme(document.documentElement.classList.contains("dark") ? "light" : "dark"));
-
-/* ---------- 6. WELCOME / SESSION ---------- */
-function openWelcome() { $("welcomeModal").classList.remove("hidden"); $("welcomeModal").classList.add("flex"); }
-function closeWelcome() { $("welcomeModal").classList.add("hidden"); $("welcomeModal").classList.remove("flex"); }
-$("welcomeForm").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const name = $("custName").value.trim();
-  const mobile = $("custMobile").value.trim();
-  if (!name || mobile.length < 10) { toast("Please enter valid details"); return; }
-  state.customer = { name, mobile };
-  localStorage.setItem(LS.customer, JSON.stringify(state.customer));
-  getAudioCtx();
-  closeWelcome();
-  toast("Welcome, " + name.split(" ")[0] + " 👋");
-});
-$("custMobile").addEventListener("input", (e) => { e.target.value = e.target.value.replace(/\D/g, "").slice(0, 10); });
-
-/* ---------- 7. RENDER: CATEGORIES ---------- */
-function renderCategories() {
-  $("categoryChips").innerHTML = CATEGORIES.map((c) => {
-    const active = state.category === c.id;
-    return `<button data-cat="${c.id}" class="cat-chip shrink-0 rounded-full border px-4 py-2 text-sm font-semibold transition ${
-      active
-        ? "border-gold-500 bg-espresso-950 text-gold-300 dark:bg-gold-500 dark:text-espresso-950"
-        : "border-espresso-200 bg-white text-espresso-700 hover:border-gold-400 dark:border-white/10 dark:bg-espresso-900 dark:text-espresso-200"
-    }">${c.icon} ${c.label}</button>`;
-  }).join("");
-  document.querySelectorAll(".cat-chip").forEach((b) =>
-    b.addEventListener("click", () => { state.category = b.dataset.cat; renderCategories(); renderMenu(); }));
-}
-
-/* ---------- 8. RENDER: SKELETON ---------- */
-function renderSkeleton() {
-  const grid = state.view === "grid";
-  $("menuContainer").className = grid ? "grid grid-cols-2 gap-3" : "flex flex-col gap-3";
-  $("menuContainer").innerHTML = Array.from({ length: 6 }).map(() => `
-    <div class="skeleton overflow-hidden rounded-2xl border border-espresso-200 bg-white dark:border-white/10 dark:bg-espresso-900 ${grid ? "" : "flex"}">
-      <div class="${grid ? "h-32" : "size-24 shrink-0"} bg-espresso-100 dark:bg-white/5"></div>
-      <div class="flex-1 space-y-2 p-3">
-        <div class="h-3 w-3/4 rounded bg-espresso-100 dark:bg-white/5"></div>
-        <div class="h-3 w-1/2 rounded bg-espresso-100 dark:bg-white/5"></div>
-        <div class="h-6 w-full rounded bg-espresso-100 dark:bg-white/5"></div>
-      </div>
-    </div>`).join("");
-}
-
-/* ---------- 9. RENDER: MENU ---------- */
-function getFiltered() {
-  return MENU.filter((m) => {
-    if (state.category !== "all" && m.cat !== state.category) return false;
-    if (state.vegOnly && !m.veg) return false;
-    if (state.search && !(m.name + " " + m.desc).toLowerCase().includes(state.search.toLowerCase())) return false;
-    return true;
-  });
-}
-function cartQty(id) { return state.cart[id] ? state.cart[id].qty : 0; }
-
-function renderMenu() {
-  if (state.loading) return;
-  const grid = state.view === "grid";
-  const items = getFiltered();
-  const container = $("menuContainer");
-
-  // result count badge
-  const rc = $("resultCount");
-  if (state.search) { rc.textContent = items.length + " found"; rc.classList.remove("hidden"); }
-  else rc.classList.add("hidden");
-
-  $("emptyState").classList.toggle("hidden", items.length !== 0);
-  container.className = grid ? "grid grid-cols-2 gap-3" : "flex flex-col gap-3";
-
-  container.innerHTML = items.map((m, i) => {
-    const qty = cartQty(m.id);
-    const selected = qty > 0;
-    const vegDot = `<span class="grid size-3.5 place-items-center rounded-[3px] border ${m.veg ? "border-green-600" : "border-red-600"} bg-white"><span class="size-1.5 rounded-full ${m.veg ? "bg-green-600" : "bg-red-600"}"></span></span>`;
-    const photo = `<div class="relative bg-gradient-to-br ${m.grad} ${grid ? "h-32" : "size-24 shrink-0 rounded-xl"} grid place-items-center overflow-hidden">
-        <span class="text-4xl drop-shadow-lg">${m.emoji}</span>
-        ${selected ? `<span class="absolute left-2 top-2 rounded-full bg-espresso-950/85 px-2 py-0.5 text-[10px] font-bold text-gold-300 ring-1 ring-gold-500/40">✨ ${qty} Selected</span>` : ""}
-      </div>`;
-    const btn = `<button data-add="${m.id}" class="add-btn mt-2 flex w-full items-center justify-center gap-1 rounded-lg py-2 text-xs font-bold transition active:scale-95 ${
-      selected ? "bg-gold-500 text-espresso-950" : "bg-espresso-950 text-gold-300 dark:bg-espresso-800 dark:text-gold-300"
-    }">${selected ? qty + " in Cart +" : "Add to Order +"}</button>`;
-
-    if (grid) {
-      return `<article data-open="${m.id}" style="animation-delay:${i * 35}ms" class="animate-fade-up cursor-pointer overflow-hidden rounded-2xl border bg-white p-0 shadow-sm transition hover:shadow-md dark:bg-espresso-900 ${selected ? "gold-border-glow" : "border-espresso-200 dark:border-white/10"}">
-        ${photo}
-        <div class="p-3">
-          <div class="flex items-center gap-1.5">${vegDot}<h3 class="truncate font-serif text-sm font-bold leading-tight">${m.name}</h3></div>
-          <p class="mt-0.5 line-clamp-2 text-[11px] leading-snug text-espresso-500 dark:text-espresso-300">${m.desc}</p>
-          <div class="mt-1.5 font-serif text-base font-bold text-gold-gradient">${rupee(m.price)}</div>
-          ${btn}
-        </div>
-      </article>`;
-    }
-    return `<article data-open="${m.id}" style="animation-delay:${i * 35}ms" class="animate-fade-up flex cursor-pointer gap-3 rounded-2xl border bg-white p-3 shadow-sm transition hover:shadow-md dark:bg-espresso-900 ${selected ? "gold-border-glow" : "border-espresso-200 dark:border-white/10"}">
-      ${photo}
-      <div class="flex min-w-0 flex-1 flex-col">
-        <div class="flex items-center gap-1.5">${vegDot}<h3 class="truncate font-serif text-sm font-bold">${m.name}</h3></div>
-        <p class="mt-0.5 line-clamp-2 text-[11px] leading-snug text-espresso-500 dark:text-espresso-300">${m.desc}</p>
-        <div class="mt-auto flex items-center justify-between pt-2">
-          <span class="font-serif text-base font-bold text-gold-gradient">${rupee(m.price)}</span>
-          <div class="w-28">${btn}</div>
-        </div>
-      </div>
-    </article>`;
-  }).join("");
-
-  // wire buttons
-  container.querySelectorAll("[data-add]").forEach((b) =>
-    b.addEventListener("click", (e) => { e.stopPropagation(); quickAdd(b.dataset.add); }));
-  container.querySelectorAll("[data-open]").forEach((a) =>
-    a.addEventListener("click", () => openItemModal(a.dataset.open)));
-}
-
-/* ---------- 10. CART LOGIC ---------- */
-function addToCart(item, addons = []) {
-  const key = item.id;
-  if (state.cart[key]) state.cart[key].qty += 1;
-  else state.cart[key] = { item, qty: 1, addons };
-  popSound();
-  updateCartBar(true);
-  renderMenu();
-}
-function quickAdd(id) { const m = MENU.find((x) => x.id === id); if (m) addToCart(m, []); }
-function changeQty(id, delta) {
-  if (!state.cart[id]) return;
-  state.cart[id].qty += delta;
-  if (state.cart[id].qty <= 0) delete state.cart[id];
-  updateCartBar(); renderMenu(); renderCartItems();
-}
-function cartLineTotal(entry) {
-  const addon = entry.addons.reduce((s, a) => s + a.price, 0);
-  return (entry.item.price + addon) * entry.qty;
-}
-function cartSubtotal() { return Object.values(state.cart).reduce((s, e) => s + cartLineTotal(e), 0); }
-function cartCount() { return Object.values(state.cart).reduce((s, e) => s + e.qty, 0); }
-function discountAmt() { const sub = cartSubtotal(); return state.promo ? Math.round(sub * state.promo.pct / 100) : 0; }
-function grandTotal() { return cartSubtotal() - discountAmt(); }
-
-function updateCartBar(animate) {
-  const count = cartCount();
-  const bar = $("cartBar");
-  if (count === 0) { bar.classList.add("hidden"); return; }
-  bar.classList.remove("hidden");
-  $("cartCount").textContent = count;
-  $("cartItemsLabel").textContent = count + (count === 1 ? " item" : " items");
-  $("cartTotal").textContent = rupee(grandTotal());
-  if (animate) { const c = $("cartCount"); c.classList.remove("animate-cart-pop"); void c.offsetWidth; c.classList.add("animate-cart-pop"); }
-}
-
-/* ---------- 11. ITEM MODAL ---------- */
-let modalItem = null, modalAddons = [];
-function openItemModal(id) {
-  const m = MENU.find((x) => x.id === id); if (!m) return;
-  modalItem = m; modalAddons = [];
-  $("itemModalImg").className = `relative h-44 shrink-0 grid place-items-center bg-gradient-to-br ${m.grad}`;
-  $("itemModalImg").querySelector("button") || null;
-  $("itemModalImg").innerHTML = `<span class="text-7xl drop-shadow-xl">${m.emoji}</span>
-    <button id="closeItemModal" aria-label="Close" class="glass absolute right-3 top-3 grid size-9 place-items-center rounded-full bg-black/30 text-white transition hover:bg-black/50">✕</button>`;
-  $("closeItemModal").addEventListener("click", closeItemModal);
-  $("itemModalName").textContent = m.name;
-  $("itemModalDesc").textContent = m.desc;
-  $("itemModalPrice").textContent = rupee(m.price);
-
-  const addons = ADDONS[m.cat] || [];
-  $("addonsWrap").style.display = addons.length ? "" : "none";
-  $("addonsList").innerHTML = addons.map((a, idx) => `
-    <label class="flex cursor-pointer items-center justify-between rounded-xl border border-espresso-200 bg-espresso-50 px-3 py-2.5 transition has-[:checked]:border-gold-500 has-[:checked]:bg-gold-500/10 dark:border-white/10 dark:bg-espresso-950">
-      <span class="text-sm font-medium">${a.name}</span>
-      <span class="flex items-center gap-2 text-sm font-semibold text-espresso-500 dark:text-espresso-300">+${rupee(a.price)}
-        <input type="checkbox" data-addon="${idx}" class="size-4 accent-gold-600" /></span>
-    </label>`).join("");
-  $("addonsList").querySelectorAll("[data-addon]").forEach((cb) =>
-    cb.addEventListener("change", () => {
-      const a = addons[+cb.dataset.addon];
-      if (cb.checked) modalAddons.push(a);
-      else modalAddons = modalAddons.filter((x) => x.name !== a.name);
-      updateModalPrice();
-    }));
-  updateModalPrice();
-  $("itemModal").classList.remove("hidden"); $("itemModal").classList.add("flex");
-  getAudioCtx();
-}
-function updateModalPrice() {
-  const total = modalItem.price + modalAddons.reduce((s, a) => s + a.price, 0);
-  $("modalAddPrice").textContent = rupee(total);
-}
-function closeItemModal() { $("itemModal").classList.add("hidden"); $("itemModal").classList.remove("flex"); }
-$("modalAddBtn").addEventListener("click", () => {
-  addToCart(modalItem, [...modalAddons]);
-  closeItemModal();
-  toast(modalItem.name + " added ✨");
-});
-
-/* ---------- 12. CART DRAWER ---------- */
-function openCart() { renderCartItems(); $("cartDrawer").classList.remove("hidden"); $("cartDrawer").classList.add("flex"); }
-function closeCart() { $("cartDrawer").classList.add("hidden"); $("cartDrawer").classList.remove("flex"); }
-$("openCart").addEventListener("click", openCart);
-$("closeCart").addEventListener("click", closeCart);
-
-function renderOrderTypeBtns() {
-  document.querySelectorAll(".orderTypeBtn").forEach((b) => {
-    const active = b.dataset.ordertype === state.orderType;
-    b.className = "orderTypeBtn flex-1 rounded-lg py-2 text-sm font-semibold transition " +
-      (active ? "bg-espresso-950 text-gold-300 dark:bg-gold-500 dark:text-espresso-950" : "text-espresso-600 dark:text-espresso-300");
-  });
-}
-document.querySelectorAll(".orderTypeBtn").forEach((b) =>
-  b.addEventListener("click", () => { state.orderType = b.dataset.ordertype; renderOrderTypeBtns(); }));
-
-function renderCartItems() {
-  const entries = Object.values(state.cart);
-  const wrap = $("cartItems");
-  if (entries.length === 0) {
-    wrap.innerHTML = `<p class="py-8 text-center text-sm text-espresso-400">Your cart is empty. Add something delicious!</p>`;
-  } else {
-    wrap.innerHTML = entries.map((e) => `
-      <div class="flex items-center gap-3 rounded-xl border border-espresso-200 bg-white p-3 dark:border-white/10 dark:bg-espresso-900">
-        <div class="grid size-12 shrink-0 place-items-center rounded-lg bg-gradient-to-br ${e.item.grad} text-2xl">${e.item.emoji}</div>
-        <div class="min-w-0 flex-1">
-          <p class="truncate text-sm font-bold">${e.item.name}</p>
-          ${e.addons.length ? `<p class="truncate text-[11px] text-espresso-400">+ ${e.addons.map(a=>a.name).join(", ")}</p>` : ""}
-          <p class="text-sm font-semibold text-gold-gradient">${rupee(cartLineTotal(e))}</p>
-        </div>
-        <div class="flex items-center gap-2 rounded-full bg-espresso-100 px-1 py-1 dark:bg-white/10">
-          <button data-dec="${e.item.id}" class="grid size-6 place-items-center rounded-full bg-white text-espresso-800 dark:bg-espresso-950 dark:text-white">−</button>
-          <span class="w-4 text-center text-sm font-bold">${e.qty}</span>
-          <button data-inc="${e.item.id}" class="grid size-6 place-items-center rounded-full bg-espresso-950 text-gold-300 dark:bg-gold-500 dark:text-espresso-950">+</button>
-        </div>
-      </div>`).join("");
-    wrap.querySelectorAll("[data-inc]").forEach((b) => b.addEventListener("click", () => changeQty(b.dataset.inc, 1)));
-    wrap.querySelectorAll("[data-dec]").forEach((b) => b.addEventListener("click", () => changeQty(b.dataset.dec, -1)));
-  }
-  renderOrderTypeBtns();
-  updateTotals();
-}
-function updateTotals() {
-  $("sumSubtotal").textContent = rupee(cartSubtotal());
-  const disc = discountAmt();
-  $("discountRow").classList.toggle("hidden", disc === 0);
-  $("discountRow").classList.toggle("flex", disc !== 0);
-  $("sumDiscount").textContent = "−" + rupee(disc);
-  $("sumTotal").textContent = rupee(grandTotal());
-}
-
-/* ---------- 13. PROMO ---------- */
-const PROMOS = { WELCOME10: 10, CAFE20: 20, GOLD15: 15 };
-$("applyPromo").addEventListener("click", () => {
-  const code = $("promoInput").value.trim().toUpperCase();
-  const msg = $("promoMsg");
-  msg.classList.remove("hidden");
-  if (PROMOS[code]) {
-    state.promo = { code, pct: PROMOS[code] };
-    msg.textContent = `✓ ${code} applied — ${PROMOS[code]}% off!`;
-    msg.className = "mt-1 text-xs font-semibold text-green-600";
-    popSound();
-  } else {
-    state.promo = null;
-    msg.textContent = "✕ Invalid promo code";
-    msg.className = "mt-1 text-xs font-semibold text-red-600";
-  }
-  updateTotals(); updateCartBar();
-});
-
-/* ---------- 14. PLACE ORDER ---------- */
-$("placeOrder").addEventListener("click", () => {
-  if (cartCount() === 0) { toast("Add items first"); return; }
-  const orderId = "DC" + Date.now().toString().slice(-6);
-  const order = {
-    orderId,
-    tableNo,
-    customer: state.customer,
-    type: state.orderType,
-    items: Object.values(state.cart).map((e) => ({
-      name: e.item.name, qty: e.qty, price: e.item.price,
-      addons: e.addons.map((a) => a.name), lineTotal: cartLineTotal(e),
-    })),
-    notes: $("notesInput").value.trim(),
-    promo: state.promo ? state.promo.code : null,
-    subtotal: cartSubtotal(),
-    discount: discountAmt(),
-    total: grandTotal(),
-    status: "received",
-    createdAt: Date.now(),
-  };
-
-  // Firebase push (graceful)
-  if (dbAvailable) {
-    try { db.ref("orders").push(order); } catch (e) { console.warn("[v0] order push failed", e); }
-  }
-
-  // History (LocalStorage)
-  const history = JSON.parse(localStorage.getItem(LS.history) || "[]");
-  history.unshift(order);
-  localStorage.setItem(LS.history, JSON.stringify(history.slice(0, 20)));
-
-  // reset cart
-  state.cart = {}; state.promo = null; $("promoInput").value = ""; $("notesInput").value = ""; $("promoMsg").classList.add("hidden");
-  updateCartBar(); renderMenu();
-  closeCart();
-  openStatus(order);
-});
-
-/* ---------- 15. ORDER STATUS + PROGRESS + RATING ---------- */
-let progressTimer = null;
-function openStatus(order) {
-  $("statusOrderId").textContent = "#" + order.orderId;
-  $("statusType").textContent = order.type === "dinein" ? "🍽️ Dine-In" : "🥡 Takeaway";
-  $("statusAmount").textContent = rupee(order.total);
-  $("statusModal").classList.remove("hidden"); $("statusModal").classList.add("flex");
-  bellSound();
-
-  const stages = [
-    { pct: 15, label: "Order received 👨‍🍳" },
-    { pct: 45, label: "Chef is preparing 🔥" },
-    { pct: 75, label: "Plating & garnish ✨" },
-    { pct: 100, label: "Ready to serve! 🛎️" },
-  ];
-  let i = 0;
-  const setStage = () => {
-    const s = stages[i];
-    $("progressBar").style.width = s.pct + "%";
-    $("progressPct").textContent = s.pct + "%";
-    $("statusStage").textContent = s.label;
-  };
-  setStage();
-  clearInterval(progressTimer);
-  progressTimer = setInterval(() => { i++; if (i >= stages.length) { clearInterval(progressTimer); return; } setStage(); }, 2200);
-
-  // rating
-  let rating = 0;
-  const sr = $("starRating");
-  const paint = (val) => { sr.querySelectorAll("button").forEach((b, idx) => b.textContent = idx < val ? "★" : "☆"); };
-  sr.innerHTML = [1,2,3,4,5].map((n) => `<button data-star="${n}" class="text-espresso-300 transition hover:scale-110 dark:text-espresso-500">☆</button>`).join("");
-  sr.querySelectorAll("button").forEach((b) => {
-    b.addEventListener("mouseenter", () => paint(+b.dataset.star));
-    b.addEventListener("mouseleave", () => paint(rating));
-    b.addEventListener("click", () => {
-      rating = +b.dataset.star; paint(rating);
-      sr.querySelectorAll("button").forEach((x) => x.classList.add("text-gold-500"));
-      popSound(); toast("Thanks for rating " + rating + " ★");
-      if (dbAvailable) { try { db.ref("ratings").push({ orderId: order.orderId, rating, at: Date.now() }); } catch(e){} }
-    });
-  });
-}
-$("closeStatus").addEventListener("click", () => {
-  clearInterval(progressTimer);
-  $("statusModal").classList.add("hidden"); $("statusModal").classList.remove("flex");
-});
-
-/* ---------- 16. HISTORY + RE-ORDER ---------- */
-function openHistory() {
-  const history = JSON.parse(localStorage.getItem(LS.history) || "[]");
-  const list = $("historyList");
-  if (history.length === 0) {
-    list.innerHTML = `<p class="py-16 text-center text-sm text-espresso-400">No past orders yet.<br>Your order history will appear here.</p>`;
-  } else {
-    list.innerHTML = history.map((o, idx) => `
-      <div class="mb-3 rounded-2xl border border-espresso-200 bg-white p-4 dark:border-white/10 dark:bg-espresso-900">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="font-serif text-sm font-bold">#${o.orderId}</p>
-            <p class="text-[11px] text-espresso-400">${new Date(o.createdAt).toLocaleString("en-IN", { day:"numeric", month:"short", hour:"2-digit", minute:"2-digit" })}</p>
+        <div class="form-group">
+          <label>Order Type</label>
+          <div class="radio-group">
+            <label><input type="radio" name="orderType" value="Dine-in" checked onclick="toggleTable(true)"> Dine-In</label>
+            <label><input type="radio" name="orderType" value="Takeaway" onclick="toggleTable(false)"> Takeaway</label>
           </div>
-          <span class="rounded-full bg-espresso-100 px-2.5 py-1 text-[11px] font-bold text-espresso-600 dark:bg-white/10 dark:text-espresso-200">${o.type === "dinein" ? "🍽️ Dine-In" : "🥡 Takeaway"}</span>
         </div>
-        <p class="mt-2 line-clamp-2 text-xs text-espresso-500 dark:text-espresso-300">${o.items.map(it => it.qty + "× " + it.name).join(", ")}</p>
-        <div class="mt-3 flex items-center justify-between">
-          <span class="font-serif text-base font-bold text-gold-gradient">${rupee(o.total)}</span>
-          <button data-reorder="${idx}" class="rounded-full bg-espresso-950 px-4 py-1.5 text-xs font-bold text-gold-300 transition active:scale-95 dark:bg-gold-500 dark:text-espresso-950">🔄 Re-order All</button>
+        <div class="form-group" id="table-no-group">
+          <label>Table Number</label>
+          <input type="number" class="form-input" id="table-no" placeholder="e.g. 5">
         </div>
-      </div>`).join("");
-    list.querySelectorAll("[data-reorder]").forEach((b) =>
-      b.addEventListener("click", () => reorder(history[+b.dataset.reorder])));
-  }
-  $("historyDrawer").classList.remove("hidden"); $("historyDrawer").classList.add("flex");
-}
-function reorder(order) {
-  order.items.forEach((it) => {
-    const m = MENU.find((x) => x.name === it.name);
-    if (m) {
-      const addons = (ADDONS[m.cat] || []).filter((a) => (it.addons || []).includes(a.name));
-      if (state.cart[m.id]) state.cart[m.id].qty += it.qty;
-      else state.cart[m.id] = { item: m, qty: it.qty, addons };
+        <div class="form-group">
+          <label>Notes (Optional)</label>
+          <input type="text" class="form-input" id="order-notes" placeholder="Less sugar, extra spicy, etc.">
+        </div>
+        <button type="submit" class="checkout-btn">Place Order</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Tracking Modal -->
+  <div class="modal" id="tracking-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Order Status</h3>
+        <span class="close-btn" onclick="closeTracking()">&times;</span>
+      </div>
+      <p style="font-size: 0.9rem; color: var(--text-muted);">Order ID: <strong id="order-id-display" style="color: var(--accent-gold);">#---</strong></p>
+      
+      <div class="tracker">
+        <div class="step active" id="step-1">
+          <div class="step-icon"><i class="fa-solid fa-receipt"></i></div>
+          <div class="step-text">Received</div>
+        </div>
+        <div class="step" id="step-2">
+          <div class="step-icon"><i class="fa-solid fa-fire-burner"></i></div>
+          <div class="step-text">Preparing</div>
+        </div>
+        <div class="step" id="step-3">
+          <div class="step-icon"><i class="fa-solid fa-bell"></i></div>
+          <div class="step-text">Ready</div>
+        </div>
+        <div class="step" id="step-4">
+          <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+          <div class="step-text">Completed</div>
+        </div>
+      </div>
+
+      <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem;" id="tracking-status-text">
+        Your order has been sent to the kitchen!
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Sample Menu Data
+    const menuItems = [
+      { id: 1, name: "Kulhad Special Chai", category: "Tea", price: 30, desc: "Authentic aromatic spices brewed in fresh milk.", img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=300&q=80" },
+      { id: 2, name: "Adrak Elaichi Chai", category: "Tea", price: 25, desc: "Fresh ginger & cardamom infused tea.", img: "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=300&q=80" },
+      { id: 3, name: "Cold Coffee", category: "Coffee", price: 90, desc: "Thick creamy cold coffee topped with chocolate syrup.", img: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=300&q=80" },
+      { id: 4, name: "Bun Maska", category: "Snacks", price: 40, desc: "Soft toasted bun loaded with fresh butter.", img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=300&q=80" },
+      { id: 5, name: "Paneer Cheese Sandwich", category: "Snacks", price: 110, desc: "Grilled sandwich with seasoned paneer & cheese.", img: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=300&q=80" }
+    ];
+
+    let cart = [];
+    let selectedCategory = "All";
+
+    function renderMenu() {
+      const container = document.getElementById('menu-container');
+      const searchQuery = document.getElementById('search-input').value.toLowerCase();
+      
+      const filtered = menuItems.filter(item => {
+        const matchesCategory = selectedCategory === "All" || item.category === selectedCategory;
+        const matchesSearch = item.name.toLowerCase().includes(searchQuery);
+        return matchesCategory && matchesSearch;
+      });
+
+      container.innerHTML = filtered.map(item => `
+        <div class="item-card">
+          <img src="${item.img}" class="item-img" alt="${item.name}">
+          <div class="item-details">
+            <div class="item-title">${item.name}</div>
+            <div class="item-desc">${item.desc}</div>
+            <div class="item-footer">
+              <span class="price">₹${item.price}</span>
+              <button class="add-btn" onclick="addToCart(${item.id})">+ Add</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
     }
-  });
-  popSound();
-  updateCartBar(true); renderMenu();
-  $("historyDrawer").classList.add("hidden"); $("historyDrawer").classList.remove("flex");
-  toast("Items added to cart 🔄");
-  openCart();
-}
-$("historyBtn").addEventListener("click", openHistory);
-$("closeHistory").addEventListener("click", () => { $("historyDrawer").classList.add("hidden"); $("historyDrawer").classList.remove("flex"); });
 
-/* ---------- 17. WAITER CALL (30s cooldown) ---------- */
-let waiterCooldown = false;
-$("waiterBtn").addEventListener("click", () => {
-  if (waiterCooldown) { toast("Please wait, waiter notified"); return; }
-  getAudioCtx(); bellSound();
-  if (dbAvailable) {
-    try { db.ref("waiterCalls").push({ tableNo, customer: state.customer, at: Date.now() }); } catch (e) { console.warn("[v0] waiter push failed", e); }
-  }
-  toast("🔔 Waiter is on the way!");
-  waiterCooldown = true;
-  const btn = $("waiterBtn"), label = $("waiterLabel");
-  btn.classList.add("opacity-60", "pointer-events-none");
-  let sec = 30;
-  const orig = label ? label.textContent : "Waiter";
-  const tick = () => { if (label) label.textContent = sec + "s"; };
-  tick();
-  const cd = setInterval(() => {
-    sec--; if (sec <= 0) { clearInterval(cd); waiterCooldown = false; btn.classList.remove("opacity-60", "pointer-events-none"); if (label) label.textContent = orig; }
-    else tick();
-  }, 1000);
-});
+    function filterCategory(cat, btn) {
+      selectedCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderMenu();
+    }
 
-/* ---------- 18. SEARCH / FILTER / VIEW ---------- */
-$("searchInput").addEventListener("input", (e) => {
-  state.search = e.target.value;
-  $("clearSearch").classList.toggle("hidden", !state.search);
-  renderMenu();
-});
-$("clearSearch").addEventListener("click", () => {
-  state.search = ""; $("searchInput").value = ""; $("clearSearch").classList.add("hidden"); renderMenu();
-});
-$("vegToggle").addEventListener("click", () => {
-  state.vegOnly = !state.vegOnly;
-  $("vegToggle").className = "flex items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold transition " +
-    (state.vegOnly
-      ? "border-green-600 bg-green-600/10 text-green-700 dark:text-green-400"
-      : "border-espresso-200 bg-white text-espresso-700 dark:border-white/10 dark:bg-espresso-900 dark:text-espresso-200");
-  renderMenu();
-});
-function setView(v) {
-  state.view = v; localStorage.setItem(LS.view, v);
-  const on = "bg-espresso-950 text-gold-300 dark:bg-gold-500 dark:text-espresso-950";
-  $("gridViewBtn").className = "grid size-8 place-items-center rounded-full text-sm transition " + (v === "grid" ? on : "text-espresso-500");
-  $("listViewBtn").className = "grid size-8 place-items-center rounded-full text-sm transition " + (v === "list" ? on : "text-espresso-500");
-  renderMenu();
-}
-$("gridViewBtn").addEventListener("click", () => setView("grid"));
-$("listViewBtn").addEventListener("click", () => setView("list"));
+    function filterMenu() {
+      renderMenu();
+    }
 
-/* ---------- 19. LIVE ORDERS (Firebase, table-filtered) ---------- */
-function subscribeLiveOrders() {
-  if (!dbAvailable) return;
-  try {
-    db.ref("orders").orderByChild("tableNo").equalTo(tableNo).on("value", (snap) => {
-      const data = snap.val() || {};
-      console.log("[v0] live orders for table", tableNo, Object.keys(data).length);
-    });
-  } catch (e) { console.warn("[v0] live orders subscribe failed", e); }
-}
+    function addToCart(id) {
+      const existing = cart.find(i => i.id === id);
+      if(existing) {
+        existing.qty++;
+      } else {
+        const item = menuItems.find(i => i.id === id);
+        cart.push({...item, qty: 1});
+      }
+      updateCartUI();
+    }
 
-/* ---------- 20. INIT ---------- */
-function init() {
-  renderCategories();
-  renderSkeleton();
-  setView(state.view);
-  renderOrderTypeBtns();
+    function updateCartUI() {
+      const count = cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById('cart-count').innerText = count;
 
-  // simulate menu fetch with shimmer skeletons
-  setTimeout(() => {
-    state.loading = false;
+      const list = document.getElementById('cart-items-list');
+      if(cart.length === 0) {
+        list.innerHTML = "<p style='color: var(--text-muted); text-align: center;'>Your cart is empty.</p>";
+      } else {
+        list.innerHTML = cart.map(item => `
+          <div class="cart-item">
+            <div>
+              <div style="font-weight: bold; font-size: 0.9rem;">${item.name}</div>
+              <div style="color: var(--accent-gold); font-size: 0.8rem;">₹${item.price * item.qty}</div>
+            </div>
+            <div class="qty-controls">
+              <button class="qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
+              <span>${item.qty}</span>
+              <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      document.getElementById('cart-total').innerText = total;
+    }
+
+    function changeQty(id, change) {
+      const item = cart.find(i => i.id === id);
+      if(item) {
+        item.qty += change;
+        if(item.qty <= 0) cart = cart.filter(i => i.id !== id);
+      }
+      updateCartUI();
+    }
+
+    function openCart() { document.getElementById('cart-modal').style.display = 'flex'; }
+    function closeCart() { document.getElementById('cart-modal').style.display = 'none'; }
+    function closeTracking() { document.getElementById('tracking-modal').style.display = 'none'; }
+
+    function toggleTable(show) {
+      document.getElementById('table-no-group').style.display = show ? 'block' : 'none';
+    }
+
+    function handleCheckout(e) {
+      e.preventDefault();
+      if(cart.length === 0) return alert('Please add items to cart first!');
+
+      const orderId = 'CC' + Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('order-id-display').innerText = '#' + orderId;
+      
+      closeCart();
+      document.getElementById('tracking-modal').style.display = 'flex';
+      
+      // Reset Cart
+      cart = [];
+      updateCartUI();
+
+      // Demo Live Status Updates
+      simulateOrderProgress();
+    }
+
+    function simulateOrderProgress() {
+      const steps = ['step-1', 'step-2', 'step-3', 'step-4'];
+      const texts = [
+        "Order received! Kitchen is notified.",
+        "Chef is preparing your order...",
+        "Order is ready to be served!",
+        "Order completed. Enjoy your meal!"
+      ];
+      
+      let currentStep = 0;
+      const interval = setInterval(() => {
+        if(currentStep < steps.length) {
+          document.getElementById(steps[currentStep]).classList.add('active');
+          document.getElementById('tracking-status-text').innerText = texts[currentStep];
+          currentStep++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 4000);
+    }
+
+    // Initialize
     renderMenu();
-    updateCartBar();
-  }, 1100);
-
-  // auto-login bypass
-  if (state.customer && state.customer.name) closeWelcome();
-  else openWelcome();
-
-  subscribeLiveOrders();
-}
-init();
-</script>
+  </script>
 </body>
 </html>
+
