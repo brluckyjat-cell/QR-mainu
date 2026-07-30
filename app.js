@@ -74,3 +74,59 @@ function showCategory(category){
     });
 
 }
+let cart = [];
+
+
+function addToCart(name, price){
+
+    cart.push({
+        name:name,
+        price:price
+    });
+
+    updateCart();
+
+    showToast(name + " added to cart");
+}
+
+
+
+function updateCart(){
+
+    let cartItems = document.getElementById("cartItems");
+    let cartTotal = document.getElementById("cartTotal");
+
+
+    if(!cartItems) return;
+
+
+    cartItems.innerHTML = "";
+
+    let total = 0;
+
+
+    cart.forEach((item,index)=>{
+
+        total += item.price;
+
+
+        cartItems.innerHTML += `
+
+        <div class="cart-item">
+
+            <span>${item.name}</span>
+
+            <b>₹${item.price}</b>
+
+        </div>
+
+        `;
+
+    });
+
+
+    if(cartTotal){
+        cartTotal.innerText = total;
+    }
+
+}
